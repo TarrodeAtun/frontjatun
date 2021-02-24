@@ -1,0 +1,96 @@
+#component-fichaTrabajador.principal{
+    width:100%;
+    display:flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-bottom: 60px;
+}
+#component-fichaTrabajador.principal.turnos{
+    padding-bottom: 90px;
+}
+#component-fichaTrabajador h2{
+    text-align: center;
+    color:#1880c3;
+    font-family: "OSbold";
+    font-size: 1.9em;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+#component-fichaTrabajador h2 a{
+padding-right: 15px;
+}
+#component-fichaTrabajador h3{
+    padding-left: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+#component-fichaTrabajador h3 button{  /*en futuro cambiar a estructura correspondiente*/
+    margin-left: auto; 
+    background: none;
+}
+#component-fichaTrabajador > div{
+    width:48%;
+}
+
+#component-fichaTrabajador .seccion {
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background:#fcfcfc;
+    box-shadow: 0px 0px 8px #00000040;
+}
+
+
+#component-fichaTrabajador .opciones > div img{
+    height: auto;
+    /* width: 55% !important;  */
+    padding:0px !important;
+    width:80px !important;
+}
+#component-fichaTrabajador .opciones{
+    padding-bottom: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+#component-fichaTrabajador.principal.turnos .opciones{
+    padding-bottom: 160px;
+}
+#component-fichaTrabajador .opciones >div{
+    flex-basis: 30%;
+    margin: 35px 10px 0px;
+}
+#component-fichaTrabajador .opciones > div img, #component-fichaTrabajador .opciones > div a{
+    display:block;
+    width:100%;
+    text-align: center;
+    margin: auto;
+    padding:11px 15px;
+    border-radius: 20px;
+}
+#component-fichaTrabajador span{
+    font-family: "OSsemibold";
+    color:#707070;
+    /* font-size: 1.4em; */
+}
+
+#component-fichaTrabajador .opciones > div a{ /*anterior last of type*/
+    background:#C2D7CA;
+    color:#46875F;
+    /* width: max-content; */
+    font-family: "OSsemibold";
+    font-size: 1.1em;
+   
+}
+#component-fichaTrabajador .opciones > div a:hover{
+    background:#46875F;
+    color:white;
+}
+#component-fichaTrabajador .opciones > div a:hover{
+    color:white;
+    background:#46875F;
+}

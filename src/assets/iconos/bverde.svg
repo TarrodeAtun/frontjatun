@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" class="bverde">
+    <defs>
+    <style>
+    .bverde .a{fill:#cae5d2;transition:all ease .4s}
+    .bverde .b{fill:none;stroke:#00852a;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;transition:all ease .4s}
+    svg.bverde:hover .a{fill:#00852a;}
+    svg.bverde:hover .b{fill:none;stroke:white}
+    </style>
+    </defs>
+    <circle class="a" cx="20" cy="20" r="20"/>
+    <path class="b" d="M234,531l9.355,6.768L234,544.558" transform="translate(-217.445 -517.862)"/>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24.441" height="27.012" viewBox="0 0 24.441 27.012" class="homeicon"><defs>
+<style>
+.homeicon .a{fill:none;stroke:#313415;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.3px;}
+.homeicon{transition:all ease .1s;}
+.homeicon:hover{transform: scale(1.2);}
+</style></defs><g transform="translate(-3.85 -2.35)"><path class="a" d="M4.5,12,16.071,3l11.571,9V26.141a2.571,2.571,0,0,1-2.571,2.571h-18A2.571,2.571,0,0,1,4.5,26.141Z"/><path class="a" d="M13.5,30.856V18h7.714V30.856" transform="translate(-1.286 -2.144)"/></g></svg>

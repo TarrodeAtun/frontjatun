@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100.5" height="50" viewBox="0 0 100.5 24" class="menuButton">
+    <defs>
+    <style>
+    .menuButton .a{fill:none;stroke:#313415;stroke-width:2.3px;transition:all ease .6s}
+    .menuButton .b{fill:#313415;font-size:18px;font-family:OpenSans, Open Sans;}
+    .a1{transform: translate(65.5px, 16px);}
+    .a2{transform: translate(65.5px, 9px);}
+    .a3{transform: translate(65.5px, 2px);}
+    </style>
+    </defs>
+    <g transform="translate(1)">
+        <g transform="translate(0 3)">
+            <line class="a a1" x2="34" />
+            <line class="a a2" x2="34" />
+            <line class="a a3" x2="34" />
+        </g>
+        <text class="b" transform="translate(48 19)">
+        <tspan x="-48.445" y="0">Menú</tspan></text>
+    </g>
+</svg>

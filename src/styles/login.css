@@ -1,0 +1,200 @@
+#component-login.principal{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+#component-login .divFormularios{
+    min-width: 27%;
+    max-width: 28%;;
+    position: relative;
+    transition: all ease .3s;
+    transform-style: preserve-3d;
+    align-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 5%;
+    margin-bottom: auto;
+    height: auto;
+}
+#component-login form{
+    width:100%;
+}
+#component-login form input[type=text], #component-login form input[type=password]{
+    width:100%;
+    border-radius:20px;
+    border: 1px solid gray;
+    padding: 10px 20px;
+    font-size:0.8em;
+}
+#component-login form button{
+    border-radius:25px;
+    border: 1px solid #46875F;
+    color:white;
+    width:100%;
+    background:#46875F;
+    padding:10px;
+}
+#component-login form button:hover{
+    background:#539c6f;
+}
+#component-login form > div{
+    padding-top:5px;
+    padding-bottom:5px;
+}
+#component-login form > div:nth-of-type(5){
+    padding-top:20px;
+}
+#component-login #recordar{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+#component-login #recordar div{
+    display:table-cell;
+}
+#component-login #recordar div *{
+    vertical-align: middle;
+ }
+
+#component-login #recordar div input{
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+#component-login a{
+    cursor:pointer;
+    color:#1880C3;
+    font-style: oblique;
+}
+#component-login h2{
+    text-align:center;
+    color:#1880C3;
+    font-size: 30px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+#component-login label{
+    font-size:0.8em;
+}
+#component-login a,label{
+    /* clear: initial; */
+    white-space: nowrap;
+    display: initial;
+}
+#component-login .barraSupLogin{
+    padding: 15px 30px;
+    width: 100%;
+    height:95px;
+    box-shadow: 0px 3px 6px #00000029;
+    background:white;
+}
+#component-login .incorrecto input {
+border-color:#EB6464 !important;
+color:#EB6464;
+}
+#component-login .incorrecto input::placeholder {
+    color:#EB6464;
+}
+#component-login #mensaje{padding:0px;min-height:20px;}
+#component-login #mensaje label{
+    text-align: center;
+    font-style: oblique;
+    color:#EB6464;
+    width: 100%;
+    display: block;
+}
+#component-login #soporte{
+    width:100%;
+    margin-top:50px;
+}
+#component-login #soporte a{
+    text-align: center;
+    margin: auto;
+    display: block;
+    color:#707070;
+    font-style: normal;
+    letter-spacing: 0px;
+    width: min-content;
+    border-bottom: 2px solid gray;
+    font-size: 0.8em;
+}
+#component-login h3{
+    text-align: center;
+    margin-bottom:50px;
+    color:white;
+    font-size: 1em;
+    font-weight: 400;
+}
+#component-login .loginsubmodal{
+    width: 550px;
+}
+#component-login .loginsubmodal input,#component-login  .loginsubmodal button{
+    margin: auto;
+    display:block;
+    border-radius: 20px;
+    
+}
+#component-login .loginsubmodal input{
+    padding: 10px 20px;
+    width: 80%;
+    border: 1px solid #E6E6E6;
+}
+
+#component-login .loginsubmodal textarea{
+    padding: 10px 20px;
+    width: 80%;
+    border: 1px solid #E6E6E6;
+    border-radius: 10px;
+    margin:auto;
+    display: block;
+}
+#component-login .loginsubmodal button{
+    padding: 10px 40px;
+    background:#1880C3;
+    color:white;
+    width:auto;
+}
+#component-login .loginsubmodal > div{
+    padding: 10px;
+}
+#component-login .loginsubmodal form > div:last-of-type{
+    margin-top: 10px;
+}
+#component-login .loginsubmodal > div p{
+    padding: 10px 45px;
+    text-align: center;
+    font-size:1.2em;
+}
+@media(min-width:1600px){
+    h2{
+        font-size:2.5em;
+    }
+}
+@media(max-width:500px){
+    #component-login {
+        font-size:17px;
+    }
+    #component-login{
+        margin-bottom: 15px;
+    }
+    #component-login .divFormularios{
+        width: auto;
+        max-width: 100%;
+        padding:  10px 10%;
+    } 
+    #component-login .loginsubmodal {
+        width:auto;
+    }
+    #component-login .modal-body{
+        width:80% !important;
+    }
+    #component-login .loginsubmodal p{
+        width:auto;
+        padding: 10px 15px !important;
+    }
+}
+
+

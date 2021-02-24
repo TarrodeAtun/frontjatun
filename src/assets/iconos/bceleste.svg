@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" class="bceleste">
+    <defs>
+        <style>
+            .bceleste .a{fill:#d7e9f3;transition:all ease .4s}
+            .bceleste .b{fill:none;stroke:#1880c3;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;transition:all ease .4s}
+            svg.bceleste:hover .a{fill:#1880c3;}
+            svg.bceleste:hover .b{stroke:white;}
+        </style>
+    </defs>
+    <path class="a" d="M20,0A20,20,0,1,1,0,20,20,20,0,0,1,20,0Z"/>
+    <path class="b" d="M234,531l9.355,6.768L234,544.558" transform="translate(-217.445 -517.862)"/>
+</svg>

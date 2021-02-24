@@ -1,0 +1,16 @@
+#component-crearUsuario form{
+    padding:15px;
+}
+#component-crearUsuario label,input{
+    display:block;
+}
+#component-crearUsuario input{
+    padding:5px;
+}
+#component-crearUsuario .modal-body{
+    background:white;
+    border-radius: 10px;
+    padding:15px;
+    border:1px solid black;
+    box-shadow:2px 2px 2px black;
+}
