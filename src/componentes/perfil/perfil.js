@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { autenticacion } from '../../servicios/autenticacion';
 import { Link } from 'react-router-dom';
-import Axios from 'axios';
+import Axios  from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
 

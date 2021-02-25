@@ -11,17 +11,14 @@ import { ReactComponent as Bcelesterev } from "../../assets/iconos/bcelesterev.s
 import { ReactComponent as Flechacel } from "../../assets/iconos/flechacel.svg";
 
 export default class GestionUsuarios extends Component {
-
     constructor(props) {
         super(props);
-
         this.state = {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
             users: null
         };
     }
-
     render() {
         return (
             <div className="principal gestion-personas menu-lista-dashboard">
@@ -49,7 +46,6 @@ export default class GestionUsuarios extends Component {
                             <Link to="/perfil/ficha-personal">Ficha Personal</Link>
                         </div>
                     </div>
-
             </div>
         );
     }

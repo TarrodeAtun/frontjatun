@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 // import { handleResponse } from '../helpers/manejador';
-import Axios from 'axios';
 
+import Axios  from '../helpers/axiosconf';
 
 if (localStorage.getItem('usuarioActual') == 'undefined' || localStorage.getItem('usuarioActual') == null) { //comprueba si la variable esta definida o si esta vacia
     localStorage.removeItem('usuarioActual'); //en ese caso eliminamos la variable
@@ -22,7 +22,7 @@ export var autenticacion = {
 
 async function login(rut, password) {
     var mensaje = "";
-    await Axios.post('http://localhost:4000/api/login', { rut, password })
+    await Axios.post('/api/login', { rut, password })
         .then(usuario => {
             localStorage.setItem('usuarioActual', JSON.stringify(usuario));
             currentUserSubject.next(usuario);

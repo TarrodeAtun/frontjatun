@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import Axios  from '../../helpers/axiosconf';
 import React, { Component } from 'react';
 
 import { autenticacion } from '../../servicios/autenticacion';
