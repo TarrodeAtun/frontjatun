@@ -1,0 +1,136 @@
+#component-listar-trabajadores {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-bottom: 60px;
+}
+
+#component-listar-trabajadores>div {
+    width: 944px;
+}
+
+#component-listar-trabajadores .filtros {
+    box-shadow: 0px 0px 8px #0000002E;
+    border-radius: 10px;
+    opacity: 1;
+}
+#component-listar-trabajadores .filtros .sup{
+    display:flex;
+    flex-wrap: wrap;
+}
+#component-listar-trabajadores .filtros .sup button{
+
+    margin-left: 10px;
+    margin-top:10px;
+    background:none;
+    color:#707070;
+    font-size: 20px;
+
+
+}
+#component-listar-trabajadores .filtros .sup a{
+
+    margin-left: auto;
+    margin-right:10px;
+    margin-top:10px;
+    background:none;
+    color:#707070;
+    font-size: 20px;
+
+}
+
+#component-listar-trabajadores .filtros .form-group {
+    padding: 15px 0px;
+}
+
+#component-listar-trabajadores .filtros .form-group input {
+    width: 40% !important;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#component-listar-trabajadores .filtros .form-group select {
+    width: 25% !important;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#component-listar-trabajadores .listado {
+    box-shadow: 0px 0px 8px #0000002E;
+    border-radius: 10px;
+    opacity: 1;
+    margin-top: 25px;
+
+}
+
+#component-listar-trabajadores table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#component-listar-trabajadores table td,
+#component-listar-trabajadores table th {
+    padding-top: 19px;
+    padding-bottom: 19px;
+    font-size: 18px;
+}
+
+#component-listar-trabajadores table td:first-of-type,
+#component-listar-trabajadores table th:first-of-type {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+#component-listar-trabajadores table thead {
+    background: #DCECF6;
+}
+
+#component-listar-trabajadores table tr {
+    background: #FCFCFC;
+    border-color: #0000002E;
+}
+
+#component-listar-trabajadores table td {
+    color: #707070;
+}
+
+#component-listar-trabajadores table td:first-of-type {
+    width: 25%;
+}
+
+#component-listar-trabajadores table th {
+    color: #1880C3;
+    font-family: "OSsemibold";
+}
+
+#component-listar-trabajadores table .rut {
+    width: 15%;
+}
+
+#component-listar-trabajadores table .centro {
+    width: 20%;
+}
+
+#component-listar-trabajadores table .acciones {
+    width: 25%;
+}
+
+#component-listar-trabajadores table .acciones>span {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#component-listar-trabajadores table .acciones button {
+    background: none;
+}
+
+#component-listar-trabajadores .incompleto {
+    color: red;
+}
+#component-listar-trabajadores .naranjo{
+    color:#E39B33;
+    text-align:center; /*quitar luego*/
+}

@@ -3,6 +3,7 @@ import { autenticacion } from '../../servicios/autenticacion';
 import { historial } from '../../helpers/historial';
 
 import imagen from "../../assets/persona.svg";
+import { ReactComponent as Boton } from "../../assets/iconos/bcelesteop.svg";
 
 import '../../styles/selectPerfil.css';
 
@@ -39,13 +40,13 @@ export default class selectperfil extends Component {
                     <div className="opciones">
                         <div>
                             <img src={imagen} />
-                            <h2><strong>Administrador</strong></h2>
-                            <button data-tipo="1" onClick={this.seleccionarPerfil}>{'>'}</button>
+                            <h2><strong>Perfil</strong> Administrador</h2>
+                            <button data-tipo="1" onClick={this.seleccionarPerfil}><Boton /></button>
                         </div>
                         <div>
                             <img src={imagen} />
-                            <h2><strong>lider de cuadrilla</strong></h2>
-                            <button data-tipo="2" onClick={this.seleccionarPerfil}>{'>'}</button>
+                            <h2><strong>Perfil</strong>Líder de Cuadrilla</h2>
+                            <button data-tipo="2" onClick={this.seleccionarPerfil}><Boton /></button>
                         </div>
                     </div>
                 </div>

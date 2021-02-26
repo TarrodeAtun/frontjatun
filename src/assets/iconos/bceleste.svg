@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" class="bceleste">
     <defs>
         <style>
+        svg.bceleste{    vertical-align: middle;}
             .bceleste .a{fill:#d7e9f3;transition:all ease .4s}
             .bceleste .b{fill:none;stroke:#1880c3;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;transition:all ease .4s}
             svg.bceleste:hover .a{fill:#1880c3;}

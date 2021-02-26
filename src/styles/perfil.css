@@ -69,8 +69,18 @@
 }
 #component-perfil .seccion > div{
     border-top:1px solid #EDEDED;
-    padding: 18px 10px;
+    padding: 5px 10px;
     box-shadow: 0px 0px 1px #00000040;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+}
+#component-perfil .seccion > div:nth-of-type(2){
+    border-top:none;
+    box-shadow: none;
+}
+#component-perfil .seccion .fotoperfil{
+    padding: 30px 10px;
 }
 
 #component-perfil .seccion > div span:first-of-type{
@@ -165,31 +175,6 @@
 font-size:2em;;
 margin-top: 40px !important;
 margin-bottom: 20px !important;
-}
-.form-group{
-    display:flex;
-    flex-wrap: wrap;
-    align-items:center;
-    /* border-bottom:1px  */
-    padding:10px 50px;
-}
-.form-group:last-of-type{
-    border-bottom:none;
-}
-.form-group label{
-width:40%;
-font-family: "OSsemibold";
-color:#707070;
-}
-.form-group input{
-    width:59%;
-}
-.form-group.buttons{
-    justify-content: center;
-}
-.form-group.buttons button{
-margin-left:10px;
-margin-right:10px;
 }
 
 .modalbasicos{

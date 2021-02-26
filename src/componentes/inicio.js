@@ -47,7 +47,7 @@ export default class inicio extends Component {
                     <div className="opPer">
                         <img src={gestion} alt="Gestion personas" />
                         <h3><strong>Gestión</strong><span> de personas</span></h3>
-                        <Link to="/usuarios/listar-usuarios"> <Amarillo /> </Link>
+                        <Link to="/personas/gestion"> <Amarillo /> </Link>
                     </div>
                     <div className="opRed">
                         <img src={residuo} alt="Gestion residuos" />

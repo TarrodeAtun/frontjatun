@@ -43,7 +43,7 @@ export default class navegador extends Component {
                         <hr></hr>
                         <li ><Link to="/">Dashboard / Inicio</Link></li>
                         <li><Link to="/perfil">Mi perfil</Link></li>
-                        <li><Link to="/usuarios/gestion">Gestión de Usuarios</Link></li>
+                        <li><Link to="/personas/gestion">Gestión de Usuarios</Link></li>
                         <li><Link to="/residuos/gestion">Gestión de Residuos</Link></li>
                         <hr></hr>
                         <li><label className="bold">Bienestar</label></li>

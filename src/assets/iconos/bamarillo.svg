@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" class="bamarillo">
     <defs>
     <style>
+    svg.bamarillo{    vertical-align: middle;}
     .bamarillo .a{fill:#f6e4c9;transition:all ease .4s}
     .bamarillo .b{fill:none;stroke:#e39b33;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;transition:all ease .4s}
     svg.bamarillo:hover .a{fill:#e39b33}

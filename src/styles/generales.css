@@ -102,6 +102,15 @@
   button.btgris:hover{
     background:#707070
   }
+  button.btblanco{
+    background:white;
+    color:#C8C8C8 !important;
+    border:1px solid #C8C8C8;
+  }
+  button.btblanco:hover{
+    background:#C8C8C8;
+    color:white !important;
+  }
   textarea {
     overflow: auto;
     resize: vertical; }
@@ -116,6 +125,12 @@
     font-size: 80%;
     font-weight: 400; }
   
+    .justify-around{
+      justify-content: space-around;
+    }
+    .justify-center{
+      justify-content: center;
+    }
   .list-inline {
     padding-left: 0;
     list-style: none; }
@@ -404,12 +419,18 @@
 }
 .menu-lista-dashboard h2{
     text-align: center;
-    color:#1880c3;
     font-family: "OSbold";
     font-size: 1.9em;
     margin-top: 50px;
     margin-bottom: 50px;
 }
+.menu-lista-dashboard h2.azul{
+  color:#1880c3;
+}
+.menu-lista-dashboard h2.naranjo{
+  color:#E39B33;
+}
+
 .menu-lista-dashboard h2 a{
 padding-right: 15px;
 }
@@ -418,6 +439,12 @@ padding-right: 15px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+}
+.menu-lista-dashboard a{
+  display: flex;
+    flex-wrap: wrap;
+    align-items: center; 
+    width:100%;
 }
 .menu-lista-dashboard h3 button{  /*en futuro cambiar a estructura correspondiente*/
     margin-left: auto; 
@@ -441,14 +468,64 @@ padding-right: 15px;
   padding:0px !important;
   width:80px !important;
 }
+.menu-lista-dashboard span{
+  font-family: "OSsemibold";
+    color: #707070;
+}
 .menu-lista-dashboard .opciones{
   padding-bottom: 200px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
+.menu-lista-dashboard .opciones >div{
+  flex-basis: 30%;
+  margin: 35px 10px 0px;
+}
 
-
-
+.menu-lista-dashboard .opciones >div a,.menu-lista-dashboard .opciones >div img{
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin: auto;
+  padding: 11px 15px;
+  border-radius: 20px;
+}
+.menu-lista-dashboard .opciones >div a{
+  background: #C2D7CA;
+  color: #46875F;
+  /* width: max-content; */
+  font-family: "OSsemibold";
+  font-size: 1.1em;
+}
+.menu-lista-dashboard .opciones > div a:hover {
+  background: #46875F;
+  color: white;
+}
+.form-group{
+  display:flex;
+  flex-wrap: wrap;
+  align-items:center;
+  /* border-bottom:1px  */
+  padding:10px 50px;
+}
+.form-group:last-of-type{
+  border-bottom:none;
+}
+.form-group label{
+width:40%;
+font-family: "OSsemibold";
+color:#707070;
+}
+.form-group input{
+  width:59%;
+}
+.form-group.buttons{
+  justify-content: center;
+}
+.form-group.buttons button{
+margin-left:10px;
+margin-right:10px;
+}
   /*# sourceMappingURL=estilos.css.map */
   

@@ -26,6 +26,8 @@ import { toogleModalCore } from '../includes/funciones';
 
 import '../../styles/perfil.css';
 
+
+
 export default class Perfil extends Component {
 
     toogleModal = toogleModalCore; //copiamos la funcion modal a una funcion local
@@ -77,7 +79,7 @@ export default class Perfil extends Component {
     }
 
     async componentDidMount() {
-        console.log(this.state.currentUser.data.usuariobd);
+        const { id } = this.props.match.params
         await this.setState({
             datosUsuarios: this.state.currentUser.data.usuariobd
         });
@@ -108,7 +110,7 @@ export default class Perfil extends Component {
 
     actualizaBasicos = async e => {
         e.preventDefault();
-        const res = await Axios.put('http://localhost:4000/api/users/worker/basic', {
+        const res = await Axios.put('/api/users/worker/basic', {
             id: this.state.currentUser.data.usuariobd._id,
             email: this.state.formEmail,
             telefono: this.state.formTelefono
@@ -126,7 +128,7 @@ export default class Perfil extends Component {
 
     actualizaEmergencias = async e => {
         e.preventDefault();
-        const res = await Axios.put('http://localhost:4000/api/users/worker/emergency', {
+        const res = await Axios.put('/api/users/worker/emergency', {
             id: this.state.currentUser.data.usuariobd._id,
             contacto: this.state.formContacto,
             parentesco: this.state.formParentesco,
@@ -282,7 +284,6 @@ export default class Perfil extends Component {
                                             <label>{puesto}</label>
                                         ))
                                         }
-
                                     </span>
                                 </div>
                                 : null

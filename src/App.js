@@ -25,15 +25,16 @@ import GestionResiduos from './componentes/gestion_residuos/gestion';
 
 //Gestion usuarios
 import GestionUsuarios from './componentes/gestion_usuarios/gestion';
+import ListarUsuarios from './componentes/gestion_usuarios/listarTrabajadores';
+import PerfilTrabajador from './componentes/gestion_usuarios/perfil';
 import Turnos from './componentes/gestion_usuarios/turnos';
 import CrearUsuario from './componentes/usuarios/crearUsuario';
 import ListaUsuarios from './componentes/usuarios/listarUsuarios';
 
+
 //perfil
 import Perfil from './componentes/perfil/perfil';
 import FichaTrabajador from './componentes/perfil/fichaTrabajador';
-
-
 
 //404
 import NotFound from './componentes/notfound';
@@ -67,7 +68,6 @@ class App extends React.Component {
     }
   }
 
-
   render() {
     const { currentUser } = this.state;
     console.log(currentUser);
@@ -82,9 +82,11 @@ class App extends React.Component {
                 
 
                 {/* trabajadores */}
-                <RutaPrivada path="/usuarios/gestion" component={GestionUsuarios} />
-                <RutaPrivada path="/usuarios/listar-usuarios" component={ListaUsuarios} />
-                <RutaPrivada path="/usuarios/crear-usuario" component={CrearUsuario} />
+                <RutaPrivada path="/personas/gestion" component={GestionUsuarios} />
+                <RutaPrivada path="/personas/listar-trabajadores" component={ListarUsuarios} />
+                <RutaPrivada path="/personas/listar-usuarios" component={ListaUsuarios} />
+                <RutaPrivada path="/personas/crear-trabajador" component={CrearUsuario} />
+                <RutaPrivada path="/personas/perfil/:id" component={PerfilTrabajador} />
 
 
                 {/*Perfil */}

@@ -1,14 +1,17 @@
+// importaciones de bibliotecas 
 import React, { Component } from "react";
 import { autenticacion } from '../../servicios/autenticacion';
 import { Link } from 'react-router-dom';
 
+// importaciones de estilos 
 import '../../styles/fichaTrabajador.css';
 
+
+// importaciones de iconos 
 import  fichaper  from "../../assets/iconos/fichaper.svg";
 import  turnos  from "../../assets/iconos/turnos.svg";
-
-import { ReactComponent as Bcelesterev } from "../../assets/iconos/bcelesterev.svg";
-import { ReactComponent as Flechacel } from "../../assets/iconos/flechacel.svg";
+import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
+import { ReactComponent as Flechaam } from "../../assets/iconos/flechaam.svg";
 
 export default class GestionUsuarios extends Component {
     constructor(props) {
@@ -23,29 +26,22 @@ export default class GestionUsuarios extends Component {
         return (
             <div className="principal gestion-personas menu-lista-dashboard">
                 <div>
-                <h2><Link to="/"> <Bcelesterev/></Link> Turnos</h2>
+                <h2 className="naranjo"><Link to="/"> <Bamarillorev/></Link> Gestión de Personas</h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
-                            <h3><span>Historial</span><button><Flechacel/></button></h3>
+                            <h3><Link to="/personas/listar-trabajadores"><span>Trabajadores</span><button><Flechaam/></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><span>Reemplazos</span><button><Flechacel/></button></h3>
+                            <h3><span>Turnos</span><button><Flechaam/></button></h3>
                         </div>
                         <div className="seccion">
-                            <h3><span>Mis Solicitudes</span><button><Flechacel/></button></h3>
+                            <h3><span>Asistencias</span><button><Flechaam/></button></h3>
+                        </div>
+                        <div className="seccion">
+                            <h3><span>Bienestar</span><button><Flechaam/></button></h3>
                         </div>
                     </div>
                 </div>
-                <div className="opciones">
-                        <div>
-                            <img src={fichaper} />
-                            <Link to="/perfil">Volver al Perfil</Link>
-                        </div>
-                        <div>
-                            <img src={turnos} />
-                            <Link to="/perfil/ficha-personal">Ficha Personal</Link>
-                        </div>
-                    </div>
             </div>
         );
     }
