@@ -116,7 +116,7 @@ export default class Perfil extends Component {
     actualizaDatos = async e => {
         const { id } = this.props.match.params;
         e.preventDefault();
-        const res = await Axios.put('http://localhost:4000/api/users/worker/update/', {
+        const res = await Axios.put('/api/users/worker/update/', {
             id: this.state.currentUser.data.usuariobd._id,
             nombre: this.state.formNombre,
             apellido: this.state.formApellido,

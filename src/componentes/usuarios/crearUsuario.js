@@ -94,7 +94,7 @@ export default class CrearUsuario extends Component {
     enviaDatos = async e => {
         const { id } = this.props.match.params;
         e.preventDefault();
-        const res = await Axios.post('http://localhost:4000/api/users/worker/create/', {
+        const res = await Axios.post('/api/users/worker/create/', {
             id: this.state.currentUser.data.usuariobd._id,
             nombre: this.state.formNombre,
             apellido: this.state.formApellido,
