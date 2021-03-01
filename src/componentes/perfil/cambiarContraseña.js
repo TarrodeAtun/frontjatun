@@ -13,7 +13,8 @@ export default class CambiarPass extends Component {
         this.state = {
             currentUser: autenticacion.currentUserValue,
             pass: '',
-            rePass: ''
+            rePass: '',
+            mensaje:''
         };
     }
 
@@ -22,26 +23,33 @@ export default class CambiarPass extends Component {
             [e.target.name]: e.target.value
         })
     }
+
     onSubmit = async e => {
+        var componente = this;
         e.preventDefault();
         if (this.state.pass === this.state.rePass) {
+            console.log("1");
             const res = await Axios.put('/api/users/worker/pass', {
                 id: this.state.currentUser.data.usuariobd._id,
                 pass: this.state.pass,
                 rePass: this.state.rePass
             }, { headers: authHeader() })
-                .then(function () {
-                    console.log("funciono");
+                .then(e => {
+                    console.log(e);
+                    componente.setState({mensaje: "se ha cambiado la contraseña"});
+                    setTimeout(function(){
+                        componente.setState({mensaje :""});
+                    },
+                    1500);
                 }).catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                    console.log("3");
                     handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 });
         } else {
             console.log("no");
         }
     }
-
     render() {
-        
         return (
             <div className="modalcontrasena">
                 <div>
@@ -68,6 +76,7 @@ export default class CambiarPass extends Component {
                             <button className="boton-generico btazul" type="submit">Guardar</button>
                             <button className="boton-generico btgris" onClick={this.props.closeModal} type="button">Cancelar</button>
                         </div>
+                        <div><p className="mensaje">{this.state.mensaje}</p></div>
                     </form>
                 </div>
             </div>
