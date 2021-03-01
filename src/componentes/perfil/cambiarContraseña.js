@@ -25,7 +25,7 @@ export default class CambiarPass extends Component {
     onSubmit = async e => {
         e.preventDefault();
         if (this.state.pass === this.state.rePass) {
-            const res = await Axios.put('http://localhost:4000/api/users/worker/pass', {
+            const res = await Axios.put('/api/users/worker/pass', {
                 id: this.state.currentUser.data.usuariobd._id,
                 pass: this.state.pass,
                 rePass: this.state.rePass
