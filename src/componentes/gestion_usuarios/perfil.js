@@ -79,7 +79,7 @@ export default class Perfil extends Component {
     cargarDatos = async e => {
         var componente = this;
         const { id } = this.props.match.params;
-        await Axios.get('http://localhost:4000/api/users/worker/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        await Axios.get('/api/users/worker/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
 
                 componente.setState({ datosUsuario: res.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
