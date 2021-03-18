@@ -51,10 +51,19 @@
 }
 #component-perfil h2{
     text-align: center;
-    color:#1880c3;
     font-family: "OSbold";
     margin-top: 50px;
     margin-bottom: 50px;
+    font-size:30px !important;
+}
+#component-perfil h2.celeste{
+    color:#1880c3;
+}
+#component-perfil h2.amarillo{
+    color:#e39b33;
+}
+#component-perfil h2 span{
+    font-family: "OSregular";
 }
 #component-perfil h2 button{
     border-radius: 50%;
@@ -197,4 +206,30 @@ margin-bottom: 20px !important;
 }
 .modalcontrasena .form-group.buttons{
     margin-top:20px
+}
+
+#component-perfil .encabezado{
+    display:flex;
+    flex-wrap:wrap;
+}
+#component-perfil .encabezado .fotoperfil {
+    padding: 15px;
+    padding-left: 30px;
+    box-shadow: none;
+    width:auto;
+}
+#component-perfil .encabezado .fotoperfil img{
+    width:70px;
+    height: 70px;;
+}
+#component-perfil .encabezado .datosPersonales h3{
+    padding: 0px;
+    margin: 0px;
+}
+#component-perfil .encabezado .datosPersonales h3 span{
+    padding-left: 10px;
+    display:block;
+    width: max-content;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

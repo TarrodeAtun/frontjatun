@@ -12,11 +12,20 @@
 }
 #component-fichaTrabajador h2{
     text-align: center;
-    color:#1880c3;
+   
     font-family: "OSbold";
     font-size: 1.9em;
     margin-top: 50px;
     margin-bottom: 50px;
+}
+#component-fichaTrabajador h2.celeste{
+    color:#1880c3;
+}
+#component-fichaTrabajador h2.amarillo, #component-fichaTrabajador h2.amarillo span{
+    color:#e39b33;
+}
+#component-fichaTrabajador h2 span{
+    font-family: "OSregular";
 }
 #component-fichaTrabajador h2 a{
 padding-right: 15px;
@@ -93,4 +102,11 @@ padding-right: 15px;
 #component-fichaTrabajador .opciones > div a:hover{
     color:white;
     background:#46875F;
+}
+#component-fichaTrabajador .encabezado{
+    display:flex;
+    flex-wrap:wrap;
+}
+#component-fichaTrabajador .encabezado .fotoperfil{
+    
 }

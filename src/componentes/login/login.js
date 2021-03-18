@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { autenticacion } from '../../servicios/autenticacion';
+import { funciones } from '../../servicios/funciones';
 import { historial } from '../../helpers/historial';
 
 // import { validate, clean, format } from 'rut.js';
@@ -11,7 +12,12 @@ import { toogleModalCore } from '../includes/funciones';
 import Recuperar from './recuperar';
 import Soporte from './soporte';
 
+// import NumberFormat from 'react-number-format';
+import { useRut } from 'react-rut';
+
 import '../../styles/login.css';
+
+
 
 export default class login extends Component {
     state = {
@@ -59,10 +65,8 @@ export default class login extends Component {
             [e.target.name]: e.target.value
         })
     }
-    onChangeRut = (e) => {
-        this.setState({
-            rut: e.target.value
-        })
+    onChangeRut = async e => {
+        funciones.formatearRut(e.target.value, 1).then(res => {this.setState({ rut: res })});
     }
     resetMensaje = (e) => {
         const comp = this;
@@ -78,6 +82,7 @@ export default class login extends Component {
         else { this.setState({ posicion: '' }) }
     }
     render() {
+
         return (
             <div className="principal" id="component-login">
                 <div className="barraSupLogin">
@@ -95,10 +100,10 @@ export default class login extends Component {
                         </div>
                         <div>
                             <input type="text"
-                                onChange={this.onChangeInput}
                                 value={this.state.rut}
+                                onChange={this.onChangeRut}
                                 name="rut"
-                                placeholder="RUN" />
+                                placeholder="RUN" maxLength="12"/>
                         </div>
                         <div>
                             <input type="password"

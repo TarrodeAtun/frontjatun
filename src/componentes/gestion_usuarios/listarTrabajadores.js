@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import { funciones } from '../../servicios/funciones';
 
 import '../../styles/listarTrabajadores.css';
 
@@ -14,6 +15,8 @@ import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev
 import { ReactComponent as Basurero } from "../../assets/iconos/basurero.svg";
 import { ReactComponent as Ojo } from "../../assets/iconos/ojo.svg";
 import { ReactComponent as Descarga } from "../../assets/iconos/descarga.svg";
+import { ReactComponent as Flechaam } from "../../assets/iconos/flechaam.svg";
+import { ReactComponent as Plus } from "../../assets/iconos/X.svg";
 
 
 //importamos manejadores de modal
@@ -44,6 +47,17 @@ export default class ListarTrabajadores extends Component {
             [e.target.name]: e.target.value
         })
     }
+     formatearRutListado =  (rutCrudo, dv) => {
+        var sRut = new String(rutCrudo);
+        var sRutFormateado = '';
+        while (sRut.length > 3) {
+            sRutFormateado = "." + sRut.substr(sRut.length - 3) + sRutFormateado;
+            sRut = sRut.substring(0, sRut.length - 3);
+        }
+        sRutFormateado = sRut + sRutFormateado;
+        sRutFormateado += "-" + dv;
+        return sRutFormateado;
+    }
 
     obtenerTrabajadores = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
@@ -70,10 +84,15 @@ export default class ListarTrabajadores extends Component {
                 <div>
                     <h2 className="naranjo"><Link to="/personas/gestion"> <Bamarillorev /> </Link> Gestión de Personas <strong>/ Trabajadores</strong></h2>
                 </div>
+
+                <div className="panel-dashboard-link">
+                    <div className="seccion">
+                            <h3><Link to="/personas/crear-trabajador"><Plus/><span>  Crear Trabajador</span><button><Flechaam/></button></Link></h3>
+                    </div>
+                </div>
                 <div className="filtros">
                     <div className="sup">
                         <button>Filtros</button>
-                        <Link to="/personas/crear-trabajador">Crear Trabajador</Link>
                     </div>
                     <div>
                         <form>
@@ -97,8 +116,6 @@ export default class ListarTrabajadores extends Component {
                     <table>
                         <thead>
                             <th>Trabajador</th>
-                            <th>Rut</th>
-                            <th>Contrato</th>
                             <th>Centro Costos</th>
                             <th>Acciones Ficha</th>
                         </thead>
@@ -106,9 +123,11 @@ export default class ListarTrabajadores extends Component {
                             {
                                 this.state.trabajadores.map(usuario => (
                                     <tr key={usuario._id}>
-                                        <td>{usuario.nombre}  {usuario.apellido}</td>
-                                        <td className="rut">{usuario.rut}</td>
-                                        <td className="vigente">Vigente</td>
+                                        <td className="columna">
+                                            <span>{usuario.nombre}  {usuario.apellido}</span>
+                                            <span>{this.formatearRutListado(usuario.rut,usuario.dv)}</span>
+                                            <span>Contrato Vigente</span>
+                                        </td>
                                         <td className="centro">Proyecto 1</td>
                                         <td className="acciones">
                                             <span className="incompleto">80%</span>

@@ -5,6 +5,18 @@ import { autenticacion } from '../../servicios/autenticacion';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
 
+import { ToastContainer, toast } from 'react-toastify';
+
+const toastoptions = {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+}
+
 export default class CambiarPass extends Component {
 
     constructor(props) {
@@ -35,12 +47,9 @@ export default class CambiarPass extends Component {
                 rePass: this.state.rePass
             }, { headers: authHeader() })
                 .then(e => {
+                    toast.success("Se ha cambiado la contraseña", toastoptions);
+                    this.props.closeModal();
                     console.log(e);
-                    componente.setState({mensaje: "se ha cambiado la contraseña"});
-                    setTimeout(function(){
-                        componente.setState({mensaje :""});
-                    },
-                    1500);
                 }).catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                     console.log("3");
                     handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente

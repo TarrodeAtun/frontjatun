@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Axios  from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import { funciones } from '../../servicios/funciones';
 
 //importaciones de componentes
 import Basicos from './editarBasicos';
@@ -19,6 +20,8 @@ import edit from "../../assets/iconos/edit.svg";
 import fichaper from "../../assets/iconos/fichaper.svg";
 import turnos from "../../assets/iconos/turnos.svg";
 
+import { ToastContainer, toast } from 'react-toastify';
+
 
 //importamos manejadores de modal
 import Modal from '../includes/modal';
@@ -26,7 +29,15 @@ import { toogleModalCore } from '../includes/funciones';
 
 import '../../styles/perfil.css';
 
-
+const toastoptions = {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+}
 
 export default class Perfil extends Component {
 
@@ -60,6 +71,7 @@ export default class Perfil extends Component {
         this.state = {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
+            rutFormateado : "",
             users: null,
             showCambiarPass: false,
             showCambiarBasicos: false,
@@ -94,10 +106,7 @@ export default class Perfil extends Component {
             formComuna: this.state.datosUsuarios.emergencias.comuna,
             formCiudad: this.state.datosUsuarios.emergencias.ciudad
         });
-    }
-
-    async getRut() {
-
+        await funciones.getRutFormateado(this.state.datosUsuarios.rut, this.state.datosUsuarios.dv).then(res => {this.setState({ rutFormateado: res })});
     }
     async componentWillUnmount() {
 
@@ -116,6 +125,7 @@ export default class Perfil extends Component {
             telefono: this.state.formTelefono
         }, { headers: authHeader() })
             .then(usuario => {
+                toast.success("Datos modificados satisfactoriamente", toastoptions);
                 localStorage.setItem('usuarioActual', JSON.stringify(usuario));
                 this.actualizaPerfil();
                 this.setState({ showCambiarBasicos: false });
@@ -139,6 +149,7 @@ export default class Perfil extends Component {
             ciudad: this.state.formCiudad
         }, { headers: authHeader() })
             .then(usuario => {
+                toast.success("Datos modificados satisfactoriamente", toastoptions);
                 localStorage.setItem('usuarioActual', JSON.stringify(usuario));
                 this.actualizaPerfil();
                 this.setState({ showCambiarEmergencias: false });
@@ -153,7 +164,7 @@ export default class Perfil extends Component {
         return (
             <div className="principal" id="component-perfil">
                 <div>
-                    <h2><Link to="/"> <Bcelesterev /> </Link> Mi Perfil de Usuario</h2>
+                    <h2 className="celeste"><Link to="/"> <Bcelesterev /> </Link> Mi Perfil </h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
                             <a className="edit-button" onClick={this.editar} data-objetivo="CambiarBasicos"><img src={edit} /></a>
@@ -168,7 +179,7 @@ export default class Perfil extends Component {
                                 <span>Apellido</span><span>{this.state.datosUsuarios.apellido}</span>
                             </div>
                             <div>
-                                <span>Rut</span><span>{this.state.datosUsuarios.rut}</span>
+                                <span>Rut</span><span>{this.state.rutFormateado}</span>
                             </div>
                             <div>
                                 <span>Fecha Nacimiento</span><span>{this.state.datosUsuarios.fechaNac}</span>

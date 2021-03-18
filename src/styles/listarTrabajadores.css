@@ -7,6 +7,13 @@
     flex-direction: column;
     padding-bottom: 60px;
 }
+#component-listar-trabajadores h2{
+font-size:30px;
+text-align: center;
+}
+#component-listar-trabajadores h2 a{
+    vertical-align: middle;
+}
 
 #component-listar-trabajadores>div {
     width: 944px;
@@ -47,13 +54,13 @@
 }
 
 #component-listar-trabajadores .filtros .form-group input {
-    width: 40% !important;
+    width: 40% ;
     margin-left: 10px;
     margin-right: 10px;
 }
 
 #component-listar-trabajadores .filtros .form-group select {
-    width: 25% !important;
+    width: 25% ;
     margin-left: 10px;
     margin-right: 10px;
 }
@@ -91,10 +98,16 @@
 #component-listar-trabajadores table tr {
     background: #FCFCFC;
     border-color: #0000002E;
+    border-bottom: 1px solid #0000002E;
 }
 
 #component-listar-trabajadores table td {
     color: #707070;
+}
+#component-listar-trabajadores table td.columna span{
+display:block;
+width:100%;
+margin-top: 15px;
 }
 
 #component-listar-trabajadores table td:first-of-type {
@@ -134,3 +147,30 @@
     color:#E39B33;
     text-align:center; /*quitar luego*/
 }
+.filtros-or input{
+    width:25% !important;
+    }
+    .filtros-or select{
+      width:20% !important;
+    }
+    .tableor td{
+    width:auto !important;
+    }
+    .anulada td{
+        color:#C8C8C8 !important;
+    }
+    h2.verde a{
+        vertical-align: middle;
+    }
+    select{
+        width:100%;
+    }
+    textarea{width:100%;}
+    .form-group.buttons{
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
+    }
+    .fix{
+        display: inline-block !important;
+    width: auto !important;
+    }

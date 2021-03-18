@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20.027" height="20.027" viewBox="0 0 20.027 20.027" class="plus">
+<defs>
+<style>plus .a{fill:none;stroke:#a8a8a8;stroke-linecap:round;stroke-width:1.5px;}
+</style>
+</defs>
+<g transform="translate(10.014 0.75) rotate(45)">
+<line class="a" x2="18.527" transform="translate(0 13.101) rotate(-45)"/>
+<line class="a" x2="18.527" transform="translate(0 0) rotate(45)"/>
+</g>
+</svg>

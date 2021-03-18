@@ -7,8 +7,8 @@ import '../../styles/fichaTrabajador.css';
 import  fichaper  from "../../assets/iconos/fichaper.svg";
 import  turnos  from "../../assets/iconos/turnos.svg";
 
-import { ReactComponent as Flechacel } from "../../assets/iconos/flechacel.svg";
 import { ReactComponent as Bcelesterev } from "../../assets/iconos/bcelesterev.svg";
+import { ReactComponent as Flechacel } from "../../assets/iconos/flechacel.svg";
 
 export default class fichaTrabajador extends Component {
 
@@ -24,27 +24,18 @@ export default class fichaTrabajador extends Component {
 
     render() {
         return (
-            <div className="principal menu-lista-dashboard" id="component-fichaTrabajador">
+            <div className="principal turnos" id="component-fichaTrabajador">
                 <div>
-                    <h2 className="celeste"><Link to="/"> <Bcelesterev/></Link> Ficha Personal</h2>
+                <h2><Link to="/"> <Bcelesterev/></Link> Turnos</h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
-                        <h3><Link to={`/perfil/ficha-personal/equipo`}> <span>Tallas Equipo</span><button><Flechacel/></button></Link></h3>
+                            <h3><span>Historial</span><button><Flechacel/></button></h3>
                         </div>
                         <div className="seccion">
-                        <h3><Link to={`/perfil/ficha-personal/contractual`}><span>Contractual</span><button><Flechacel/></button> </Link></h3>
+                            <h3><span>Reemplazos</span><button><Flechacel/></button></h3>
                         </div>
                         <div className="seccion">
-                            <h3><span>Prevision Social</span><button><Flechacel/></button></h3>
-                        </div>
-                        <div className="seccion">
-                            <h3><span>Hoja de Vida</span><button><Flechacel/></button></h3>
-                        </div>
-                        <div className="seccion">
-                            <h3><span>Registros graficos</span><button><Flechacel/></button></h3>
-                        </div>
-                        <div className="seccion">
-                            <h3><span>Asistencias</span><button><Flechacel/></button></h3>
+                            <h3><span>Mis Solicitudes</span><button><Flechacel/></button></h3>
                         </div>
                     </div>
                 </div>
@@ -55,7 +46,7 @@ export default class fichaTrabajador extends Component {
                         </div>
                         <div>
                             <img src={turnos} />
-                            <Link to="/perfil/turnos">Turnos</Link>
+                            <Link to="/perfil/ficha-personal">Ficha Personal</Link>
                         </div>
                     </div>
 
