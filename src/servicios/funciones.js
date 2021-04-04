@@ -1,7 +1,8 @@
 export var funciones = {
     formatearRut,
     quitarFormato,
-    getRutFormateado
+    getRutFormateado,
+    validarEmail
 
 };
 
@@ -67,6 +68,14 @@ function getDigito(rut) {
 
 async function getRutFormateado(rutCrudo, dv) {
     var rut = await formatearRut(rutCrudo);
-    rut  = rut+"-"+dv
+    rut = rut + "-" + dv
     return rut;
+}
+
+async function validarEmail(valor) {
+    if (/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(valor)) {
+        return true;
+    } else {
+        return false
+    }
 }

@@ -156,6 +156,7 @@ color:#EB6464;
     background:#1880C3;
     color:white;
     width:auto;
+    margin-top: 20px;
 }
 #component-login .loginsubmodal > div{
     padding: 10px;
@@ -167,6 +168,9 @@ color:#EB6464;
     padding: 10px 45px;
     text-align: center;
     font-size:1.2em;
+}
+#component-login .loginsubmodal h4{
+    text-align: center;color:#1880C3;
 }
 @media(min-width:1600px){
     h2{

@@ -38,7 +38,7 @@ export default class GestionUsuarios extends Component {
                             <h3><span>Asistencias</span><button><Flechaam/></button></h3>
                         </div>
                         <div className="seccion">
-                            <h3><span>Bienestar</span><button><Flechaam/></button></h3>
+                            <h3><Link to="/bienestar"><span>Bienestar</span><button><Flechaam/></button></Link></h3>
                         </div>
                     </div>
                 </div>

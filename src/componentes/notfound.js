@@ -1,12 +1,15 @@
 import React from 'react'
-//import { autenticacion } from '../servicios/autenticacion';
-import { historial } from '../helpers/historial';
+import { Link } from 'react-router-dom';
 
-historial.push('/');
+// historial.push('/');
 
 const NotFound = () => (
-
-    <div></div>
-);
+    <div>
+      <h1>404 - Not Found!</h1>
+      <Link to="/">
+        Go Home
+      </Link>
+    </div>
+  );
 
 export default NotFound;

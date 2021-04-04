@@ -47,7 +47,7 @@ export default class ModalBody extends Component {
         console.log(this.props.props);
         const clonHijo = React.Children.map(this.props.contenido, child => { //clonamos el contenido hijo para entregarle nuevos atributos
             if (React.isValidElement(child)) {
-                return React.cloneElement(child, { closeModal: this.cerrarModalContenido, funcion: this.props.props.funcion });
+                return React.cloneElement(child, { closeModal: this.cerrarModalContenido, funcion: this.props.props.funcion, props: this.props.props });
             }
             return child;
         });

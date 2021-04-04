@@ -26,7 +26,7 @@ const toastoptions = {
     progress: undefined,
 }
 const openInNewTab = (url) => {
-    let direccion = "http://ec2-18-219-217-99.us-east-2.compute.amazonaws.com:3000/media/users";
+    let direccion = "http://localhost:4000/media/users";
     direccion = direccion + url;
     const newWindow = window.open(direccion, '_blank', 'noopener,noreferrer')
     if (newWindow) newWindow.opener = null

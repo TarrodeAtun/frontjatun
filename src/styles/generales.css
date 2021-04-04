@@ -95,6 +95,15 @@
   button.btazul:hover{
     background:#064B77
   }
+  button.btazulalt{
+    background:white;
+    color:#1880C3 !important;
+    border:1px solid #1880C3;
+  }
+  button.btazulalt:hover{
+    border-color:#064B77;
+    color:#064B77;
+  }
   button.btgris{
     background:#C8C8C8;
     color:white !important;
@@ -158,7 +167,12 @@
     .fila-contenedor > div {
       position: relative;
       min-height: 1px; }
-  
+  .mr{
+    margin-right: auto;
+  }
+  .ml{
+    margin-left: auto;
+  }
   /* fin Estilos elementales*/
   /* estilos generales */
   .contenedor {
@@ -402,7 +416,9 @@
     }
   /* fin estilos generales*/
 
-
+.incorrecto{
+  border-color:red !important;
+}
 
   .menu-lista-dashboard{
 
@@ -419,10 +435,13 @@
 }
 .menu-lista-dashboard h2{
     text-align: center;
-    font-family: "OSbold";
+    font-family: "OSregular";
     margin-top: 50px;
     margin-bottom: 50px;
     font-size: 30px;
+}
+.menu-lista-dashboard h2 strong{
+  font-family: "OSbold";
 }
 .menu-lista-dashboard h2.azul{
   color:#1880c3;
@@ -453,7 +472,8 @@ display:inline !important;
     background: none;
 }
 .menu-lista-dashboard > div{
-    width:48%;
+    width:auto;
+    min-width:48%;
 }
 
 .menu-lista-dashboard .seccion {
@@ -595,4 +615,281 @@ table{
   text-align: center;
 } */
   /*# sourceMappingURL=estilos.css.map */
-  
+
+  .listado-simple{
+    background:#FCFCFC;
+    border: 1px solid #E6E6E6;
+    border-radius:7px;
+    box-shadow:0px 0px 8px #0000002E;
+  }
+  .listado-simple .encabezado{
+   display:flex;
+   flex-wrap: wrap;
+   padding-left: 32px;
+   padding-right: 32px;
+  }
+  .listado-simple .encabezado h3{
+    font-family: "OSsemibold";
+    width:max-content;
+    padding: 0px;
+  }
+  .listado-simple .encabezado input{
+    font-family: "OSregular";
+    width:60%;
+    padding:10px 20px;
+    border:1px solid #C8C8C8;
+    border-radius: 20px;
+    margin-top:10px;
+    margin-bottom:10px;
+  }
+  .listado-simple .encabezado a, .listado-simple .encabezado button{
+    width: max-content;
+    color:#707070;
+    font-size:18px;
+    font-family: "OSsemibold";
+    background:none;
+  }
+  .listado-simple .elemento{
+    border-top: 1px solid #c8c8c8;
+    display:flex;
+    flex-wrap:wrap;
+    padding-left: 32px;
+    padding-right: 32px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .listado-simple .elemento span{
+    font-family: "OSregular";
+    font-size:18px;
+  }
+  .listado-simple .elemento .acciones{
+
+    display:flex;
+    flex-wrap:wrap;
+  }
+  .listado-simple .elemento .acciones a{
+    display: inline-block;
+    width: auto;
+  }
+  .listado-simple .elemento .acciones >*{
+    padding-left: 10px;
+    padding-right: 10px;
+    background:none;
+  }
+
+  .modalPreguntaEncuesta{
+    width:750px;
+    padding:30px 25px;
+  }
+  .modalPreguntaEncuesta h3{
+    margin-top:0px !important;
+    margin-bottom:20px;
+    color:#707070;
+    font-size:18px !important;
+    text-align: center;
+    display: block;
+    font-family: "OSbold";
+  }
+  .modalPreguntaEncuesta .contenido{
+    display:flex;
+    flex-wrap: wrap;
+  }
+  .modalPreguntaEncuesta .opciones{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 60%;
+  }
+  .modalPreguntaEncuesta .corta{
+    width: 40%;
+  }
+  .modalPreguntaEncuesta .opciones, .modalPreguntaEncuesta .corta{
+    padding-top: 30px;
+  }
+  .modalPreguntaEncuesta .opciones label, .modalPreguntaEncuesta .corta label{
+    padding-left: 10px;
+    color:#707070;
+    font-size: 18px;
+  }
+  .modalPreguntaEncuesta .opciones >div{
+    width:100%;
+    flex-basis: 100%;;
+  }
+  .modalPreguntaEncuesta .opciones input[type="text"]{
+    padding:10px 20px;
+    border:1px solid #C8C8C8;
+    border-radius: 20px;
+    width:100%;
+  }
+  .modalPreguntaEncuesta .opciones button{
+    margin-top:20px;
+    background:none;
+    color:#707070;
+    font-size:18px;
+    font-family: "OSregular";
+  }
+  .listaPreguntas .enunciado {
+    display:flex;
+    flex-wrap: wrap;
+    width:100%;
+  }
+  .listaPreguntas .enunciado p {
+  width:80%;
+  font-size: 18px;
+  color:#707070;
+  }
+  .listaPreguntas .enunciado .actions {
+    width:20%;
+    }
+    .listaPreguntas .enunciado .actions button {
+      margin-left: 5px;
+      margin-right: 5px;
+      background:none;
+    }
+  .listaPreguntas .respuestas, .listaPreguntas .respuestas > div {
+    width:100%;
+    justify-content: left;
+    flex-basis: 100%;
+    margin-top: 0px;
+    padding-bottom: 0px;
+  }
+  .listaPreguntas .respuestas ul{
+    width:100%;
+    list-style: none;
+    display:flex; flex-wrap: wrap;
+    padding:0px;
+  }
+  .listaPreguntas .respuestas ul li{
+    display: flex;
+    margin-right: 10px;
+  }
+  .listaPreguntas .respuestas label{
+  font-size: 18px;
+  color:#707070;
+  }
+  .listaPreguntas .respuestas ul li input{
+     margin-left: 5px;
+     margin-right: 5px;
+  }
+  .listaPreguntas .respuestas textarea{
+    border-radius: 10px;
+    border:1px solid #C8C8C8;
+    color:#707070;
+    padding:10px 25px; 
+ }
+  .listaPreguntas .opciones{
+    padding-bottom: 40px;;
+  }
+  .listaPreguntas .opciones .fila{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    margin-top:10px;
+  }
+  .listaPreguntas .opciones .fila input{
+    width:80%
+  }
+  .listaPreguntas .opciones  button{
+    margin-top: 0px;
+  }
+  .listaPreguntas .enviar{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+  }
+  .listaPreguntas .enviar button{
+
+  }
+  .tituloencuesta{
+    color:#707070;
+  }
+  .listado-simple.tabla {
+width:650px;
+margin-right: 0px;
+margin: auto;
+  }
+  .listado-simple.tabla  .elemento{
+   display: table-row;
+}
+.listado-simple.tabla th{
+  padding:15px 25px;
+  background:#DCECF6;
+  color:#1880C3;
+  font-size:18px;font-family: "OSsemibold";
+}
+.listado-simple.tabla  .elemento > td{
+  padding:15px 25px;
+  color:#707070;
+  font-size:18px;
+}
+.prehead{
+  background: #FCFCFC;
+    border: 1px solid #E6E6E6;
+    border-radius: 7px 7px 0px 0px;
+    box-shadow: 0px 0px 8px #0000002e;
+    width: 650px;
+    display:flex;
+    padding-right: 25px;
+    margin: auto;
+}
+.prehead h3{
+  font-family: "OSsemibold";
+}
+.prehead button{
+background:none;
+color:#707070;
+  font-size:18px;
+  font-family: "OSsemibold";
+}
+.form-mensaje input{
+width:100%;
+}
+.form-mensaje > button{
+  background:none;
+}
+.form-mensaje > div > div{
+  margin-bottom: 15px;
+}
+.listaPreguntas .modalPreguntaEncuesta{
+  background: #FCFCFC;
+  border: 1px solid #E6E6E6;
+  border-radius: 7px;
+  box-shadow: 0px 0px 8px #0000002e;
+  margin-top:25px;
+}
+.elemento-mensaje{
+  display: flex;
+  flex-wrap: wrap;;
+  padding: 32px;
+  border-top:1px solid #C8C8C8;; 
+}
+.elemento-mensaje:first-of-type{
+
+  border-top:1px solid #E6E6E6;  
+}
+.elemento-mensaje .image{
+  width:20%;
+} 
+.elemento-mensaje .content{
+  width:80%;
+} 
+.elemento-mensaje .content h3{
+  color:#46875F;
+  font-size: 20px;
+  font-family: "OSbold";
+}
+.elemento-mensaje .content li{
+  color:#707070;
+  font-family: "OSsemibold";
+  font-size:18px;
+  margin-bottom: 10px;
+}
+.elemento-mensaje .content h3, .elemento-mensaje .content ul{
+list-style: none;
+padding: 0px;
+} 
+.elemento-mensaje .content p{
+  color:#707070;
+  line-height: 34px;
+  font-size:18px;
+}

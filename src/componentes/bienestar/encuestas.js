@@ -11,7 +11,7 @@ import '../../styles/fichaTrabajador.css';
 import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
 import { ReactComponent as Flechaam } from "../../assets/iconos/flechaam.svg";
 
-export default class Bienestar extends Component {
+export default class Encuestas extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,13 +24,13 @@ export default class Bienestar extends Component {
         return (
             <div className="principal gestion-residuos menu-lista-dashboard">
                 <div>
-                    <h2 className="naranjo"><Link to="/personas/gestion"> <Bamarillorev/></Link> Bienestar</h2>
+                    <h2 className="naranjo"><Link to="/bienestar"> <Bamarillorev/></Link> Bienestar / <strong>Encuestas</strong></h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
-                            <h3><Link to="/bienestar/encuestas"><span>Encuestas</span><button><Flechaam /></button></Link></h3>
+                            <h3><Link to="/bienestar/encuestas/mis-encuestas"><span>Mis Encuestas</span><button><Flechaam /></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><Link to="/bienestar/soporte"><span>Soporte Técnico</span><button><Flechaam /></button></Link></h3>
+                            <h3><Link to="/bienestar/encuestas/resultados"><span>Resultados Encuestas</span><button><Flechaam /></button></Link></h3>
                         </div>
                     </div>
                 </div>
