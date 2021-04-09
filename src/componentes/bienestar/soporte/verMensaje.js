@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import Axios from '../../../helpers/axiosconf';
 import { authHeader } from '../../../helpers/auth-header';
 import { handleResponse } from '../../../helpers/manejador';
+import moment from 'moment';
+import { confirmAlert } from 'react-confirm-alert';
 
 import { toast } from 'react-toastify';
 
@@ -34,8 +36,9 @@ export default class VerMensajeSoporte extends Component {
         this.state = {
             currentUser: autenticacion.currentUserValue,
             pregunta: '',
-            tipo: '',
-            opciones: []
+            estado: '',
+            mensajes: [],
+            mensaje: ''
         };
     }
 
@@ -48,119 +51,159 @@ export default class VerMensajeSoporte extends Component {
         })
     }
 
-    onChangeOption = (e) => {
-        const llave = e.target.dataset.key;
-        let opciones = this.state.opciones;
-        opciones[llave].value = e.target.value;
-        this.setState({ opciones: opciones });
+    async componentDidMount() {
+        await this.cargarMensajes();
+        console.log(this.state.encuestas);
+        this.interval = setInterval(this.cargarMensajes, 10000)
+    }
+    componentWillUnmount() {
+        // Clear the interval right before component unmount
+        clearInterval(this.interval);
     }
 
-    agregarOpcion = (e) => {
-        console.log(this.state.opciones);
-        const opcion = {
-            value: '',
-        }
-        this.setState({
-            opciones: [...this.state.opciones, opcion]
-        })
+
+    cargarMensajes = () => {
+        var { id } = this.props.match.params;
+        var componente = this;
+        Axios.get('/api/bienestar/soporte/consultas/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+            .then(function (res) {   //si la peticion es satisfactoria entonces
+                console.log(res.data.data);
+                console.log(res.data.estadoConsulta);
+                componente.setState({ mensajes: res.data.data, estado: res.data.estadoConsulta });  //almacenamos el listado de usuarios en el estado usuarios (array)
+            })
+            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                return;
+            });
     }
+    responder = () => {
+        var { id } = this.props.match.params;
+        var componente = this;
+        Axios.post('/api/bienestar/soporte/consulta/responder', {
+            id: id,
+            mensaje: this.state.mensaje
+        },
+            { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+            .then(function (res) {   //si la peticion es satisfactoria entonces
+                console.log(res);
+                componente.cargarMensajes();
+                toast.success("¡Mensaje enviado!")
+            })
+            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                console.log(err);
+                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                return;
+            });
+    }
+
+    finalizarConsulta = () => {
+        var { id } = this.props.match.params;
+        var componente = this;
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-confirm '>
+                        <p>¿Estás seguro(a) que deseas finalizar la consulta?</p>
+                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
+                        <button className="boton-generico btazul"
+                            onClick={() => {
+                                Axios.post('/api/bienestar/soporte/consulta/finalizar', {
+                                    id: id
+                                },
+                                    { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+                                    .then(function (res) {   //si la peticion es satisfactoria entonces
+                                        componente.cargarMensajes();
+                                        componente.setState({ estado: "1" });
+                                        toast.success("¡Se ha finalizado la consulta, no se pueden agregar más mensajes!")
+                                        onClose();
+                                    })
+                                    .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                                        handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                                        return;
+                                    });
+
+                            }}
+                        >
+                            Aceptar
+                    </button>
+                    </div>
+                );
+            }
+        });
+    }
+
     eliminaOpcion = (e) => {
         const llave = e.target.dataset.key;
         let opciones = this.state.opciones;
         opciones.splice(llave, 1);
         this.setState({ opciones: opciones });
     }
-    enviarDatos = async (e) => {
-        if (this.state.pregunta) {
-            if (this.state.tipo) {
-                await this.props.props.agregaPregunta(this.state.pregunta, this.state.tipo, this.state.opciones);
-                await this.props.closeModal();
-            } else {
-                toast.warning("Debe Seleccionar un tipo de respuesta", toastoptions);
-            }
-        }
-        else {
-            toast.warning("Debe llenar los campos", toastoptions);
-        }
-
-    }
 
 
     render() {
-        const compo = this;
-        const items = this.state.opciones.map((opcion, index) =>
-            <div className="fila" key={index}>
-                <input onChange={compo.onChangeOption} data-key={index} placeholder="Añadir opción" value={opcion.value} type="text" />
-                <button onClick={compo.eliminaOpcion} data-key={index}>x</button>
-            </div>
+        let items = [];
+        if (this.state.mensajes.length !== 0) {
+            items = this.state.mensajes.map((mensaje, index) =>
+                <div className="elemento-mensaje">
+                    <div className="image">
 
-        );
+                    </div>
+                    <div className="content">
+                        <h3>{mensaje.asd[0].asunto}</h3>
+                        <ul>
+                            <li>De: {mensaje.datosAutor[0].nombre} {mensaje.datosAutor[0].apellido}</li>
+                            <li>Run: {mensaje.datosAutor[0].nombre}</li>
+                            <li>Fecha: {moment(mensaje.fechaRespuesta).format('DD-MM-YYYY  HH:mm')}</li>
+                        </ul>
+                        <p dangerouslySetInnerHTML={{ __html: mensaje.mensaje }} />
+                    </div>
+                </div>
+            )
+        } else {
+            items = <div className="elemento-mensaje">No mensajes en este hilo</div>
+        }
         return (
             <div className="principal menu-lista-dashboard listaPreguntas">
                 <div>
                     <h2 className="naranjo"><Link to="/bienestar/soporte"> <Bamarillorev /></Link> Soporte Técnico / <strong>Mensaje</strong></h2>
                 </div>
-                <div className="listado-simple">
+                <div className="listado-simple chat">
                     <div className="encabezado">
                         <h3 className="amarillo">Mensajes</h3>
-                        <Link to="/bienestar/encuestas/nueva-encuesta" className="ml celeste">Finalizar Consulta</Link>
+                        {this.state.estado === 0
+                            ? <button onClick={this.finalizarConsulta} className="ml celeste">Finalizar Consulta</button>
+                            : <div></div>
+                        }
                     </div>
                     <div className="elementos">
-                        <div className="elemento-mensaje">
-                            <div className="image">
-
-                            </div>
-                            <div className="content">
-                                <h3>Nombre Asunto</h3>
-                                <ul>
-                                    <li>De: Lorem Ipsum</li>
-                                    <li>Run: 11.111.111-1</li>
-                                    <li>Fecha: 15-01-2021 16:32</li>
-                                </ul>
-                                <p>
-                                Estimados: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis imperdiet tincidunt nulla rutrum venenatis. In faucibus, tortor vel rhoncus tincidunt, diam leo finibus libero, sed ultrices ex massa ac ligula. Duis vestibulum dolor eget arcu scelerisque viverra. 
-                                Praesent orci urna, sollicitudin a mollis eu, tristique at est. Nunc gravida semper mollis. Pellentesque ultrices ante vel augue convallis, sed aliquam erat consectetur. Quisque id dapibus nisl. Mauris vel metus placerat, elementum sapien vitae, bibendum quam. Saludos
-                                </p>
-                            </div>
-                        </div>
-                        <div className="elemento-mensaje">
-                            <div className="image">
-
-                            </div>
-                            <div className="content">
-                                <ul>
-                                    <li>De: Lorem Ipsum</li>
-                                    <li>Fecha: 15-01-2021 16:32</li>
-                                </ul>
-                                <p>
-                                Estimados: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis imperdiet tincidunt nulla rutrum venenatis. In faucibus, tortor vel rhoncus tincidunt, diam leo finibus libero, sed ultrices ex massa ac ligula. Duis vestibulum dolor eget arcu scelerisque viverra. 
-                                Praesent orci urna, sollicitudin a mollis eu, tristique at est. Nunc gravida semper mollis. Pellentesque ultrices ante vel augue convallis, sed aliquam erat consectetur. Quisque id dapibus nisl. Mauris vel metus placerat, elementum sapien vitae, bibendum quam. Saludos
-                                </p>
-                            </div>
-                        </div>
+                        {items}
                     </div>
                 </div>
-                <div className="modalPreguntaEncuesta">
-                    <div className="form-mensaje">
-                        <button onClick={this.props.closeModal}><h3 className="amarillo"> Contestar</h3></button>
-                        <div>
+                {this.state.estado === 0
+                    ? <div className="modalPreguntaEncuesta">
+                        <div className="form-mensaje">
+                            <button onClick={this.props.closeModal}><h3 className="amarillo"> Contestar</h3></button>
                             <div>
-                                <textarea
-                                    className="input-generico"
-                                    value={this.state.pregunta}
-                                    placeholder="Escribe tu mensaje"
-                                    rows="8"
-                                    onChange={this.onChangeInput}
-                                    name="pregunta"
-                                />
+                                <div>
+                                    <textarea
+                                        className="input-generico"
+                                        value={this.state.mensaje}
+                                        placeholder="Escribe tu mensaje"
+                                        rows="8"
+                                        onChange={this.onChangeInput}
+                                        name="mensaje"
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group buttons">
+                                <button className="boton-generico btazulalt">Cancelar</button>
+                                <button className="boton-generico btazul" type="button" onClick={this.responder}>Enviar</button>
                             </div>
                         </div>
-                        <div className="form-group buttons">
-                            <button className="boton-generico btazulalt" onClick={this.actualizaDatos}>Cancelar</button>
-                            <button className="boton-generico btazul" type="button">Enviar</button>
-                        </div>
                     </div>
-                </div>
+                    : <div></div>
+                }
+
             </div>
         )
     }

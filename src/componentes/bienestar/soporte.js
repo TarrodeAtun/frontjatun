@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import moment from 'moment';
 
 // importaciones de estilos 
 import '../../styles/fichaTrabajador.css';
@@ -92,21 +93,24 @@ export default class ResultadosEncuestas extends Component {
 
 
     render() {
-        let items;
-        if (this.state.consultas) {
+        let items = [];
+        if (this.state.consultas.length !== 0) {
             items = this.state.consultas.map((encuesta, index) =>
-
                 <tr className="elemento">
-                    <td><Link to="/bienestar/soporte/ver-mensaje/"><span>{encuesta.asunto}</span><span>{encuesta.autor}</span></Link></td>
-                    <td><span>15-01-2021 12:34 </span><span>Juan Pérez</span></td>
-                    <td>Pendiente</td>
+                    <td><Link to={`/bienestar/soporte/ver-mensaje/${encuesta._id}`}><span>{encuesta.asunto}</span><span>{encuesta.datosAutor[0].nombre} {encuesta.datosAutor[0].apellido}</span></Link></td>
+                    <td><span>{moment(encuesta.fechaRespuesta).format('DD-MM-YYYY HH:mm')}</span><span>{encuesta.datosUltimaRespuesta[0].nombre} {encuesta.datosUltimaRespuesta[0].apellido}</span></td>
+                    {encuesta.estado === 0
+                        ? <td>Pendiente</td>
+                        : <td>Finalizado</td>
+                    }
                     <td className="acciones ml">
                         <button><img src={basurero} /></button>
                     </td>
                 </tr>
             )
+        } else {
+            items = <tr className="elemento"> <td colSpan="5">No hay consultas actualmente</td></tr>
         }
-
         return (
             <div className="principal menu-lista-dashboard">
                 <div>

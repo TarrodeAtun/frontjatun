@@ -6,6 +6,7 @@ import Axios  from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
 import { funciones } from '../../servicios/funciones';
+import moment from 'moment';
 
 //importaciones de componentes
 import Basicos from './editarBasicos';
@@ -182,7 +183,7 @@ export default class Perfil extends Component {
                                 <span>Rut</span><span>{this.state.rutFormateado}</span>
                             </div>
                             <div>
-                                <span>Fecha Nacimiento</span><span>{this.state.datosUsuarios.fechaNac}</span>
+                                <span>Fecha Nacimiento</span><span>{moment(this.state.datosUsuarios.fechaNac).format('YYYY-MM-DD')}</span>
                             </div>
                             <div>
                                 <span>Email</span>

@@ -35,10 +35,17 @@ export default class NuevoMensaje extends Component {
         })
     }
     enviarDatos = async (e) => {
+        console.log("1");
         if (this.state.asunto) {
+            console.log("2");
             if (this.state.primerMensaje) {
-                await this.props.props.agregarConsulta(this.state.asunto, this.state.primerMensaje);
-                // await this.props.closeModal();
+                console.log("3");
+                var primerMensaje = this.state.primerMensaje;
+                primerMensaje = primerMensaje.replace("\n", "<br/>");
+                console.log(primerMensaje);
+                await this.props.props.agregarConsulta(this.state.asunto, primerMensaje);
+                toast.success("Consulta ingresada exitosamente, se le notificará cuando sea respondida", toastoptions);
+                await this.props.closeModal();
             } else {
                 toast.warning("Debe Seleccionar un tipo de respuesta", toastoptions);
             }

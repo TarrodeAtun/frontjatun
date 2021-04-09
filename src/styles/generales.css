@@ -69,7 +69,11 @@
   
   button, html [type="button"], [type="reset"], [type="submit"] {
     -webkit-appearance: button; }
-  
+  .boton-vacio{
+    background:none;
+    border:none;
+    vertical-align: middle;
+  }
   input[type="radio"], input[type="checkbox"] {
     box-sizing: border-box;
     padding: 0; }
@@ -661,6 +665,8 @@ table{
   .listado-simple .elemento span{
     font-family: "OSregular";
     font-size:18px;
+    width: 100%;
+    display: block;
   }
   .listado-simple .elemento .acciones{
 
@@ -892,4 +898,133 @@ padding: 0px;
   color:#707070;
   line-height: 34px;
   font-size:18px;
+}
+.chat{
+  width:48% !important;
+}
+
+.chat .elemento-mensaje h3{
+  display:none;
+}
+.chat .elemento-mensaje:first-of-type h3{
+  display:block;
+}
+.react-confirm-alert-blur {
+  filter: blur(0px) !important;
+  -webkit-filter: blur(0px) !important;
+}
+.react-confirm-alert-overlay{
+  background:rgba(255,255,255,0.6) !important;
+}
+
+.custom-confirm{
+  box-shadow: 0px 0px 8px #0000002E;
+border: 1px solid #E6E6E6;
+border-radius: 8px;
+padding:15px 50px;
+background: white;
+}
+.custom-confirm p{
+  text-align: center;
+  font-size: 18px;
+  font-family: "OSregular";
+  color:#707070;
+}
+.custom-confirm button{
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.grilla table{
+  empty-cells: show;
+  table-layout: fixed;
+       width: 969px;
+}
+.calendario .encabezado h3{
+  font-size: 18px;
+  font-family: "OSsemibold";
+}
+.grilla .filas tr , .grilla .filas td{
+  height: 35px;
+}
+.grilla .filas td{
+  padding-right: 14px;
+}
+.grilla .filas td span {
+  height: 100%;;
+}
+.grilla table .fondo.filas tr td:last-of-type{
+  border-top:1px solid #EDEDED;
+  border-bottom:1px solid #EDEDED;
+}
+.grilla table .fondo.filas tr td:first-of-type span{
+  transform: translateY(-30%);
+  display: block;
+  text-align: right;
+}
+.grilla colgroup col{width:70px;}
+.grilla table th{
+  padding-left: 10px;;
+  width: 130px;
+}
+.grilla table th:first-of-type,.grilla table td:first-of-type{
+  width: 60px !important;
+}
+.grid-container{
+  position: relative;
+}
+.grilla .columnas{
+  position: absolute;
+  top: 0px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 844px;
+}
+.grilla .columnas tr td{
+  border-left:1px solid #C8C8C8;
+  border-right:1px solid #C8C8C8;
+  width: 130px;
+}
+.grilla .columnas td > div{
+  display:flex;
+  position: relative;
+  height: 842px;
+  width:100%;
+  grid-template-rows:repeat(48, 1fr)
+}
+.grilla .columnas td > div > div{
+position: relative;
+width:100%;
+}
+.grilla .columnas td > div > div >div{
+position: absolute;
+width:100%;
+top:0px;
+}
+.grilla .columnas td span{
+  display: block;
+  width:100%;
+  background-color:#FFE6C3;
+  padding-left:5px;
+  font-size:12px;
+  font-family:"OSregular";
+  padding-top:2px;
+  padding-bottom:2px;
+}
+.grilla .columnas td span:first-of-type{
+  border-radius: 10px 10px 0px 0px;
+}
+.grilla .columnas td span:last-of-type{
+  border-radius: 0px 0px 10px 10px;
+}
+.grilla .columnas td > div > div{
+overflow: hidden;
+border: 1px solid #FFE6C3;
+background-color:#FFE6C3;
+border-radius: 10px;
+position: absolute;
+}
+.grilla .columnas td > div > div:hover{
+  overflow: visible;
 }

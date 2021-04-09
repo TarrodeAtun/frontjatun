@@ -170,6 +170,7 @@
 } */
 #component-perfil .seccion span{
     color:#707070;
+    font-size: 18px;
 }
 #component-perfil .seccion span:first-of-type{
     font-family: "OSsemibold";
