@@ -211,6 +211,54 @@
     height:100%;
     flex-flow: column;
 }
+.w100{
+  width: 100% !important;
+}
+.wauto{
+  width:auto !important;
+}
+.spanConductor{
+  position: relative;
+}
+.introspan{
+ display:flex !important;
+ flex-wrap: wrap;
+}
+.introspan span{
+width:auto !important;
+}
+.introspan span input{
+  width:auto !important;
+}
+.introspan span label{
+display: inline-block  !important;
+width:auto !important;
+padding-right: 10px;
+}
+.spanConductor span{
+width:calc(100% - 40px) !important;
+display:block;
+padding:0px !important;
+}
+.spanConductor button{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+.spanseparado span:not(:first-of-type){
+  margin-left: 25px;
+}
+.selectread{
+  border:none;
+  background: none;
+  color:#707070 !important;
+  opacity: 1;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.selectread::-ms-expand {
+  display: none;
+}
 @media(max-width:900px){
   #appContainer{    background-position: 100% 100%;}
 }  
@@ -411,12 +459,41 @@
     .submodal{
 
     }
+    .submodal .seccion.mod{
+      box-shadow:none;
+      margin-top: 0px;
+      margin-bottom:0px;
+      background:white;
+    }
+    .submodal  .seccion .dias span:last-of-type,.submodal  .seccion .dias span:first-of-type{
+      width: auto !important;
+    }
+    .submodal .seccion .dias span{
+      flex: 1;
+    }
+    .submodal .seccion .dias span input{
+     display: none;
+    }
+    .submodal .seccion .dias span label{
+      background:gray;
+      color:white;
+      width: 20px !important;
+    display: block;
+    text-align: center;
+    }
+    .submodal .seccion .dias span input:checked + label{
+      background:green;
+    }
     *:focus{
       outline: none;
     }
     button{
       cursor:pointer;
       border:none;
+    }
+    .no-borde{
+      border:none;
+      box-shadow: none !important;
     }
   /* fin estilos generales*/
 
@@ -612,6 +689,9 @@ margin-left:10px;
   .amarillo{
     color: #E39B33 !important;
   }
+  .gris{
+    color: #707070 !important;
+  }
 table{
   width:100%;
 }
@@ -619,7 +699,9 @@ table{
   text-align: center;
 } */
   /*# sourceMappingURL=estilos.css.map */
-
+.txc{
+  text-align: center;
+}
   .listado-simple{
     background:#FCFCFC;
     border: 1px solid #E6E6E6;
@@ -669,7 +751,7 @@ table{
     display: block;
   }
   .listado-simple .elemento .acciones{
-
+    justify-content: flex-end;
     display:flex;
     flex-wrap:wrap;
   }
@@ -681,6 +763,9 @@ table{
     padding-left: 10px;
     padding-right: 10px;
     background:none;
+  }
+  .acciones span{
+    width:auto !important;
   }
 
   .modalPreguntaEncuesta{
@@ -733,6 +818,17 @@ table{
     color:#707070;
     font-size:18px;
     font-family: "OSregular";
+  }
+  .modalPreguntaEncuesta .elemento{
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+  .vEmergencia{
+    width:480px;
+  }
+  .vEmergencia .buttons{
+    padding-left: 20px;
+    padding-right: 20px;
   }
   .listaPreguntas .enunciado {
     display:flex;
@@ -813,6 +909,9 @@ table{
 width:650px;
 margin-right: 0px;
 margin: auto;
+  }
+  .listado-simple.tabla.full {
+    width:100% ;
   }
   .listado-simple.tabla  .elemento{
    display: table-row;
@@ -985,22 +1084,29 @@ background: white;
   border-left:1px solid #C8C8C8;
   border-right:1px solid #C8C8C8;
   width: 130px;
+  height: 842px;
+    position: relative;
 }
 .grilla .columnas td > div{
-  display:flex;
-  position: relative;
-  height: 842px;
+  position: absolute;
   width:100%;
-  grid-template-rows:repeat(48, 1fr)
+  overflow: hidden;
+  white-space: pre;
+  border-radius: 10px 10px 10px 10px;
+  background-color:#FFE6C3;
+  box-shadow: 0px 0px 5px #444
+}
+.grilla .columnas td > div:hover{
+ 
+  width:100% !important;
+  overflow: visible;
+  z-index: 100000 !important;
+  cursor: pointer;
+  /* height: max-content !important; */
 }
 .grilla .columnas td > div > div{
 position: relative;
 width:100%;
-}
-.grilla .columnas td > div > div >div{
-position: absolute;
-width:100%;
-top:0px;
 }
 .grilla .columnas td span{
   display: block;
@@ -1018,13 +1124,115 @@ top:0px;
 .grilla .columnas td span:last-of-type{
   border-radius: 0px 0px 10px 10px;
 }
-.grilla .columnas td > div > div{
-overflow: hidden;
-border: 1px solid #FFE6C3;
-background-color:#FFE6C3;
-border-radius: 10px;
-position: absolute;
+.seccion .filtros{
+  padding-bottom: 20px;
 }
-.grilla .columnas td > div > div:hover{
-  overflow: visible;
+.seccion .filtros .sup{
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between;
+padding-top: 25px;
+padding-left: 32px;
+padding-right: 37px;
+padding-bottom: 10px;
+}
+.seccion .filtros .sup a{
+  width: max-content;
+
+}
+.seccion .filtros select{
+  width:40%;
+}
+.seccion .filtros .buttons-space{
+margin-left: auto;;
+}
+.seccion .filtros .buttons-space button{
+  margin-left: 8px;
+  margin-right: 8px;
+  }
+.seccion .listado-simple.tabla{
+  padding: 0px;
+  border-radius: 0px;
+}
+.retiros .finalizado{
+  color:#1880C3 !important;
+}
+.retiros .asignado{
+  color:#5D994E !important;
+}
+.retiros .pendiente{
+  color:#E39B33 !important;
+}
+.tabselectcontainer{
+  text-align: center;
+    width: min-content;
+    margin: auto;
+    border:1px solid #1880C3;
+    border-radius: 20px;
+    background:white;
+    overflow: hidden;
+    display: flex;
+}
+.tabselectcontainer label{
+  padding:3px 25px;
+  border-radius: 20px;
+  color:#1880C3;
+  font-size: 18px;;
+  transition: all ease .5s;
+  cursor:pointer
+}
+.tabselectcontainer label.activo{
+  background:#1880C3;
+  color:white;
+}
+.hoja-vida h4{
+color:#707070;
+font-size:18px;
+}
+.hoja-vida label{
+  color:#46875F;
+}
+.hoja-vida p{
+  color:#707070;
+  font-size:18px;
+  line-height: 32px;
+}
+.hoja-vida .seccion > div{
+  padding: 0px 25px !important;
+  align-items: flex-start !important;
+  justify-content: space-between;
+}
+.hoja-vida .seccion > div > div:not(.acciones){
+  width: calc(100% - 100px);
+}
+.hoja-vida .seccion > div .acciones{
+  width: 100px;
+  justify-content: center;
+  margin-top: 15px;
+}
+.hoja-vida .seccion > div .acciones > *{
+width:auto !important;
+padding: 0px !important;
+margin-left: 5px;
+margin-right: 5px;
+}
+
+.hoja-vida h4, .hoja-vida p{
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.inline-block{
+  width: auto;
+  display: inline-block !important;
+}
+.fechaProgra{
+  margin-left: auto;
+  height: 30px;
+  margin-right: 20px;
+}
+.flex{
+  display:flex;
+  flex-wrap: wrap;
+  align-content: center;;
+  align-items: center;
 }

@@ -32,7 +32,7 @@ export default class GestionUsuarios extends Component {
                             <h3><Link to="/personas/listar-trabajadores"><span>Trabajadores</span><button><Flechaam/></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><span>Turnos</span><button><Flechaam/></button></h3>
+                            <h3><Link to="/personas/turnos"><span>Turnos</span><button><Flechaam/></button></Link></h3>
                         </div>
                         <div className="seccion">
                             <h3><span>Asistencias</span><button><Flechaam/></button></h3>

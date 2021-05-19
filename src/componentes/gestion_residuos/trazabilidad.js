@@ -20,7 +20,7 @@ import { ReactComponent as Ojo } from "../../assets/iconos/ojo.svg";
 import { ReactComponent as Edit } from "../../assets/iconos/edit.svg";
 import { ReactComponent as Plus } from "../../assets/iconos/X.svg";
 
-export default class OrdenesRetiro extends Component {
+export default class Trazabilidad extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -40,7 +40,7 @@ export default class OrdenesRetiro extends Component {
     }
     componentDidMount = (e) => {
         var componente = this;
-        const res = Axios.get('/api/gestion-residuos/ordenes-retiro/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.get('/api/gestion-residuos/trazabilidad/ordenes', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ ordenes: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -58,10 +58,12 @@ export default class OrdenesRetiro extends Component {
             items = this.state.ordenes.map((orden, index) =>
                 <tr className="">
                     <td>
-                        {this.pad(orden.idor, 8)}
+                        {orden.datosRetiro[0].codigoler} - {orden.datosRetiro[0].categoria}
+
                     </td>
-                    <td>{orden.datosCentro[0].nombre}</td>
-                    <td>{moment(orden.retiro).utc().format('DD-MM-YYYY')}</td>
+                    <td> {this.pad(orden.idor, 8)} </td>
+                    <td>{orden.tarjeta}</td>
+                    <td>{moment(orden.retiro).format('DD-MM-YYYY')}</td>
 
                     {orden.estado === 0 &&
                         <td className="amarillo">
@@ -90,17 +92,11 @@ export default class OrdenesRetiro extends Component {
                     }
 
 
-                    <td>{orden.tarjeta}</td>
+
+                    <td>{orden.datosCentro[0].nombre}</td>
 
                     <td className="acciones">
-                        {orden.estado === 0 &&
-                            <Fragment>
-                                <span><Link to={`/residuos/control-retiro/orden-retiro/ver-orden/${orden._id}`}><Ojo /></Link></span>
-                                <span><Link to={`/residuos/control-retiro/orden-retiro/modificar-orden/${orden._id}`}><Edit /></Link></span>
-                            </Fragment>
-                        }
-
-                        <span><Link ><Basurero /></Link></span>
+                        <span><Link to={`/residuos/trazabilidad/ver/${orden._id}`}><Ojo /></Link></span>
                         {/* <span><button type="button"><Descarga /></button></span> */}
                     </td>
                 </tr>
@@ -112,40 +108,17 @@ export default class OrdenesRetiro extends Component {
         return (
             <div className="principal gestion-personas" id="component-listar-trabajadores">
                 <div>
-                    <h2 className="verde"><Link to="/residuos/control-retiro"> <Bverderev /></Link> <span className="verde">Control de Retiro / </span> <strong>OR</strong></h2>
-                </div>
-                <div className="filtros">
-                    <div className="sup">
-                        <button>Filtros</button>
-                        <Link to="/residuos/control-retiro/orden-retiro/nueva-orden"><Plus /> Nueva OR</Link>
-                    </div>
-                    <div>
-                        <form>
-                            <div className="form-group justify-center filtros-or">
-                                <input className="input-generico" placeholder="Nº Tarjeta cliente asignado…" />
-                                <input type="date" className="input-generico" placeholder="" />
-                                <select className="input-generico">
-                                    <option>Centro de costos</option>
-                                </select>
-                                <select className="input-generico">
-                                    <option>Estado</option>
-                                </select>
-                            </div>
-                            <div className="form-group buttons">
-                                <button className="boton-generico btazul" type="button">Filtrar</button>
-                                <button className="boton-generico btblanco" type="button">Limpiar</button>
-                            </div>
-                        </form>
-                    </div>
+                    <h2 className="verde"><Link to="/residuos/control-retiro"> <Bverderev /></Link> <span className="verde">Gestión de residuos / </span> <strong>Trazabilidad de Residuos</strong></h2>
                 </div>
                 <div className="listado">
                     <table className="tableor">
                         <thead>
+                            <th>TipoResiduo</th>
                             <th>N° OR</th>
-                            <th>Centro Costos</th>
+                            <th>N° Tarjeta</th>
                             <th>Fecha Retiro</th>
                             <th>Estado</th>
-                            <th>N° Tarjeta</th>
+                            <th>Centro Costos</th>
                             <th>Acciones</th>
                         </thead>
                         <tbody>

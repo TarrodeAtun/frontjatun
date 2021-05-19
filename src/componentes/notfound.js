@@ -1,7 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { autenticacion } from '../servicios/autenticacion';
+import { historial } from '../helpers/historial';
 
-// historial.push('/');
+const currentUser = autenticacion.currentUserValue;
+if (!currentUser) {
+historial.push('/login');
+}
 
 const NotFound = () => (
     <div>

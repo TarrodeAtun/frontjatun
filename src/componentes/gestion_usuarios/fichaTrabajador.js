@@ -44,7 +44,7 @@ export default class fichaTrabajador extends Component {
                             <h3><Link to={`/personas/ficha-trabajador/prevision/${this.state.idUsuario}`}><span>Prevision Social</span><button><Flechacel/></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><span>Hoja de Vida</span><button><Flechacel/></button></h3>
+                            <h3><Link to={`/personas/ficha-trabajador/hoja-de-vida/${this.state.idUsuario}`}><span>Hoja de Vida</span><button><Flechacel/></button></Link></h3>
                         </div>
                         <div className="seccion">
                             <h3><span>Registros graficos</span><button><Flechacel/></button></h3>

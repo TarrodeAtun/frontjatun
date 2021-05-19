@@ -2,6 +2,11 @@
 import React, { Component } from "react";
 import { autenticacion } from '../../servicios/autenticacion';
 import { Link } from 'react-router-dom';
+import { confirmAlert } from 'react-confirm-alert';
+import Axios from '../../helpers/axiosconf';
+import { authHeader } from '../../helpers/auth-header';
+import { handleResponse } from '../../helpers/manejador';
+import { historial } from "../../helpers/historial";
 
 // importaciones de estilos 
 import '../../styles/fichaTrabajador.css';
@@ -29,7 +34,32 @@ export default class GestionResiduos extends Component {
             users: null
         };
     }
+    componentDidMount = () => {
+        this.obtenerClientes();
+    }
+    obtenerClientes = async () => { //genera una peticion get por axios a la api de usuarios
+        var componente = this;
+        const res = Axios.get('/api/generales/clientes/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+            .then(function (res) {   //si la peticion es satisfactoria entonces
+                componente.setState({ clientes: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
+            })
+            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                return;
+            });
+    }
     render() {
+
+        let clientes;
+        if (this.state.clientes) {
+            clientes = this.state.clientes.map((cliente, index) =>
+                <div className="seccion">
+                    <h3><Link to={`/residuos/plan-manejo-cliente/${cliente._id}`}><span>{cliente.nombre}</span><button><Flechaver /></button></Link></h3>
+                </div>
+
+            )
+        }
+
         return (
             <div className="principal gestion-personas menu-lista-dashboard" id="component-listar-trabajadores">
                 <div>
@@ -55,9 +85,7 @@ export default class GestionResiduos extends Component {
                     </div>
                 </div>
                 <div className="fichaPerfil">
-                    <div className="seccion">
-                        <h3><Link to="/personas/listar-trabajadores"><span>Trabajadores</span><button><Flechaver /></button></Link></h3>
-                    </div>
+                   {clientes}
                 </div>
             </div>
 

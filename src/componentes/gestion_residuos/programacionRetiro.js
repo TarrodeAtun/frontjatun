@@ -17,8 +17,8 @@ import fichaper from "../../assets/iconos/fichaper.svg";
 import turnos from "../../assets/iconos/turnos.svg";
 import { ReactComponent as Basurero } from "../../assets/iconos/basurero.svg";
 import { ReactComponent as Ojo } from "../../assets/iconos/ojo.svg";
-import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
-import { ReactComponent as Flechaam } from "../../assets/iconos/flechaam.svg";
+import { ReactComponent as Bverderev } from "../../assets/iconos/bverderev.svg";
+import { ReactComponent as Flechaver } from "../../assets/iconos/flechaver.svg";
 import { historial } from "../../helpers/historial";
 
 export default class GestionResiduos extends Component {
@@ -44,7 +44,7 @@ export default class GestionResiduos extends Component {
         var componente = this;
         var fecha = new Date();
         console.log(fecha);
-        const res = Axios.get('/api/users/worker/turnos/' + moment(fecha).format('YYYY-MM-DD'), { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.get('/api/gestion-residuos/retiros/'+ moment(fecha).format('YYYY-MM-DD'), { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -56,12 +56,12 @@ export default class GestionResiduos extends Component {
         var node = this.myRef.current;
         this.recalculaEspacios(node);
     }
-    obtenerRetiros = (e) => {
-
+    obtenerRetiros = (e) =>{
+        
         var componente = this;
         var fecha = e.target.value;
         console.log(fecha);
-        const res = Axios.get('/api/users/worker/turnos/' + fecha, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.get('/api/gestion-residuos/retiros/'+ fecha, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -93,7 +93,7 @@ export default class GestionResiduos extends Component {
                 repetidos[numero] = (repetidos[numero] || 0) + 1;
                 empuje[numero] = 0;
                 anchos[numero] = 0;
-                // console.log(empuje);
+                console.log(empuje);
             });
             for await (var elemento of subespacio.children) {
                 var factor = repetidos[elemento.style.top];
@@ -105,9 +105,9 @@ export default class GestionResiduos extends Component {
         }
 
     }
-    pushDetalle = (e) => {
+    pushDetalle = (e) =>{
         var id = e.currentTarget.dataset.id;
-        historial.push(`/personas/turnos/detalle/${id}`);
+        historial.push(`/residuos/control-retiro/ver-retiro/${id}`);
     }
     calculaPosicion = (e, index) => {
         var inicio = e.inicio.replace(":", '');
@@ -132,36 +132,38 @@ export default class GestionResiduos extends Component {
         var sabado = [];
         var domingo = [];
         if (this.state.horas.length !== 0) {
+            this.state.horas.map((hora, index) => {
+                var fech = new Date(hora.fecha);
+                console.log(fech.getDay());
+            });
+
             lunes = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
-                // console.log(hora);
                 if (fech.getDay() === 0) {
                     console.log(fech.getDay());
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                      <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span> {hora.datosCentro[0].nombre} </span>
+                        <span> OR  {this.pad(hora.or, 8)} </span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
             });
             martes = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
-                console.log(hora.datosServicio[0].nombre);
                 if (fech.getDay() === 1) {
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                         <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span> {hora.datosCentro[0].nombre} </span>
+                        <span> OR  {this.pad(hora.or, 8)} </span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
             });
             miercoles = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
-                console.log(hora);
                 if (fech.getDay() === 2) {
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                       <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span> {hora.datosCentro[0].nombre} </span>
+                        <span> OR  {this.pad(hora.or, 8)} </span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
@@ -171,8 +173,8 @@ export default class GestionResiduos extends Component {
                 if (fech.getDay() === 3) {
                     console.log("asd");
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                        <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span> {hora.datosCentro[0].nombre} </span>
+                        <span> OR  {this.pad(hora.or, 8)} </span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
@@ -181,9 +183,9 @@ export default class GestionResiduos extends Component {
             viernes = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
                 if (fech.getDay() === 4) {
-                    return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                        <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                    return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora, index)}>
+                        <span> {hora.datosCentro[0].nombre} </span>
+                        <span> OR  {this.pad(hora.or, 8)} </span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
@@ -191,61 +193,54 @@ export default class GestionResiduos extends Component {
             sabado = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
                 if (fech.getDay() === 5) {
-                    return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                        <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                    return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora, index)}>
+                        <span> {hora.datosCentro[0].nombre} </span>
+                        <span> OR  {this.pad(hora.or, 8)} </span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
             });
             domingo = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
-                console.log(hora);
                 if (fech.getDay() === 6) {
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                       <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span> {hora.datosCentro[0].nombre} </span>
+                        <span> OR  {this.pad(hora.or, 8)} </span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
             });
+            items = this.state.horas.map((hora, index) => (
+                <tr className="elemento ">
+                    <td>{hora.datosCliente[0].nombre}</td>
+                    <td>{hora.datosCentro[0].nombre}</td>
+                    <td className="columna">
+                        <span>{moment(hora.fecha).format('DD-MM-YYYY')}</span>
+                        {/* <span><strong>Personalizado</strong></span>
+                        <span>desde 03/03/2021</span>
+                        <span>hasta 31/03/2021</span> */}
+                    </td>
+                    <td className="asignado">Asignado</td>
+                    <td className="acciones">
+                        <span><Link to={`/residuos/control-retiro/ver-retiro/${hora._id}`}><Ojo /></Link></span>
+                    </td>
+                </tr>
+            ))
+
             
         }
+
+
+
 
         return (
             <div className="principal gestion-residuos menu-lista-dashboard" >
                 <div>
-                    <h2 className="amarillo"><Link to="/personas/gestion"> <Bamarillorev /></Link><span className="amarillo"> Gestión de personas</span> / <strong>Turnos</strong></h2>
+                    <h2 className="verde"><Link to="/residuos/control-retiro"> <Bverderev /></Link><span className="verde"> Control de Retiro</span> / <strong>Programación de Retiro</strong></h2>
                     <div className="fichaPerfil">
-                        <div className="seccion">
-                            <h3><Link to="/personas/listar-trabajadores"><span>Solicitudes de reemplazo</span><button><Flechaam /></button></Link></h3>
-                        </div>
-                        <div className="seccion">
-                            <div className="filtros">
-                                <div className="sup">
-                                    <button>Filtros</button>
-                                </div>
-                                <div>
-                                    <form>
-                                        <div className="form-group ">
-                                            <select className="input-generico">
-                                                <option>Todos los Sectores</option>
-                                            </select>
-                                            <select className="input-generico">
-                                                <option>Todos los clientes</option>
-                                            </select>
-                                            <div className="buttons-space">
-                                                <button className="boton-generico btazul" type="button">Filtrar</button>
-                                                <button className="boton-generico btblanco" type="button">Limpiar</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                         <div className="seccion calendario">
                             <div className="encabezado flex">
-                                <Link to="/personas/turnos/crear-turno">+ Agregar Turno</Link>
+                                <h3 className="verde inline-block">Calendario retiros programados</h3>
                                 <input className="fechaProgra" onChange={this.obtenerRetiros} type="date"></input>
                             </div>
                             <div className="grilla">
@@ -312,6 +307,41 @@ export default class GestionResiduos extends Component {
                                 </table>
 
                             </div>
+                        </div>
+                        <div className="seccion">
+                            <div className="filtros">
+                                <div className="sup">
+                                    <button>Filtros</button>
+                                    <Link to="/residuos/control-retiro/crear-retiro">Nuevo Retiro</Link>
+                                </div>
+                                <div>
+                                    <form>
+                                        <div className="form-group justify-center">
+                                            <select className="input-generico">
+                                                <option>Todos los estados</option>
+                                            </select>
+                                            <div className="buttons-space">
+                                                <button className="boton-generico btazul" type="button">Filtrar</button>
+                                                <button className="boton-generico btblanco" type="button">Limpiar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="listado-simple tabla full">
+                            <table>
+                                <thead>
+                                    <th>Cliente</th>
+                                    <th>Centro Costos</th>
+                                    <th>Frecuencia retiro</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </thead>
+                                <tbody className="retiros">
+                                    {items}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

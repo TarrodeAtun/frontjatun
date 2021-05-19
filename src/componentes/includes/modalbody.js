@@ -28,15 +28,24 @@ export default class ModalBody extends Component {
         );
     }
     componentWillUnmount() {
+        console.log("cvb")
         document.removeEventListener('click', this.ClickExterior, true);
     }
     ClickExterior = async event => {
-        const domNode = this.wrapper.current;
-        if (!domNode || !domNode.contains(event.target)) {
-            this.cerrarModalContenido();
+        console.log(event);
+        if (event.clientX === 0 && event.clientY === 0) {
+            console.log("no entro");
+        } else {
+            const domNode = this.wrapper.current;
+            console.log(domNode);
+            if (!domNode || !domNode.contains(event.target)) {
+                this.cerrarModalContenido();
+            }
         }
+
     }
     cerrarModalContenido = async event => {
+        console.log("cer");
         await this.setState({ estado: "abriendo" });
         setTimeout(
             () => this.props.toogleModal(null, this.props.props.name),

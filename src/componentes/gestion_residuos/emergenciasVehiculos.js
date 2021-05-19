@@ -13,7 +13,7 @@ import turnos from "../../assets/iconos/turnos.svg";
 import { ReactComponent as Bverderev } from "../../assets/iconos/bverderev.svg";
 import { ReactComponent as Flechaver } from "../../assets/iconos/flechaver.svg";
 
-export default class GestionResiduos extends Component {
+export default class EmergenciasVehiculos extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -41,7 +41,7 @@ export default class GestionResiduos extends Component {
                             <h3><Link to="/residuos/control-logistico"><span>Control Logistico</span><button><Flechaver /></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><Link to="/residuos/emergencias"><span>Emergencias</span><button><Flechaver /></button></Link></h3>
+                            <h3><span>Emergencias</span><button><Flechaver /></button></h3>
                         </div>
                     </div>
                 </div>

@@ -8,12 +8,12 @@ import '../../styles/fichaTrabajador.css';
 
 
 // importaciones de iconos 
-import  fichaper  from "../../assets/iconos/fichaper.svg";
-import  turnos  from "../../assets/iconos/turnos.svg";
+import fichaper from "../../assets/iconos/fichaper.svg";
+import turnos from "../../assets/iconos/turnos.svg";
 import { ReactComponent as Bverderev } from "../../assets/iconos/bverderev.svg";
 import { ReactComponent as Flechaver } from "../../assets/iconos/flechaver.svg";
 
-export default class ControlRetiro extends Component {
+export default class Emergencias extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,13 +26,13 @@ export default class ControlRetiro extends Component {
         return (
             <div className="principal gestion-residuos menu-lista-dashboard">
                 <div>
-                <h2 className="verde"><Link to="/residuos/gestion"> <Bverderev/></Link><span className="verde"> Gestión de residuos</span> / <strong>Control de Retiro</strong></h2>
+                    <h2 className="verde"><Link to="/"> <Bverderev /></Link> Gestión de residuos / <strong>Emergencias</strong></h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
-                            <h3><Link to="/residuos/control-retiro/orden-retiro"><span>OR (orden de retiro)</span><button><Flechaver/></button></Link></h3>
+                            <h3><Link to="/residuos/emergencias/residuos"><span>Emergencias Residuos</span><button><Flechaver /></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><Link to="/residuos/control-retiro/programacion-retiro"><span>Programación de retiro</span><button><Flechaver/></button></Link></h3>
+                            <h3><Link to="/residuos/emergencias/vehiculos/"><span>Emergencias Vehiculos</span><button><Flechaver /></button></Link></h3>
                         </div>
                     </div>
                 </div>

@@ -21,8 +21,31 @@ import GestionResiduos from './componentes/gestion_residuos/gestion';
 import ControlRetiro from './componentes/gestion_residuos/controlretiro';
 import OrdenesRetiro from './componentes/gestion_residuos/ordenesretiro';
 import CrearOrdenRetiro from './componentes/gestion_residuos/crearordenretiro';
+import ModificarOrdenRetiro from './componentes/gestion_residuos/modificarordenretiro';
+import VerOrdenRetiro from './componentes/gestion_residuos/verordenretiro';
+import ProgramacionRetiro from './componentes/gestion_residuos/programacionRetiro';
+import CrearRetiro from './componentes/gestion_residuos/crearretiro';
+import FrecuenciaRetiro from './componentes/gestion_residuos/frecuenciaRetiro';
+import VerRetiro from './componentes/gestion_residuos/verretiro';
+import ControlLogistico from './componentes/gestion_residuos/controlLogistico';
+import CrearRuta from './componentes/gestion_residuos/crearruta';
+import VerRuta from './componentes/gestion_residuos/verruta';
 
 import PlanManejo from './componentes/gestion_residuos/planManejo';
+import PlanManejoCliente from './componentes/gestion_residuos/planmanejocliente';
+import CrearPlanManejo from './componentes/gestion_residuos/crearplanmanejo';
+import VerPlanManejo from './componentes/gestion_residuos/verplanmanejo';
+
+
+import Trazabilidad from './componentes/gestion_residuos/trazabilidad';
+import VerTrazabilidad from './componentes/gestion_residuos/vertrazabilidad';
+
+import Emergencias from './componentes/gestion_residuos/emergencias';
+import EmergenciasResiduos from './componentes/gestion_residuos/emergenciasResiduos';
+import EmergenciasResiduosCrear from './componentes/gestion_residuos/crearEmergenciaResiduos';
+import EmergenciasResiduosVer from './componentes/gestion_residuos/crearEmergenciaResiduos';
+import EmergenciasVehiculos from './componentes/gestion_residuos/emergenciasVehiculos';
+import EmergenciasVehiculosCrear from './componentes/gestion_residuos/crearEmergenciaVehiculos';
 
 //Gestion usuarios
 import GestionUsuarios from './componentes/gestion_usuarios/gestion';
@@ -33,6 +56,15 @@ import FichaTrabajador from './componentes/gestion_usuarios/fichaTrabajador';
 import EquipoTrabajador from './componentes/gestion_usuarios/equipoTrabajador';
 import ContractualTrabajador from './componentes/gestion_usuarios/contractualTrabajador';
 import PrevisionTrabajador from './componentes/gestion_usuarios/previsionTrabajador';
+import HojaDeVida from './componentes/gestion_usuarios/hojadevida';
+import CrearCapacitacion from './componentes/gestion_usuarios/hojadevida/crearCapacitacion';
+import ModificarCapacitacion from './componentes/gestion_usuarios/hojadevida/modificarCapacitacion';
+import CrearAmonestacion from './componentes/gestion_usuarios/hojadevida/crearAmonestacion';
+import ModificarAmonestacion from './componentes/gestion_usuarios/hojadevida/modificarAmonestacion';
+import Asistencias from './componentes/gestion_usuarios/asistencias';
+import Turnos from './componentes/gestion_usuarios/turnos';
+import CrearTurno from './componentes/gestion_usuarios/crearturnos';
+import DetalleTurno from './componentes/gestion_usuarios/detalleturno';
 
 //Bienestar
 import Bienestar from './componentes/bienestar/bienestar';
@@ -59,6 +91,7 @@ import ContractualPersonal from './componentes/perfil/contractualPersonal';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 
 //404
@@ -95,7 +128,6 @@ class App extends React.Component {
 
   render() {
     const { currentUser } = this.state;
-    console.log(currentUser);
 
     return (
 
@@ -126,12 +158,23 @@ class App extends React.Component {
                   <RutaPrivada path="/personas/crear-trabajador" component={CrearUsuario} />
                   <RutaPrivada path="/personas/perfil/:id" component={PerfilTrabajador} />
                   <RutaPrivada exact path="/personas/ficha-trabajador/:id" component={FichaTrabajador} />
+
+                  <RutaPrivada exact path="/personas/ficha-trabajador/" component={FichaTrabajador} />
+
                   <RutaPrivada exact path="/personas/ficha-trabajador/equipo/:id" component={EquipoTrabajador} />
-                  <RutaPrivada path="/personas/ficha-trabajador/contractual/:id" component={ContractualTrabajador} />
-                  <RutaPrivada path="/personas/ficha-trabajador/prevision/:id" component={PrevisionTrabajador} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/contractual/:id" component={ContractualTrabajador} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/prevision/:id" component={PrevisionTrabajador} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/hoja-de-vida/:id" component={HojaDeVida} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/hoja-de-vida/crear-capacitacion/:id" component={CrearCapacitacion} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/hoja-de-vida/modificar-capacitacion/:id" component={ModificarCapacitacion} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/hoja-de-vida/crear-amonestacion/:id" component={CrearAmonestacion} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/hoja-de-vida/modificar-amonestacion/:id" component={ModificarAmonestacion} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/asistencias:id" component={Asistencias} />
 
 
-                  <RutaPrivada path="/personas/turnos/:id" component={TurnosTrabajador} />
+                  <RutaPrivada exact path="/personas/turnos/detalle/:id" component={DetalleTurno} />
+                  <RutaPrivada exact path="/personas/turnos/" component={Turnos} />
+                  <RutaPrivada exact path="/personas/turnos/crear-turno" component={CrearTurno} />
 
 
                   {/*Perfil */}
@@ -148,8 +191,28 @@ class App extends React.Component {
                   <RutaPrivada exact path="/residuos/control-retiro" component={ControlRetiro} />
                   <RutaPrivada exact path="/residuos/control-retiro/orden-retiro" component={OrdenesRetiro} />
                   <RutaPrivada exact path="/residuos/control-retiro/orden-retiro/nueva-orden" component={CrearOrdenRetiro} />
-
+                  <RutaPrivada exact path="/residuos/control-retiro/orden-retiro/modificar-orden/:id" component={ModificarOrdenRetiro} />
+                  <RutaPrivada exact path="/residuos/control-retiro/orden-retiro/ver-orden/:id" component={VerOrdenRetiro} />
+                  <RutaPrivada exact path="/residuos/control-retiro/programacion-retiro" component={ProgramacionRetiro} />
+                  <RutaPrivada exact path="/residuos/control-retiro/crear-retiro" component={CrearRetiro} />
+                  <RutaPrivada exact path="/residuos/control-retiro/ver-retiro/:id" component={VerRetiro} />
+                  <RutaPrivada exact path="/residuos/control-logistico" component={ControlLogistico} />
+                  <RutaPrivada exact path="/residuos/control-logistico/crear-ruta" component={CrearRuta} />
+                  <RutaPrivada exact path="/residuos/control-logistico/ver-ruta/:id" component={VerRuta} />
                   <RutaPrivada exact path="/residuos/plan-manejo" component={PlanManejo} />
+                  <RutaPrivada exact path="/residuos/plan-manejo-cliente/:id" component={PlanManejoCliente} />
+                  <RutaPrivada exact path="/residuos/plan-manejo/crear/:id" component={CrearPlanManejo} />
+                  <RutaPrivada exact path="/residuos/plan-manejo/ver/:id" component={VerPlanManejo} />
+
+                  <RutaPrivada exact path="/residuos/trazabilidad/" component={Trazabilidad} />
+                  <RutaPrivada exact path="/residuos/trazabilidad/ver/:id" component={VerTrazabilidad} />
+
+                  <RutaPrivada exact path="/residuos/emergencias/" component={Emergencias} />
+                  <RutaPrivada exact path="/residuos/emergencias/residuos/" component={EmergenciasResiduos} />
+                  <RutaPrivada exact path="/residuos/emergencias/residuos/crear" component={EmergenciasResiduosCrear} />
+                  <RutaPrivada exact path="/residuos/emergencias/residuos/ver/:id" component={EmergenciasResiduosVer} />
+                  <RutaPrivada exact path="/residuos/emergencias/vehiculos/" component={EmergenciasVehiculos} />
+                  <RutaPrivada exact path="/residuos/emergencias/vehiculos/crear" component={EmergenciasVehiculosCrear} />
 
                   {/*Bienestar*/}
                   <RutaPrivada exact path="/bienestar" component={Bienestar} />
@@ -161,10 +224,9 @@ class App extends React.Component {
                   <RutaPrivada exact path="/bienestar/encuestas/ver-resultados/:id" component={VerResultados} />
                   <RutaPrivada exact path="/bienestar/encuestas/resultados" component={ResultadosEncuestas} />
                   <RutaPrivada exact path="/bienestar/soporte" component={Soporte} />
-                  <RutaPrivada exact path="/bienestar/soporte/ver-mensaje/" component={VerMensajeSoporte} />
+                  <RutaPrivada exact path="/bienestar/soporte/ver-mensaje/:id" component={VerMensajeSoporte} />
 
-                  {/* asistencias  */}
-                  <RutaPrivada path="/turnos/listar-asistencias" component={ListarUsuarios} />
+
 
                   <Route component={NotFound} />
                 </Switch>

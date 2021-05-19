@@ -32,7 +32,7 @@ const toastoptions = {
 }
 
 
-export default class CrearOrdenRetiro extends Component {
+export default class VerOrdenRetiro extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -42,30 +42,72 @@ export default class CrearOrdenRetiro extends Component {
             centros: '',
             clientes: '',
             comunas: '',
+            idOrden: '',
             clienteSelectRut: '',
-            form:{
-                centro:'',
-                retiro:'',
-                tarjeta:'',
-                clienterut:'',
-                contactoNombre:'',
-                contactoEmail:'',
-                direccion:'',
-                comuna:'',
-                establecimientoID:'',
-                vuretc:'',
-                detalle:''
-
+            creado: '',
+            form: {
+                idor: '',
+                centro: '',
+                retiro: '',
+                tarjeta: '',
+                clienterut: '',
+                contactoNombre: '',
+                contactoEmail: '',
+                direccion: '',
+                comuna: '',
+                establecimientoID: '',
+                vuretc: '',
+                detalle: ''
             }
         };
     }
 
     componentDidMount = () => {
+        this.obtenerOrden();
         this.obtenerClientes();
         this.obtenerCentros();
         this.obtenerComunas();
     }
 
+    pad = (num, size) => {
+        var s = "00000000" + num;
+        s = s.substr(s.length - size);
+        var f = s.substr(0, 4);
+        var l = s.substr(4, 7);
+
+        return f + " " + l;
+    }
+    obtenerOrden = async () => {
+        var componente = this;
+        var { id } = this.props.match.params;
+        this.setState({ idOrden: id });
+        const res = Axios.get('/api/gestion-residuos/ordenes-retiro/obtener/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+            .then(function (res) {   //si la peticion es satisfactoria entonces
+                console.log(res.data)
+                componente.setState({
+                    form: {
+                        idor: res.data.data.idor,
+                        retiro: moment(res.data.data.retiro).utc().format('YYYY-MM-DD'),
+                        centro: res.data.data.centro,
+                        tarjeta: res.data.data.tarjeta,
+                        clienterut: res.data.data.clienterut,
+                        contactoNombre: res.data.data.contactoNombre,
+                        contactoEmail: res.data.data.contactoEmail,
+                        direccion: res.data.data.direccion,
+                        comuna: res.data.data.comuna,
+                        establecimientoID: res.data.data.establecimientoID,
+                        vuretc: res.data.data.vuretc,
+                        detalle: res.data.data.detalle
+                    },
+                    creado: moment(res.data.data.createdAt).utc().format('YYYY-MM-DD')
+                });  //almacenamos el listado de usuarios en el estado usuarios (array)
+
+            })
+            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                return;
+            });
+    }
     obtenerClientes = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
         const res = Axios.get('/api/generales/clientes/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
@@ -173,6 +215,8 @@ export default class CrearOrdenRetiro extends Component {
     }
 
     enviaDatos = async e => {
+        var componente = this;
+        var { id } = this.props.match.params;
         e.preventDefault();
         var campoVacio = false;
         console.log(this.state.form);
@@ -182,18 +226,19 @@ export default class CrearOrdenRetiro extends Component {
             }
         });
         if (!campoVacio) {
-            const res = await Axios.post('/api/gestion-residuos/ordenes-retiro/create/', {
+            const res = await Axios.post('/api/gestion-residuos/ordenes-retiro/modificar/', {
+                id: this.state.idOrden,
                 centro: this.state.form.centro,
-                retiro:this.state.form.retiro,
-                tarjeta:this.state.form.tarjeta,
-                clienterut:this.state.form.clienterut,
-                contactoNombre:this.state.form.contactoNombre,
-                contactoEmail:this.state.form.contactoEmail,
-                direccion:this.state.form.direccion,
-                comuna:this.state.form.comuna,
-                establecimientoID:this.state.form.establecimientoID,
-                vuretc:this.state.form.vuretc,
-                detalle:this.state.form.detalle
+                retiro: this.state.form.retiro,
+                tarjeta: this.state.form.tarjeta,
+                clienterut: this.state.form.clienterut,
+                contactoNombre: this.state.form.contactoNombre,
+                contactoEmail: this.state.form.contactoEmail,
+                direccion: this.state.form.direccion,
+                comuna: this.state.form.comuna,
+                establecimientoID: this.state.form.establecimientoID,
+                vuretc: this.state.form.vuretc,
+                detalle: this.state.form.detalle
             }, { headers: authHeader() })
                 .then(respuesta => {
                     // this.setState({ idUsuario: respuesta.data.id });
@@ -210,7 +255,7 @@ export default class CrearOrdenRetiro extends Component {
                     handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                     toast.error("Ha habido un error al enviar los datos", toastoptions);
                 });
-        }else{
+        } else {
             toast.warning("Debes llenar todos los campos", toastoptions);
         }
     }
@@ -243,18 +288,18 @@ export default class CrearOrdenRetiro extends Component {
         return (
             <div className="principal" id="component-perfil">
                 <div>
-                    <h2 className="verde"><button className="boton-vacio" onClick={this.volver}> <Bverderev /> </button><span>OR</span> / <strong>Nueva OR</strong></h2>
+                    <h2 className="verde"><button className="boton-vacio" onClick={this.volver}> <Bverderev /> </button><span>OR</span> / <strong>OR {this.pad(this.state.form.idor, 8)}</strong></h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
                             <h3 className="verde">Datos OR</h3>
                             <div>
                                 <span>N° OR</span>
-                                <span> </span>
+                                <span> {this.pad(this.state.form.idor, 8)}</span>
                             </div>
                             <div>
                                 <span>Centro Costos</span>
                                 <span>
-                                    <select name="centro" onChange={this.onChangeInput} className="input-generico">
+                                    <select name="centro" onChange={this.onChangeInput} readOnly="true" disabled="true" value={this.state.form.centro} className="input-generico">
                                         <option>Seleccione Centro de Costos</option>
                                         {centrocostos}
                                     </select>
@@ -262,21 +307,21 @@ export default class CrearOrdenRetiro extends Component {
                             </div>
                             <div>
                                 <span>Fecha Creación</span>
-                                <span>{moment(Date.now()).format('DD/MM/YYYY')}</span>
+                                <span>{this.state.creado}</span>
                             </div>
                             <div>
                                 <span>Fecha Retiro</span>
-                                <span><input name="retiro" onChange={this.onChangeInput} type="date" className="input-generico" /></span>
+                                <span>{this.state.form.retiro}</span>
                             </div>
                             <div>
                                 <span>N° Tarjeta</span>
-                                <span><input name="tarjeta" onChange={this.onChangeInput} className="input-generico"  /></span>
+                                <span>{this.state.form.tarjeta}</span>
                             </div>
                             <h3 className="verde">Datos Cliente</h3>
                             <div>
                                 <span>Cliente</span>
                                 <span>
-                                    <select name="clienterut" className="input-generico" value={this.state.form.clienterut} onChange={this.onChangeSelectCiente}>
+                                    <select name="clienterut" className="input-generico" readOnly="true" disabled="true" value={this.state.form.clienterut} onChange={this.onChangeSelectCiente}>
                                         <option>Seleccione Cliente</option>
                                         {clientes}
                                     </select>
@@ -288,16 +333,16 @@ export default class CrearOrdenRetiro extends Component {
                             </div>
                             <div>
                                 <span>Nombre Contacto</span>
-                                <span><input name="contactoNombre" onChange={this.onChangeInput} className="input-generico" /></span>
+                                <span>{this.state.form.contactoNombre}</span>
                             </div>
                             <div>
                                 <span>Email Contacto</span>
-                                <span><input  name="contactoEmail" onChange={this.onChangeInput} className="input-generico" /></span>
+                                <span>{this.state.form.contactoEmail}</span>
                             </div>
                             <h3 className="verde">Establecimiento</h3>
                             <div>
                                 <span>Direccion</span>
-                                <span><input  name="direccion" onChange={this.onChangeInput} className="input-generico" /></span>
+                                <span>{this.state.form.direccion}</span>
                             </div>
                             {/* <div>
                                 <span>Ciudad</span>
@@ -309,24 +354,23 @@ export default class CrearOrdenRetiro extends Component {
                             </div> */}
                             <div>
                                 <span>Comuna</span>
-                                <span><select  name="comuna" onChange={this.onChangeInput} className="input-generico">
+                                <span><select name="comuna" onChange={this.onChangeInput} readOnly="true" disabled="true" value={this.state.form.comuna} className="input-generico">
                                     <option>Seleccione Comuna</option>
                                     {comunas}
                                 </select></span>
                             </div>
                             <div>
                                 <span>ID</span>
-                                <span><input name="establecimientoID" onChange={this.onChangeInput} className="input-generico"  /></span>
+                                <span>{this.state.form.establecimientoID}</span>
                             </div>
                             <div>
                                 <span>VU-RETC</span>
-                                <span><input  name="vuretc" onChange={this.onChangeInput} className="input-generico"/></span>
+                                <span>{this.state.form.vuretc}</span>
                             </div>
                             <h3 className="verde">Observaciones</h3>
                             <div>
                                 <span>Detalle del Retiro</span>
-                                <span><textarea name="detalle" onChange={this.onChangeInput} rows="6" className="input-generico" 
-                                /></span>
+                                <span>{this.state.form.detalle}</span>
                             </div>
                             <div className="form-group buttons">
                                 <button className="boton-generico btazul" onClick={this.enviaDatos}>Guardar</button>

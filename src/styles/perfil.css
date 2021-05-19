@@ -180,6 +180,36 @@
     right: 20px;
     top:20px;
 }
+.sub-seccion{
+    flex-wrap: wrap;
+    padding: 10px 10px !important;
+}
+.sub-seccion >div{
+    display: flex;
+    width: 100%;
+    padding: 10px 0px;
+}
+.radiocontainer {
+   display: flex !important;
+   /* flex-wrap: wrap; */
+}
+.radiocontainer > *{
+width: auto !important;
+padding:0px 10px;
+}
+.radiocontainer > label{
+    padding-right: 30px;
+}
+.radiocontainer > span{
+    width: 100px !important;
+}
+.radiocontainer > span > *{
+    display: inline-block !important;
+    width: min-content !important;
+}
+.radiocontainer > span > label{
+    margin-left: 15px;
+}
 
 .modal h2{
 font-size:2em;;

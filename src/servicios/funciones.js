@@ -2,7 +2,8 @@ export var funciones = {
     formatearRut,
     quitarFormato,
     getRutFormateado,
-    validarEmail
+    validarEmail,
+    nombreDia
 
 };
 
@@ -47,7 +48,7 @@ function getDigito(rut) {
     var mul = 2;
     for (var i = rut.length - 1; i >= 0; i--) {
         suma = suma + rut.charAt(i) * mul;
-        if (mul == 7) {
+        if (mul === 7) {
             mul = 2;
         }
         else {
@@ -55,10 +56,10 @@ function getDigito(rut) {
         }
     }
     var res = suma % 11;
-    if (res == 1) {
+    if (res === 1) {
         return 'k';
     }
-    else if (res == 0) {
+    else if (res === 0) {
         return '0';
     }
     else {
@@ -78,4 +79,12 @@ async function validarEmail(valor) {
     } else {
         return false
     }
+}
+
+function nombreDia(fecha) {
+    var arrayOfWeekdays = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado"]
+    var weekdayNumber = fecha.getDay();
+    console.log(weekdayNumber);
+    var weekdayName = arrayOfWeekdays[weekdayNumber]
+    return weekdayName;
 }
