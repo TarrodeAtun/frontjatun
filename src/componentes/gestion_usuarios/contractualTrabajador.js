@@ -194,12 +194,12 @@ export default class EquipoTrabajador extends Component {
         const res = await Axios.post('/api/users/worker/ficha/contractuales/', formData, { headers: authHeader() })
             .then(respuesta => {
                 console.log(respuesta);
-                // if (respuesta.data.estado === "success") {
-                //     toast.success(respuesta.data.mensaje, toastoptions);
-                //     this.setState({ showModificar: false });
-                // } else if (respuesta.data.estado === "warning") {
-                //     toast.warning(respuesta.data.mensaje, toastoptions);
-                // }
+                if (respuesta.data.estado === "success") {
+                    toast.success(respuesta.data.mensaje, toastoptions);
+                    this.setState({ showModificar: false });
+                } else if (respuesta.data.estado === "warning") {
+                    toast.warning(respuesta.data.mensaje, toastoptions);
+                }
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente

@@ -34,20 +34,28 @@ export default class RecuperarPass extends Component {
     onSubmit = async e => {
         e.preventDefault();
         let email = this.state.email;
+        let componente = this;
         if (email !== '') {
             funciones.validarEmail(email).then(async res => {
                 console.log(res);
                 if (res) {
+                    console.log("dsa");
                     await Axios.post('/api/mailer/recuperarPass', { email })
                         .then(res => {
-                            this.setState({ enviado: true });
+                            if (res.data.estado === "success") {
+                                console.log("asd");
+                                componente.setState({ enviado: true });
+                            } else {
+                                toast.warning(res.data.mensaje, toastoptions);
+                            }
+
                         })
                         .catch(err => {
                             console.log(err);
                         });
-                } else { 
+                } else {
                     toast.warning("El formato de correo no es válido", toastoptions);
-                    this.setState({ incorrecto: 'incorrecto', email:'' });
+                    this.setState({ incorrecto: 'incorrecto', email: '' });
                     this.resetMensaje();
                 }
             });

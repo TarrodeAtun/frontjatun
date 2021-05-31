@@ -111,7 +111,7 @@ export default class ControlLogistico extends Component {
     }
     pushDetalle = (e) => {
         var id = e.currentTarget.dataset.id;
-        historial.push(`/residuos/control-retiro/ver-retiro/${id}`);
+        historial.push(`/residuos/control-retiro/orden-retiro/ver-orden/${id}`);
     }
     calculaPosicion = (e, index) => {
         console.log(e);

@@ -111,23 +111,7 @@ export default class CrearOrdenRetiro extends Component {
                         <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
                         <button className="boton-generico btazul" onClick={function () { componente.pushLista(); onClose(); }}>No guardar</button>
                         <button className="boton-generico btazul"
-                            onClick={() => {
-                                Axios.post('/api/bienestar/soporte/consulta/finalizar', {
-
-                                },
-                                    { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-                                    .then(function (res) {   //si la peticion es satisfactoria entonces
-                                        componente.cargarMensajes();
-                                        componente.setState({ estado: "1" });
-                                        toast.success("¡Se ha finalizado la consulta, no se pueden agregar más mensajes!")
-                                        onClose();
-                                    })
-                                    .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                                        handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                                        return;
-                                    });
-
-                            }}
+                            onClick={this.enviaDatos}
                         >
                             Aceptar
                     </button>
@@ -172,8 +156,7 @@ export default class CrearOrdenRetiro extends Component {
         historial.push("/residuos/control-retiro/orden-retiro");
     }
 
-    enviaDatos = async e => {
-        e.preventDefault();
+    enviaDatos = async () => {
         var campoVacio = false;
         console.log(this.state.form);
         await Object.entries(this.state.form).map((t, k) => {

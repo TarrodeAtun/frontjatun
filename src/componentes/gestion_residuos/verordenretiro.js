@@ -153,23 +153,7 @@ export default class VerOrdenRetiro extends Component {
                         <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
                         <button className="boton-generico btazul" onClick={function () { componente.pushLista(); onClose(); }}>No guardar</button>
                         <button className="boton-generico btazul"
-                            onClick={() => {
-                                Axios.post('/api/bienestar/soporte/consulta/finalizar', {
-
-                                },
-                                    { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-                                    .then(function (res) {   //si la peticion es satisfactoria entonces
-                                        componente.cargarMensajes();
-                                        componente.setState({ estado: "1" });
-                                        toast.success("¡Se ha finalizado la consulta, no se pueden agregar más mensajes!")
-                                        onClose();
-                                    })
-                                    .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                                        handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                                        return;
-                                    });
-
-                            }}
+                            onClick={this.enviaDatos}
                         >
                             Aceptar
                     </button>
@@ -288,7 +272,7 @@ export default class VerOrdenRetiro extends Component {
         return (
             <div className="principal" id="component-perfil">
                 <div>
-                    <h2 className="verde"><button className="boton-vacio" onClick={this.volver}> <Bverderev /> </button><span>OR</span> / <strong>OR {this.pad(this.state.form.idor, 8)}</strong></h2>
+                    <h2 className="verde"><button className="boton-vacio" onClick={this.pushLista}> <Bverderev /> </button><span>OR</span> / <strong>OR {this.pad(this.state.form.idor, 8)}</strong></h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
                             <h3 className="verde">Datos OR</h3>
@@ -372,10 +356,7 @@ export default class VerOrdenRetiro extends Component {
                                 <span>Detalle del Retiro</span>
                                 <span>{this.state.form.detalle}</span>
                             </div>
-                            <div className="form-group buttons">
-                                <button className="boton-generico btazul" onClick={this.enviaDatos}>Guardar</button>
-                                <button className="boton-generico btgris" type="button" >Cancelar</button>
-                            </div>
+                         
                         </div>
                     </div>
                 </div>

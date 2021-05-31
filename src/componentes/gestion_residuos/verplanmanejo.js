@@ -157,41 +157,7 @@ export default class CrearPlanManejo extends Component {
             });
     }
 
-    volver = () => {
-        var componente = this;
-        confirmAlert({
-            customUI: ({ onClose }) => {
-                return (
-                    <div className='custom-confirm '>
-                        <p>¿Quieres guardar antes de salir de la sección crear OR?</p>
-                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
-                        <button className="boton-generico btazul" onClick={function () { componente.pushLista(); onClose(); }}>No guardar</button>
-                        <button className="boton-generico btazul"
-                            onClick={() => {
-                                Axios.post('/api/bienestar/soporte/consulta/finalizar', {
-
-                                },
-                                    { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-                                    .then(function (res) {   //si la peticion es satisfactoria entonces
-                                        componente.cargarMensajes();
-                                        componente.setState({ estado: "1" });
-                                        toast.success("¡Se ha finalizado la consulta, no se pueden agregar más mensajes!")
-                                        onClose();
-                                    })
-                                    .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                                        handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                                        return;
-                                    });
-
-                            }}
-                        >
-                            Aceptar
-                    </button>
-                    </div>
-                );
-            }
-        });
-    }
+    
 
     formatearRutListado = (rutCrudo, dv) => {
         var sRut = new String(rutCrudo);
@@ -247,7 +213,7 @@ export default class CrearPlanManejo extends Component {
     }
 
     pushLista = () => {
-        historial.push("/residuos/trazabilidad");
+        historial.push("/residuos/plan-manejo");
     }
 
     enviaDatos = async e => {
@@ -375,7 +341,7 @@ export default class CrearPlanManejo extends Component {
         return (
             <div className="principal" id="component-perfil">
                 <div>
-                    <h2 className="verde"><button className="boton-vacio" onClick={this.volver}> <Bverderev /> </button><span>{this.state.datosCliente.nombre}</span> / <strong>{this.state.nombre}</strong></h2>
+                    <h2 className="verde"><button className="boton-vacio" onClick={this.pushLista}> <Bverderev /> </button><span>{this.state.datosCliente.nombre}</span> / <strong>{this.state.nombre}</strong></h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
                             <h3 className="verde">Editar Plan</h3>

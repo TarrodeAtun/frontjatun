@@ -60,7 +60,9 @@ export default class CrearRetiro extends Component {
                 inicio: '',
                 termino: '',
                 or: ''
-            }
+            },
+            disabled: false,
+            estado: ''
         };
     }
 
@@ -96,9 +98,13 @@ export default class CrearRetiro extends Component {
                         or: res.data.data.or
                     },
                     ordenActual: res.data.data.or,
-                    fechaActual: moment(res.data.data.fecha).utc().format('YYYY-MM-DD')
+                    fechaActual: moment(res.data.data.fecha).utc().format('YYYY-MM-DD'),
+                    estado: res.data.data.estado
                 });  //almacenamos el listado de usuarios en el estado usuarios (array)
                 componente.optionsOrdenesAsignadas(res.data.data.fecha);
+                if (res.data.data.estado === 1) {
+                    componente.setState({ disabled: true });
+                }
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -221,7 +227,7 @@ export default class CrearRetiro extends Component {
         if (fechaRe === this.state.fechaActual) {
             console.log("original")
             original = <option value={this.state.ordenActual} >{this.state.ordenActual}</option>
-        }else{
+        } else {
             console.log("no original")
             original = '';
         }
@@ -364,14 +370,14 @@ export default class CrearRetiro extends Component {
         return (
             <div className="principal" id="component-perfil">
                 <div>
-                    <h2 className="verde"><button className="boton-vacio" onClick={this.volver}> <Bverderev /> </button><span>Programación Retiro</span> / <strong>Detalle Retiro</strong></h2>
+                    <h2 className="verde"><button className="boton-vacio" onClick={this.pushLista}> <Bverderev /> </button><span>Programación Retiro</span> / <strong>Detalle Retiro</strong></h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
                             <h3 className="verde">Cliente *</h3>
                             <div>
                                 <span>Cliente</span>
                                 <span>
-                                    <select name="clienterut" onChange={this.onChangeInput} className="input-generico" value={this.state.form.clienterut} >
+                                    <select name="clienterut" onChange={this.onChangeInput} disabled={this.state.disabled} className="input-generico" value={this.state.form.clienterut} >
                                         <option>Seleccione Cliente</option>
                                         {clientes}
                                     </select>
@@ -380,7 +386,7 @@ export default class CrearRetiro extends Component {
                             <div>
                                 <span>Centro Costos</span>
                                 <span>
-                                    <select name="centro" onChange={this.onChangeInput} value={this.state.form.centro} className="input-generico">
+                                    <select name="centro" onChange={this.onChangeInput} disabled={this.state.disabled} value={this.state.form.centro} className="input-generico">
                                         <option>Seleccione Centro de Costos</option>
                                         {centrocostos}
                                     </select>
@@ -389,11 +395,11 @@ export default class CrearRetiro extends Component {
                             <h3 className="verde">Establecimiento *</h3>
                             <div>
                                 <span>Direccion</span>
-                                <span><input type="text" onChange={this.onChangeInput} value={this.state.form.direccion} name="direccion" className="input-generico" /></span>
+                                <span><input type="text" onChange={this.onChangeInput} disabled={this.state.disabled} value={this.state.form.direccion} name="direccion" className="input-generico" /></span>
                             </div>
                             <div>
                                 <span>Comuna</span>
-                                <span><select name="comuna" value={this.state.form.comuna} onChange={this.onChangeInput} className="input-generico">
+                                <span><select name="comuna" value={this.state.form.comuna} disabled={this.state.disabled} onChange={this.onChangeInput} className="input-generico">
                                     <option>Seleccione Comuna</option>
                                     {comunas}
                                 </select></span>
@@ -401,7 +407,7 @@ export default class CrearRetiro extends Component {
                             <h3 className="verde">Tipo residuo (código LER) *</h3>
                             <div>
                                 <span>Código</span>
-                                <span><select name="codigoler" onChange={this.onChangeCodigo} value={this.state.form.codigoler} className="input-generico">
+                                <span><select name="codigoler" onChange={this.onChangeCodigo} disabled={this.state.disabled} value={this.state.form.codigoler} className="input-generico">
                                     <option value="">Seleccione un código</option>
                                     {codigosler}
                                 </select></span>
@@ -409,7 +415,7 @@ export default class CrearRetiro extends Component {
                             <div>
                                 <span>Categoria</span>
                                 <span>
-                                    <select name="categoria" onChange={this.onChangeInput} value={this.state.form.categoria} className="input-generico">
+                                    <select name="categoria" onChange={this.onChangeInput} disabled={this.state.disabled} value={this.state.form.categoria} className="input-generico">
                                         <option>Seleccione una categoría</option>
                                         {categoriasler}
                                     </select>
@@ -418,12 +424,12 @@ export default class CrearRetiro extends Component {
                             <h3 className="verde">Fecha y Frecuencia*</h3>
                             <div>
                                 <span>Fecha</span>
-                                <span><input type="date" onChange={this.onChangeInputFecha} value={this.state.form.fecha} className="input-generico" name="fecha" /></span>
+                                <span><input type="date" onChange={this.onChangeInputFecha} disabled={this.state.disabled} value={this.state.form.fecha} className="input-generico" name="fecha" /></span>
                             </div>
                             <div>
                                 <span>Horario Inicio</span>
                                 <span>
-                                    <select name="inicio" onChange={this.onChangeInput} value={this.state.form.inicio} className="input-generico">
+                                    <select name="inicio" onChange={this.onChangeInput} disabled={this.state.disabled} value={this.state.form.inicio} className="input-generico">
                                         <option>00:00</option>
                                         <option>00:30</option>
                                         <option>01:00</option>
@@ -476,7 +482,7 @@ export default class CrearRetiro extends Component {
                             <div>
                                 <span>Horario Termino</span>
                                 <span>
-                                    <select name="termino" onChange={this.onChangeInput} value={this.state.form.termino} className="input-generico">
+                                    <select name="termino" onChange={this.onChangeInput} disabled={this.state.disabled} value={this.state.form.termino} className="input-generico">
                                         <option>00:00</option>
                                         <option>00:30</option>
                                         <option>01:00</option>
@@ -529,7 +535,7 @@ export default class CrearRetiro extends Component {
                             <div>
                                 <span>OR Referencia</span>
                                 <span>
-                                    <select name="or" onChange={this.onChangeInput} value={this.state.form.or} className="input-generico">
+                                    <select name="or" onChange={this.onChangeInput} disabled={this.state.disabled} value={this.state.form.or} className="input-generico">
                                         <option>Seleccione una orden</option>
                                         {this.state.domOrdenOriginal}
                                         {this.state.domOrdenes}
@@ -572,11 +578,13 @@ export default class CrearRetiro extends Component {
                                 </tbody>
                             </table>
                         </div> */}
+                            {this.state.estado === 1
+                                ? ""
+                                : <div className="form-group buttons">
+                                    <button className="boton-generico btazulalt" >Cancelar</button>
+                                    <button className="boton-generico btazul" onClick={this.enviaDatos} type="button" >Guardar</button>
+                                </div>}
 
-                            <div className="form-group buttons">
-                                <button className="boton-generico btazulalt" >Cancelar</button>
-                                <button className="boton-generico btazul" onClick={this.enviaDatos} type="button" >Guardar</button>
-                            </div>
                         </div>
                     </div>
                 </div>
