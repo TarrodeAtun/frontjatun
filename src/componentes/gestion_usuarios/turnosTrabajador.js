@@ -6,7 +6,9 @@ import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
 import moment from 'moment';
+import { funciones } from '../../servicios/funciones';
 import { toast } from 'react-toastify';
+import imagen from "../../assets/persona.svg";
 
 // importaciones de estilos 
 import '../../styles/fichaTrabajador.css';
@@ -18,7 +20,7 @@ import turnos from "../../assets/iconos/turnos.svg";
 import { ReactComponent as Basurero } from "../../assets/iconos/basurero.svg";
 import { ReactComponent as Plus } from "../../assets/iconos/plusNaranjo.svg";
 import { ReactComponent as Filtro } from "../../assets/iconos/filtro.svg";
-import { ReactComponent as Bcelesterev } from "../../assets/iconos/bcelesterev.svg";
+import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
 import { ReactComponent as Flechaam } from "../../assets/iconos/flechaam.svg";
 import { historial } from "../../helpers/historial";
 
@@ -28,9 +30,11 @@ export default class GestionResiduos extends Component {
         this.myRef = React.createRef();
         this.state = {
             currentUser: autenticacion.currentUserValue,
-            datosUsuarios: "",
+            datosUsuario: "",
             users: null,
-            horas: ''
+            horas: '',
+            servicios:'',
+            idUsuario:''
         };
     }
     pad = (num, size) => {
@@ -41,12 +45,21 @@ export default class GestionResiduos extends Component {
 
         return f + " " + l;
     }
-    componentDidMount = () => {
+    componentDidMount = async () => {
         var componente = this;
         var fecha = new Date();
-        var rut = autenticacion.currentUserValue.data.usuariobd.rut;
-        console.log(fecha);
-        const res = Axios.post('/api/users/worker/turnos/', { fecha:  moment(fecha).format('YYYY-MM-DD'), rut: rut }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const { id } = this.props.match.params;
+        this.setState({idUsuario:id});
+        await Axios.get('/api/users/worker/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+            .then(function (res) {   //si la peticion es satisfactoria entonces
+                console.log(res.data);
+                componente.setState({ datosUsuario: res.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
+            })
+            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                // handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                return;
+            });
+        await Axios.post('/api/users/worker/turnos/', { fecha: moment(fecha).format('YYYY-MM-DD'), rut: this.state.datosUsuario.rut }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -57,13 +70,14 @@ export default class GestionResiduos extends Component {
             });
         var node = this.myRef.current;
         this.recalculaEspacios(node);
+        await this.setState({servicios: funciones.obtenerServicios()});
+        console.log(this.state.servicios);
     }
     obtenerTurnos = (e) => {
         var componente = this;
         var fecha = e.target.value;
-        var rut = autenticacion.currentUserValue.data.usuariobd.rut;
         console.log(fecha);
-        const res = Axios.post('/api/users/worker/turnos/', { fecha:  moment(fecha).format('YYYY-MM-DD'), rut: rut }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        Axios.post('/api/users/worker/turnos/', { fecha: moment(fecha).format('YYYY-MM-DD'), rut: this.state.datosUsuario.rut }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -215,21 +229,26 @@ export default class GestionResiduos extends Component {
         }
 
         return (
-            <div className="principal gestion-residuos menu-lista-dashboard" >
+            <div className="principal menu-lista-dashboard"  >
                 <div>
-                    <h2 className="celeste"><Link to="/perfil"> <Bcelesterev /></Link> Mi Perfil / <strong>Mis Turnos</strong></h2>
+                    <h2 className="amarillo"><Link to={`/personas/perfil/${this.state.idUsuario}`}> <Bamarillorev /></Link> Perfil trabajador / <strong>Turnos Trabajador</strong></h2>
                     <div className="fichaPerfil">
-                        <div className="flex between">
-                            <div className="seccion seccionparalela">
-                                <h3><Link to="/perfil/turnos/historial"><span>Historial de turnos</span><button><Flechaam /></button></Link></h3>
+                        <div className="seccion encabezado">
+                            <div className="fotoperfil">
+                                <img src={imagen} />
                             </div>
-                            <div className="seccion seccionparalela">
-                                <h3><Link to="/personas/listar-trabajadores"><span>Solicitudes de reemplazo</span><button><Flechaam /></button></Link></h3>
+                            <div className="datosPersonales">
+                                <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>
                             </div>
+                        </div>
+                        <div className="seccion">
+                            <h3><Link to={`/personas/turnos/trabajador/historial/${this.state.datosUsuario._id}`}><span>Historial de turnos</span><button><Flechaam /></button></Link></h3>
                         </div>
                         <div className="seccion calendario">
                             <div className="encabezado flex">
+                                <h3>asdsda</h3>
                                 <input className="fechaProgra input-generico" onChange={this.obtenerTurnos} type="date"></input>
+
                             </div>
                             <div className="grilla">
                                 <table className="fondo encabezado" >

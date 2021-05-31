@@ -78,7 +78,6 @@ export default class CrearRetiro extends Component {
     }
     componentDidMount = () => {
         this.obtenerClientes();
-        this.obtenerSectores();
         this.obtenerServicios();
         this.obtenerTiposTurno();
         this.obtenerTrabajadores();
@@ -90,17 +89,6 @@ export default class CrearRetiro extends Component {
         const res = Axios.get('/api/generales/clientes/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 componente.setState({ clientes: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
-            })
-            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                return;
-            });
-    }
-    obtenerSectores = async () => { //genera una peticion get por axios a la api de usuarios
-        var componente = this;
-        const res = Axios.get('/api/generales/sectores/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                componente.setState({ sectores: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -190,6 +178,23 @@ export default class CrearRetiro extends Component {
             selectTrabajador: ''
         })
     }
+
+    onChangeCliente = async (e) => {
+        var clienteRut = e.target.value;
+        if (e.target.value) {
+            await this.setState({form: {...this.state.form, clienterut: clienteRut } })
+            await this.setState({form: {...this.state.form, sector: '' } })
+            let clientes = await this.state.clientes;
+            let clienteSelect = await clientes.find(cliente => parseInt(cliente.rut) === parseInt(clienteRut));
+            this.setState({ sectores: clienteSelect.sectores });
+        } else {
+            console.log("no");
+            await this.setState({form: {...this.state.form, clienterut: '' } })
+            await this.setState({form: {...this.state.form, sector: '' } })
+            await this.setState({ sectores: '' });
+        }
+    }
+
     eliminaTrabajador = (e) => {
         console.log("elimina");
         var trabajadores = this.state.trabajadoresSelect;
@@ -371,8 +376,8 @@ export default class CrearRetiro extends Component {
                     console.log(respuesta);
                     // this.setState({ idUsuario: respuesta.data.id });
                     if (respuesta.data.estado === "success") {
-                        // toast.success(respuesta.data.mensaje, toastoptions);
-                        // historial.push("/residuos/control-retiro/programacion-retiro");
+                        toast.success(respuesta.data.mensaje, toastoptions);
+                        historial.push("/personas/turnos");
                         // this.setState({ showIngresar: true, showOptions: false });
                     } else if (respuesta.data.estado === "warning") {
                         toast.warning(respuesta.data.mensaje, toastoptions);
@@ -454,8 +459,8 @@ export default class CrearRetiro extends Component {
                             <div>
                                 <span>Cliente</span>
                                 <span>
-                                    <select name="clienterut" onChange={this.onChangeInput} className="input-generico" value={this.state.form.clienterut} >
-                                        <option>Seleccionar</option>
+                                    <select name="clienterut" onChange={this.onChangeCliente} className="input-generico" value={this.state.form.clienterut} >
+                                        <option value="">Seleccionar</option>
                                         {clientes}
                                     </select>
                                 </span>
@@ -464,7 +469,7 @@ export default class CrearRetiro extends Component {
                                 <span>Sector</span>
                                 <span>
                                     <select name="sector" onChange={this.onChangeInput} value={this.state.form.sector} className="input-generico">
-                                        <option>Seleccionar</option>
+                                        <option value="">Seleccionar</option>
                                         {sectores}
                                     </select>
                                 </span>

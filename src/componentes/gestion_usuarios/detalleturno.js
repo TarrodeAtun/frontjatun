@@ -58,6 +58,7 @@ export default class CrearRetiro extends Component {
             jefes: '',
             trabajadoresSelect: [],
             selectTrabajador: '',
+            estado: '',
             showModificar: true,
             form: {
                 idTurno: '',
@@ -78,10 +79,9 @@ export default class CrearRetiro extends Component {
     manejadorModals = (e, res) => {
         this.toogleModal(e, res);
     }
-    componentDidMount = () => {
-        this.obtenerDetalleTurno();
-        this.obtenerClientes();
-        this.obtenerSectores();
+    componentDidMount = async () => {
+        await this.obtenerDetalleTurno();
+        await this.obtenerClientes();
         this.obtenerServicios();
         this.obtenerTiposTurno();
         this.obtenerTrabajadores();
@@ -91,21 +91,22 @@ export default class CrearRetiro extends Component {
         var componente = this;
         const { id } = this.props.match.params;
         const res = Axios.get('/api/users/worker/turnos/detalle/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
+            .then(async function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res);
-                componente.setState({
+                await componente.setState({
                     form: {
                         idTurno: id,
-                        clienterut: res.data.data.clienterut,
-                        sector: res.data.data.sector,
-                        servicio: res.data.data.servicio,
-                        tipoTurno: res.data.data.tipoTurno,
-                        fecha: moment(res.data.data.fecha).utc().format('YYYY-MM-DD'),
-                        inicio: res.data.data.inicio,
-                        termino: res.data.data.termino,
-                        jefe: res.data.data.jefeCuadrilla,
+                        clienterut: res.data.data[0].clienterut,
+                        sector: res.data.data[0].sector,
+                        servicio: res.data.data[0].servicio,
+                        tipoTurno: res.data.data[0].tipoTurno,
+                        fecha: moment(res.data.data[0].fecha).utc().format('YYYY-MM-DD'),
+                        inicio: res.data.data[0].inicio,
+                        termino: res.data.data[0].termino,
+                        jefe: res.data.data[0].jefeCuadrilla,
                     },
-                    trabajadoresSelect: res.data.data.trabajadores
+                    estado: res.data.data[0].estado,
+                    trabajadoresSelect: res.data.data[0].trabajadores
                 });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -116,22 +117,17 @@ export default class CrearRetiro extends Component {
     obtenerClientes = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
         const res = Axios.get('/api/generales/clientes/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                componente.setState({ clientes: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
+            .then(async function (res) {   //si la peticion es satisfactoria entonces
+                let clientes = await res.data.data;
+                await componente.setState({ clientes: clientes });  //almacenamos el listado de usuarios en el estado usuarios (array)
+                let clienteSelect = await clientes.find(cliente => parseInt(cliente.rut) === parseInt(componente.state.form.clienterut));
+                console.log(clienteSelect);
+                if (clienteSelect) {
+                    componente.setState({ sectores: clienteSelect.sectores });
+                }
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                return;
-            });
-    }
-    obtenerSectores = async () => { //genera una peticion get por axios a la api de usuarios
-        var componente = this;
-        const res = Axios.get('/api/generales/sectores/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                componente.setState({ sectores: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
-            })
-            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                handleResponse(err);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 return;
             });
     }
@@ -217,6 +213,21 @@ export default class CrearRetiro extends Component {
         this.setState({
             selectTrabajador: ''
         })
+    }
+    onChangeCliente = async (e) => {
+        var clienteRut = e.target.value;
+        if (e.target.value) {
+            await this.setState({ form: { ...this.state.form, clienterut: clienteRut } })
+            await this.setState({ form: { ...this.state.form, sector: '' } })
+            let clientes = await this.state.clientes;
+            let clienteSelect = await clientes.find(cliente => parseInt(cliente.rut) === parseInt(clienteRut));
+            this.setState({ sectores: clienteSelect.sectores });
+        } else {
+            console.log("no");
+            await this.setState({ form: { ...this.state.form, clienterut: '' } })
+            await this.setState({ form: { ...this.state.form, sector: '' } })
+            await this.setState({ sectores: '' });
+        }
     }
     eliminaTrabajador = (e) => {
         console.log("elimina");
@@ -381,6 +392,7 @@ export default class CrearRetiro extends Component {
         console.log(this.state.form);
         await Object.entries(this.state.form).map((t, k) => {
             if (t[1] === "" || t[1] === null) {
+                console.log(t + "vacio");
                 campoVacio = true;
             }
         });
@@ -397,14 +409,13 @@ export default class CrearRetiro extends Component {
                 termino: this.state.form.termino,
                 jefe: this.state.form.jefe,
                 trabajadores: this.state.trabajadoresSelect,
-                frecuencia: this.state.frecuenciaArray
             }, { headers: authHeader() })
                 .then(respuesta => {
                     console.log(respuesta);
                     // this.setState({ idUsuario: respuesta.data.id });
                     if (respuesta.data.estado === "success") {
-                        // toast.success(respuesta.data.mensaje, toastoptions);
-                        // historial.push("/residuos/control-retiro/programacion-retiro");
+                        toast.success(respuesta.data.mensaje, toastoptions);
+                        historial.push("/personas/turnos");
                         // this.setState({ showIngresar: true, showOptions: false });
                     } else if (respuesta.data.estado === "warning") {
                         toast.warning(respuesta.data.mensaje, toastoptions);
@@ -484,18 +495,17 @@ export default class CrearRetiro extends Component {
         } else {
             selectread = "selectread"
         }
-
         return (
             <div className="principal" id="component-perfil">
                 <div>
                     <h2 className="amarillo"><button className="boton-vacio" onClick={this.volver}> <Bamarillorev /> </button><span>Turnos</span> / <strong>Detalle turno</strong></h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
-                            <h3 className="amarillo">Cliente * <button onClick={this.showModificar}>lapiz</button></h3>
+                            <h3 className="amarillo">Cliente *  {this.state.estado === 0 && <button onClick={this.showModificar}>lapiz</button>}</h3>
                             <div>
                                 <span>Cliente</span>
                                 <span>
-                                    <select name="clienterut" disabled={this.state.showModificar} onChange={this.onChangeInput} className={`input-generico ${selectread}`} value={this.state.form.clienterut} >
+                                    <select name="clienterut" disabled={this.state.showModificar} onChange={this.onChangeCliente} className={`input-generico ${selectread}`} value={this.state.form.clienterut} >
                                         <option>Seleccionar</option>
                                         {clientes}
                                     </select>
@@ -663,10 +673,12 @@ export default class CrearRetiro extends Component {
 
                             </div>
                             {trabajadoresAsignados}
-                            <div className="form-group buttons">
-                                <button className="boton-generico btazulalt" data-objetivo="FrecuenciaRetiro" onClick={this.volver} >Cancelar</button>
-                                <button className="boton-generico btazul" onClick={this.enviaDatos} type="button" >Guardar</button>
-                            </div>
+                            {!this.state.showModificar &&
+                                <div className="form-group buttons">
+                                    <button className="boton-generico btazulalt" data-objetivo="FrecuenciaRetiro" onClick={this.volver} >Cancelar</button>
+                                    <button className="boton-generico btazul" onClick={this.enviaDatos} type="button" >Guardar</button>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

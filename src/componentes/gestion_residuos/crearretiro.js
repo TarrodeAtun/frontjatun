@@ -422,6 +422,7 @@ export default class CrearRetiro extends Component {
         this.setState({ retiros: retiros });
         this.setState({ DOMretiros: preDOM });
     }
+    
     abrirmodal = () => {
         this.setState({ showFrecuenciaRetiro: true });
     }

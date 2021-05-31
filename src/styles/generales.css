@@ -211,8 +211,17 @@
     height:100%;
     flex-flow: column;
 }
+.between{
+  justify-content: space-between;
+}
 .w100{
   width: 100% !important;
+}
+.w50{
+  width: 50% !important;
+}
+.seccionparalela{
+  width: calc(50% - 10px) !important;
 }
 .wauto{
   width:auto !important;
@@ -428,9 +437,9 @@ padding:0px !important;
       position: absolute;
       top: 0;
       left: 0;
-      height: 100vh;
-      width: 100vw;
-      background:rgba(255,255,255,0.5)
+      height: 100vh !important;
+      width: 100vw !important;
+      background:rgba(255,255,255,0.5) !important
     }
     #modales .modal > div{
       width:auto;
@@ -692,6 +701,9 @@ margin-left:10px;
   .gris{
     color: #707070 !important;
   }
+  .grisclaro{
+    color: #c5c5c5 !important;
+  }
 table{
   width:100%;
 }
@@ -702,6 +714,14 @@ table{
 .txc{
   text-align: center;
 }
+.listado .encabezado{
+padding-left: 30px;
+}
+.listado .encabezado  + table{
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+}
+
   .listado-simple{
     background:#FCFCFC;
     border: 1px solid #E6E6E6;
@@ -719,6 +739,7 @@ table{
     width:max-content;
     padding: 0px;
   }
+  
   .listado-simple .encabezado input{
     font-family: "OSregular";
     width:60%;
@@ -744,11 +765,38 @@ table{
     padding-top: 20px;
     padding-bottom: 20px;
   }
+  .listado-simple .elemento >div{
+    width: 100%;
+    display: block;
+  }
+  .listado-simple .elemento >div:nth-of-type(n+1){
+    margin-top: 15px;
+  }
+
   .listado-simple .elemento span{
     font-family: "OSregular";
     font-size:18px;
     width: 100%;
     display: block;
+  }
+  .listado-simple .elemento span.inline:first-of-type{
+    font-family: "OSregular";
+    font-size:18px;
+    width: 30%;
+    display: inline-block;
+  }
+  .listado-simple .elemento span.inline:last-of-type{
+    font-family: "OSregular";
+    font-size:18px;
+    width: 70%;
+    display: inline-block;
+  }
+  .listado-simple .elemento span.inline-auto{
+    width: auto !important;
+    display: inline-block;
+  }
+  .listado-simple .elemento span.inline-auto input[type="radio"] {
+margin-left: 15px;
   }
   .listado-simple .elemento .acciones{
     justify-content: flex-end;
@@ -763,6 +811,27 @@ table{
     padding-left: 10px;
     padding-right: 10px;
     background:none;
+  }
+  .listado-simple .elemento .respuestas{
+    width: 100%;
+    justify-content: left;
+    flex-basis: 100%;
+  }
+  .listado-simple .elemento .respuestas ul{
+    width: 100%;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0px;
+  }
+  .listado-simple .elemento .respuestas ul li{
+    display: flex;
+    margin-right: 25px;
+    align-items: center;
+  }
+  .listado-simple .elemento .respuestas ul li input{
+    margin-right: 5px;
+
   }
   .acciones span{
     width:auto !important;
@@ -1042,6 +1111,11 @@ background: white;
   font-size: 18px;
   font-family: "OSsemibold";
 }
+.calendario .encabezado {
+  padding-top:10px;
+  padding-bottom:10px;
+}
+
 .grilla .filas tr , .grilla .filas td{
   height: 35px;
 }
@@ -1141,7 +1215,8 @@ padding-bottom: 10px;
 
 }
 .seccion .filtros select{
-  width:40%;
+  width: 25%;
+  margin-right: 10px;
 }
 .seccion .filtros .buttons-space{
 margin-left: auto;;
@@ -1153,6 +1228,15 @@ margin-left: auto;;
 .seccion .listado-simple.tabla{
   padding: 0px;
   border-radius: 0px;
+}
+.seccion .encabezado a{
+  width: auto;
+  margin-left: 25px;
+    margin-top: 18px;
+    margin-bottom: 18px;
+    color:#707070;
+    font-size: 18px;
+    font-family: "OSsemibold";
 }
 .retiros .finalizado{
   color:#1880C3 !important;
@@ -1227,7 +1311,7 @@ margin-right: 5px;
 }
 .fechaProgra{
   margin-left: auto;
-  height: 30px;
+  height: 40px;
   margin-right: 20px;
 }
 .flex{
@@ -1235,4 +1319,150 @@ margin-right: 5px;
   flex-wrap: wrap;
   align-content: center;;
   align-items: center;
+}
+.QRbox{
+  padding: 15px;
+  background:white;
+  border-radius: 10px;
+  display: grid;
+}
+.QRbox svg{
+  margin:auto;
+  border-radius: 10px;
+}
+.QRbox h3{
+  color:#4B4B4B;
+  font-size:18px !important;
+}
+.lecturaQR{
+  border-radius: 20px;
+  font-size: 18px;;
+  padding:10px 25px;
+}
+.turnoFinalizado{
+  background:#D4EAD3 !important;
+}
+.turnoFinalizado td{
+  color:#46875F !important;
+}
+.turnoEncurso{
+  background:#f6e4c9 !important;
+}
+.turnoEncurso td{
+  color:#e39b33 !important;
+}
+.circulogris{
+  width:20px !important;
+  height:20px !important;
+  background:#C8C8C8;
+  border-radius: 20px;
+  margin: auto;
+  display: block;
+}
+.block{
+  display:block !important;
+}
+.indicadores-desempeño >div span:first-of-type{
+  width:80%;
+}
+.seccion .indicadores{
+  width:50%;
+  box-shadow: none !important;
+  border:none !important;
+  display:flex;
+}
+.seccion .indicadores div:first-of-type{
+width:40%;
+}
+.seccion .indicadores div:last-of-type{
+width:60%;
+}
+.seccion .indicadores ul{
+list-style: none;
+padding-left: 5px;
+}
+.btcabecera{
+  font-size: 20px;
+  color:#707070;
+  font-family: "OSsemibold";
+  background:none;
+
+}
+.btcabecera svg{
+  margin-right: 10px;
+}
+.seccion .indicadores ul li:nth-of-type(1){ font-size:18px; color:#4B4B4B; font-family:"OSbold"}
+.seccion .indicadores ul li:nth-of-type(2){ font-size:18px; color:#1880C3; font-family:"OSregular"}
+.seccion .indicadores ul li:nth-of-type(3){ font-size:16px; color:#707070; font-family:"OSregular"}
+.seccion .indicadores ul li:nth-of-type(4){ font-size:16px; color:#707070; font-family:"OSregular"}
+
+
+.menu-lista-dashboard .encabezado{
+  display:flex;
+  flex-wrap:wrap;
+}
+.menu-lista-dashboard .encabezado .fotoperfil{
+  padding: 15px;
+  padding-left: 30px;
+  box-shadow: none;
+  width: auto;
+  
+}
+.menu-lista-dashboard .encabezado .fotoperfil img{
+  width: 70px;
+    height: 70px;
+}
+
+.menu-lista-dashboard .encabezado .datosPersonales{
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+}
+.menu-lista-dashboard .encabezado .datosPersonales h3{
+  padding-left: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.menu-lista-dashboard .encabezado .datosPersonales h3 span{
+  padding-left: 10px;
+    display: block;
+    width: max-content;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.menu-lista-dashboard .encabezado .datosPersonales h3 span:last-of-type{
+font-family: "OSregular";
+}
+.paginador{
+display:flex;
+flex-wrap: wrap;
+align-content: center;
+justify-content: center;
+}
+.paginador li{
+  list-style: none;
+  margin-left: 5px;
+  margin-right: 5px;
+font-size:14px;
+width:22px;
+height:22px;
+text-align: center;
+font-family: "OSsemibold";
+display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    cursor:pointer;
+}
+.paginador li.activo{
+  background:#E39B33;
+  border-radius:50%;
+  color:white;
+  font-family: "OSbold";
+  cursor:default;
 }

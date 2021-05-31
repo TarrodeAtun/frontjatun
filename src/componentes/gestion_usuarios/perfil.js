@@ -415,7 +415,7 @@ export default class Perfil extends Component {
                         </div>
                         <div>
                             <img src={turnos} />
-                            <Link>Turnos</Link>
+                            <Link to={`/personas/turnos/trabajador/${this.state.idUsuario}`}>Turnos</Link>
                         </div>
                     </div>
 

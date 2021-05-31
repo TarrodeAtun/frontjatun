@@ -47,8 +47,8 @@ export default class navegador extends Component {
                         <li><Link to="/residuos/gestion">Gestión de Residuos</Link></li>
                         <hr></hr>
                         <li><label className="bold">Bienestar</label></li>
-                        <li><Link to="/encuestas">Encuestas</Link></li>
-                        <li><Link to="/soporte">Mensajes / soporte Técnico</Link></li>
+                        <li><Link to="/bienestar/encuestas">Encuestas</Link></li>
+                        <li><Link to="/bienestar/soporte">Mensajes / soporte Técnico</Link></li>
                         <hr></hr>
                         <li><Link to="/">Cambiar Perfil</Link></li>
                         <hr></hr>

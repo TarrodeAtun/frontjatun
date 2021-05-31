@@ -57,14 +57,24 @@ import EquipoTrabajador from './componentes/gestion_usuarios/equipoTrabajador';
 import ContractualTrabajador from './componentes/gestion_usuarios/contractualTrabajador';
 import PrevisionTrabajador from './componentes/gestion_usuarios/previsionTrabajador';
 import HojaDeVida from './componentes/gestion_usuarios/hojadevida';
+import RegistrosGraficos from './componentes/gestion_usuarios/registrosgraficos';
+import IndicadoresTrabajador from './componentes/gestion_usuarios/indicadoresdesempeño';
+
 import CrearCapacitacion from './componentes/gestion_usuarios/hojadevida/crearCapacitacion';
 import ModificarCapacitacion from './componentes/gestion_usuarios/hojadevida/modificarCapacitacion';
 import CrearAmonestacion from './componentes/gestion_usuarios/hojadevida/crearAmonestacion';
 import ModificarAmonestacion from './componentes/gestion_usuarios/hojadevida/modificarAmonestacion';
 import Asistencias from './componentes/gestion_usuarios/asistencias';
+import ControlAsistencia from './componentes/gestion_usuarios/asistencias/control';
+import ControlAsistenciaTurno from './componentes/gestion_usuarios/asistencias/controlTurno';
+import AsistenciasTrabajador from './componentes/gestion_usuarios/asistencias/control';
 import Turnos from './componentes/gestion_usuarios/turnos';
+import TurnosTrabajador from './componentes/gestion_usuarios/turnosTrabajador';
+import TurnosHistorialTrabajador from './componentes/gestion_usuarios/historialTurnos';
 import CrearTurno from './componentes/gestion_usuarios/crearturnos';
 import DetalleTurno from './componentes/gestion_usuarios/detalleturno';
+import DetalleAsistencia from './componentes/gestion_usuarios/asistencias/detalleasistencia';
+import EvaluarTurno from './componentes/gestion_usuarios/asistencias/evaluarturno';
 
 //Bienestar
 import Bienestar from './componentes/bienestar/bienestar';
@@ -79,14 +89,18 @@ import Soporte from './componentes/bienestar/soporte';
 import VerMensajeSoporte from './componentes/bienestar/soporte/verMensaje';
 
 
-import TurnosTrabajador from './componentes/gestion_usuarios/turnos';
 
 //perfil personal
 import Perfil from './componentes/perfil/perfil';
 import TurnosPersonal from './componentes/perfil/turnos';
+import TurnosHistorialPersonal from './componentes/perfil/historialTurnos';
 import FichaPersonal from './componentes/perfil/fichaTrabajador';
 import EquipoPersonal from './componentes/perfil/equipoPersonal';
 import ContractualPersonal from './componentes/perfil/contractualPersonal';
+import HojaDeVidaPersonal from './componentes/perfil/hojadevida';
+import PrevisionPersonal from './componentes/perfil/previsionTrabajador';
+import RegistrosGraficosPersonal from './componentes/perfil/registrosgraficos';
+import IndicadoresPersonal from './componentes/perfil/indicadoresdesempeño';
 
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -169,11 +183,20 @@ class App extends React.Component {
                   <RutaPrivada exact path="/personas/ficha-trabajador/hoja-de-vida/modificar-capacitacion/:id" component={ModificarCapacitacion} />
                   <RutaPrivada exact path="/personas/ficha-trabajador/hoja-de-vida/crear-amonestacion/:id" component={CrearAmonestacion} />
                   <RutaPrivada exact path="/personas/ficha-trabajador/hoja-de-vida/modificar-amonestacion/:id" component={ModificarAmonestacion} />
-                  <RutaPrivada exact path="/personas/ficha-trabajador/asistencias:id" component={Asistencias} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/asistencias/:id" component={AsistenciasTrabajador} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/registros-graficos/:id" component={RegistrosGraficos} />
+                  <RutaPrivada exact path="/personas/ficha-trabajador/indicadores-desempeño/:id" component={IndicadoresTrabajador} />
 
+                  <RutaPrivada exact path="/personas/asistencias/" component={Asistencias} />
+                  <RutaPrivada exact path="/personas/asistencias/control-asistencia" component={ControlAsistencia} />
+                  <RutaPrivada exact path="/personas/asistencias/control-asistencia/turno/:id" component={ControlAsistenciaTurno} />
+                  <RutaPrivada exact path="/personas/asistencias/control-asistencia/turno/evaluar/:id" component={EvaluarTurno} />
+                  <RutaPrivada exact path="/personas/asistencias/control-asistencia/turno/detalle/:id" component={DetalleAsistencia} />
 
                   <RutaPrivada exact path="/personas/turnos/detalle/:id" component={DetalleTurno} />
                   <RutaPrivada exact path="/personas/turnos/" component={Turnos} />
+                  <RutaPrivada exact path="/personas/turnos/trabajador/:id" component={TurnosTrabajador} />
+                  <RutaPrivada exact path="/personas/turnos/trabajador/historial/:id" component={TurnosHistorialTrabajador} />
                   <RutaPrivada exact path="/personas/turnos/crear-turno" component={CrearTurno} />
 
 
@@ -182,8 +205,14 @@ class App extends React.Component {
                   <RutaPrivada exact path="/selecciona-perfil" component={Selectperfil} funcion={this.mostrarNavegador} />
                   <RutaPrivada exact path="/perfil/ficha-personal/" component={FichaPersonal} />
                   <RutaPrivada exact path="/perfil/turnos" component={TurnosPersonal} />
+                  <RutaPrivada exact path="/perfil/turnos/historial" component={TurnosHistorialPersonal} />
                   <RutaPrivada exact path="/perfil/ficha-personal/equipo" component={EquipoPersonal} />
                   <RutaPrivada exact path="/perfil/ficha-personal/contractual" component={ContractualPersonal} />
+                  <RutaPrivada exact path="/perfil/ficha-personal/prevision" component={PrevisionPersonal} />
+                  <RutaPrivada exact path="/perfil/ficha-personal/hoja-de-vida" component={HojaDeVidaPersonal} />
+                  <RutaPrivada exact path="/perfil/ficha-personal/registros-graficos" component={RegistrosGraficosPersonal} />
+                  <RutaPrivada exact path="/perfil/ficha-personal/indicadores-desempeño" component={IndicadoresPersonal} />
+
 
 
                   {/*Residuos*/}

@@ -33,6 +33,13 @@ export default class ListarTrabajadores extends Component {
 
         this.state = {
             trabajadores: [],
+
+            centrosCostos: '',
+
+
+            rut: '',
+            centro: '',
+            estado: ''
         };
     }
 
@@ -47,7 +54,7 @@ export default class ListarTrabajadores extends Component {
             [e.target.name]: e.target.value
         })
     }
-     formatearRutListado =  (rutCrudo, dv) => {
+    formatearRutListado = (rutCrudo, dv) => {
         var sRut = new String(rutCrudo);
         var sRutFormateado = '';
         while (sRut.length > 3) {
@@ -71,14 +78,25 @@ export default class ListarTrabajadores extends Component {
             });
     }
 
+
+
     async componentDidMount() {
         await this.obtenerTrabajadores();
+        await this.setState({ centrosCostos: await funciones.obtenerCentrosCostos() });
     }
     async componentWillUnmount() {
 
     }
 
     render() {
+
+        let centrosCostos;
+        if (this.state.centrosCostos) {
+            centrosCostos = this.state.centrosCostos.map(centro => {
+                <option value={centro.key} >{centro.nombre}</option>
+            });
+        }
+
         return (
             <div className="principal" id="component-listar-trabajadores">
                 <div>
@@ -87,7 +105,7 @@ export default class ListarTrabajadores extends Component {
 
                 <div className="panel-dashboard-link">
                     <div className="seccion">
-                            <h3><Link to="/personas/crear-trabajador"><Plus/><span>  Crear Trabajador</span><button><Flechaam/></button></Link></h3>
+                        <h3><Link to="/personas/crear-trabajador"><Plus /><span>  Crear Trabajador</span><button><Flechaam /></button></Link></h3>
                     </div>
                 </div>
                 <div className="filtros">
@@ -97,13 +115,14 @@ export default class ListarTrabajadores extends Component {
                     <div>
                         <form>
                             <div className="form-group justify-center">
-                                <input className="input-generico" placeholder="Nombre o Rut" />
-                                <select className="input-generico">
+                                <input className="input-generico" name="rut" onChange={this.onChangeInput} placeholder="Nombre o Rut" />
+                                <select className="input-generico" name="centro">
                                     <option>Centro de costos</option>
+                                    {centrosCostos}
                                 </select>
-                                <select className="input-generico">
+                                {/* <select className="input-generico">
                                     <option>Estado de contrato</option>
-                                </select>
+                                </select> */}
                             </div>
                             <div className="form-group buttons">
                                 <button className="boton-generico btazul" type="button">Filtrar</button>
@@ -125,12 +144,12 @@ export default class ListarTrabajadores extends Component {
                                     <tr key={usuario._id}>
                                         <td className="columna">
                                             <span>{usuario.nombre}  {usuario.apellido}</span>
-                                            <span>{this.formatearRutListado(usuario.rut,usuario.dv)}</span>
+                                            <span>{this.formatearRutListado(usuario.rut, usuario.dv)}</span>
                                             <span>Contrato Vigente</span>
                                         </td>
                                         <td className="centro">Proyecto 1</td>
                                         <td className="acciones">
-                                            <span className="incompleto">80%</span>
+                                            {/* <span className="incompleto">80%</span> */}
                                             <span><Link to={`/personas/perfil/${usuario._id}`}><Ojo /></Link></span>
                                             <span><Link ><Basurero /></Link></span>
                                             <span><button type="button"><Descarga /></button></span>

@@ -93,9 +93,10 @@ export default class OrdenesRetiro extends Component {
                     <td>{orden.tarjeta}</td>
 
                     <td className="acciones">
+                    <span><Link to={`/residuos/control-retiro/orden-retiro/ver-orden/${orden._id}`}><Ojo /></Link></span>
                         {orden.estado === 0 &&
                             <Fragment>
-                                <span><Link to={`/residuos/control-retiro/orden-retiro/ver-orden/${orden._id}`}><Ojo /></Link></span>
+                                
                                 <span><Link to={`/residuos/control-retiro/orden-retiro/modificar-orden/${orden._id}`}><Edit /></Link></span>
                             </Fragment>
                         }

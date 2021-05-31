@@ -1,9 +1,22 @@
+
+import Axios from '../helpers/axiosconf';
+import { authHeader } from '../helpers/auth-header';
+import { handleResponse } from '../helpers/manejador';
+
 export var funciones = {
     formatearRut,
     quitarFormato,
     getRutFormateado,
     validarEmail,
-    nombreDia
+    nombreDia,
+    paginacion,
+    obtenerClientes,
+    obtenerSectores,
+    obtenerServicios,
+    obtenerTiposTurno,
+    obtenerTrabajadores,
+    obtenerJefesCuadrilla,
+    obtenerCentrosCostos
 
 };
 
@@ -82,9 +95,118 @@ async function validarEmail(valor) {
 }
 
 function nombreDia(fecha) {
+    console.log(fecha);
     var arrayOfWeekdays = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado"]
     var weekdayNumber = fecha.getDay();
     console.log(weekdayNumber);
     var weekdayName = arrayOfWeekdays[weekdayNumber]
     return weekdayName;
+}
+
+
+function paginacion(paginas, paginaActual, trig) {
+    console.log(paginas);
+    let paginacion = [];
+    console.log(paginaActual);
+
+    if (paginas === 1) {
+
+    } else {
+        for (var i = 1; i <= paginas; i++) {
+            if (parseInt(paginaActual) === i) {
+                paginacion.push(<li data-pag={i} className="activo"><span>{i}</span></li>)
+            } else {
+                paginacion.push(<li onClick={trig} data-pag={i}><span>{i}</span></li>)
+            }
+
+        }
+    }
+    return paginacion;
+
+}
+
+async function obtenerClientes() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    await Axios.get('/api/generales/clientes/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            registro = res.data.data
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+function obtenerSectores() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    Axios.get('/api/generales/sectores/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            registro = res.data.data
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+async function obtenerServicios() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    await Axios.get('/api/generales/servicios/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            registro = res.data.data
+
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+function obtenerTiposTurno() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    const res = Axios.get('/api/generales/tiposTurno', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {   //si la peticion es satisfactoria entonces
+            registro = res.data.data
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+function obtenerTrabajadores() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    const res = Axios.get('/api/users/worker/obtenertrabajadores', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            registro = res.data.data
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+function obtenerJefesCuadrilla() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    const res = Axios.get('/api/users/worker/obtenerjefes', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            registro = res.data.data
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+function obtenerCentrosCostos() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    Axios.get('/api/generales/centroscostos/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            registro = res.data.data
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
 }

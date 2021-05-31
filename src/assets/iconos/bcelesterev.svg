@@ -2,7 +2,7 @@
     <defs>
         <style>
             svg.bcelesterev{    vertical-align: middle;}
-            .bcelesterev .a{fill:#d7e9f3;transition:all ease .4s}
+            .bcelesterev .a{fill:#d7e9f3;transition:all ease .4s;stroke:transparent}
             .bcelesterev .b{fill:none;stroke:#1880c3;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;transition:all ease .4s}
             svg.bcelesterev:hover .a{fill:#1880c3;}
             svg.bcelesterev:hover .b{stroke:white;}

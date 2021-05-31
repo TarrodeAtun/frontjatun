@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 
 import '../../styles/fichaTrabajador.css';
 
-import  fichaper  from "../../assets/iconos/fichaper.svg";
-import  turnos  from "../../assets/iconos/turnos.svg";
+import fichaper from "../../assets/iconos/fichaper.svg";
+import turnos from "../../assets/iconos/turnos.svg";
 
 import { ReactComponent as Flechacel } from "../../assets/iconos/flechacel.svg";
 import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
@@ -19,51 +19,51 @@ export default class fichaTrabajador extends Component {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
             users: null,
-            idUsuario:''
+            idUsuario: ''
         };
     }
 
     async componentDidMount() {
         var { id } = this.props.match.params;
-        this.setState({idUsuario:id});
+        this.setState({ idUsuario: id });
     }
 
     render() {
         return (
             <div className="principal menu-lista-dashboard" id="component-fichaTrabajador">
                 <div>
-                    <h2 class="amarillo"><Link to="/personas/listar-trabajadores"> <Bamarillorev/></Link><span>Trabajadores / </span> Ficha Trabajador</h2>
+                    <h2 class="amarillo"><Link to="/personas/listar-trabajadores"> <Bamarillorev /></Link><span>Trabajadores / </span> Ficha Trabajador</h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
-                            <h3><Link to={`/personas/ficha-trabajador/equipo/${this.state.idUsuario}`}> <span>Tallas Equipo</span><button><Flechacel/></button></Link></h3>
+                            <h3><Link to={`/personas/ficha-trabajador/equipo/${this.state.idUsuario}`}> <span>Tallas Equipo</span><button><Flechacel /></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><Link to={`/personas/ficha-trabajador/contractual/${this.state.idUsuario}`}><span>Contractual</span><button><Flechacel/></button> </Link></h3>
+                            <h3><Link to={`/personas/ficha-trabajador/contractual/${this.state.idUsuario}`}><span>Contractual</span><button><Flechacel /></button> </Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><Link to={`/personas/ficha-trabajador/prevision/${this.state.idUsuario}`}><span>Prevision Social</span><button><Flechacel/></button></Link></h3>
+                            <h3><Link to={`/personas/ficha-trabajador/prevision/${this.state.idUsuario}`}><span>Previsión Social</span><button><Flechacel /></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><Link to={`/personas/ficha-trabajador/hoja-de-vida/${this.state.idUsuario}`}><span>Hoja de Vida</span><button><Flechacel/></button></Link></h3>
+                            <h3><Link to={`/personas/ficha-trabajador/hoja-de-vida/${this.state.idUsuario}`}><span>Hoja de Vida</span><button><Flechacel /></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><span>Registros graficos</span><button><Flechacel/></button></h3>
+                            <h3><Link to={`/personas/ficha-trabajador/registros-graficos/${this.state.idUsuario}`}><span>Registros gráficos</span><button><Flechacel /></button></Link></h3>
                         </div>
                         <div className="seccion">
-                            <h3><span>Asistencias</span><button><Flechacel/></button></h3>
+                            <h3><Link to={`/personas/ficha-trabajador/indicadores-desempeño/${this.state.idUsuario}`}><span>Indicadores de Desempeño</span><button><Flechacel /></button></Link></h3>
                         </div>
                     </div>
                 </div>
                 <div className="opciones">
-                        <div>
-                            <img src={fichaper} />
-                            <Link to={`/personas/perfil/${this.state.idUsuario}`}>Volver al Perfil</Link>
-                        </div>
-                        <div>
-                            <img src={turnos} />
-                            <Link >Turnos</Link>
-                        </div>
+                    <div>
+                        <img src={fichaper} />
+                        <Link to={`/personas/perfil/${this.state.idUsuario}`}>Volver al Perfil</Link>
                     </div>
+                    <div>
+                        <img src={turnos} />
+                        <Link to={`/personas/turnos/trabajador/${this.state.idUsuario}`}>Turnos</Link>
+                    </div>
+                </div>
 
             </div>
         );

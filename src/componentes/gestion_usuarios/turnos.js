@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import { funciones } from '../../servicios/funciones';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 
@@ -16,7 +17,8 @@ import '../../styles/fichaTrabajador.css';
 import fichaper from "../../assets/iconos/fichaper.svg";
 import turnos from "../../assets/iconos/turnos.svg";
 import { ReactComponent as Basurero } from "../../assets/iconos/basurero.svg";
-import { ReactComponent as Ojo } from "../../assets/iconos/ojo.svg";
+import { ReactComponent as Plus } from "../../assets/iconos/plusNaranjo.svg";
+import { ReactComponent as Filtro } from "../../assets/iconos/filtro.svg";
 import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
 import { ReactComponent as Flechaam } from "../../assets/iconos/flechaam.svg";
 import { historial } from "../../helpers/historial";
@@ -29,7 +31,14 @@ export default class GestionResiduos extends Component {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
             users: null,
-            horas: ''
+            horas: '',
+            clientes: '',
+            sectores: '',
+
+            /* valores para filtro */
+            cliente: '',
+            sector: '',
+            fecha: ''
         };
     }
     pad = (num, size) => {
@@ -40,11 +49,11 @@ export default class GestionResiduos extends Component {
 
         return f + " " + l;
     }
-    componentDidMount = () => {
+    componentDidMount = async () => {
         var componente = this;
         var fecha = new Date();
-        console.log(fecha);
-        const res = Axios.get('/api/users/worker/turnos/' + moment(fecha).format('YYYY-MM-DD'), { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        await this.setState({ fecha: fecha });
+        const res = Axios.post('/api/users/worker/turnos/', { fecha: moment(fecha).format('YYYY-MM-DD') }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -55,13 +64,42 @@ export default class GestionResiduos extends Component {
             });
         var node = this.myRef.current;
         this.recalculaEspacios(node);
+        await this.setState({ clientes: await funciones.obtenerClientes() });
     }
-    obtenerRetiros = (e) => {
-
-        var componente = this;
+    changeFecha = async (e) => {
         var fecha = e.target.value;
-        console.log(fecha);
-        const res = Axios.get('/api/users/worker/turnos/' + fecha, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        await this.setState({ fecha: fecha });
+        this.obtenerTurnos();
+    }
+    changeSector = async (e) => {
+        var sector = e.target.value;
+        if (e.target.value) {
+            await this.setState({ sector: sector });
+        }else{
+            this.setState({ sector: '' });
+        }
+    }
+    changeCliente = async (e) => {
+        var clienteRut = e.target.value;
+        if (e.target.value) {
+            await this.setState({ cliente: clienteRut, sector: '' });
+            let clientes = await this.state.clientes;
+            console.log(clientes);
+            console.log(clienteRut);
+            let clienteSelect = await clientes.find(cliente => parseInt(cliente.rut) === parseInt(clienteRut));
+            console.log(clienteSelect);
+            this.setState({ sectores: clienteSelect.sectores });
+        } else {
+            await this.setState({ cliente: '', sector: '' });
+            this.setState({ sectores: '' });
+        }
+
+    }
+    filtrar = () => { this.obtenerTurnos() }
+    limpiaFiltro = () => { this.setState({ sector: '', cliente: '' }) }
+    obtenerTurnos = () => {
+        var componente = this;
+        const res = Axios.post('/api/users/worker/turnos/', { fecha: moment(this.state.fecha).format('YYYY-MM-DD'), cliente: this.state.cliente, sector: this.state.sector }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -77,7 +115,6 @@ export default class GestionResiduos extends Component {
         var columnas;
         var subespacio;
         nodo.classList.add("asd");
-        console.log("recalculando");
         columnas = nodo.children;
         for await (var espacio of columnas) {
             //por cada columna
@@ -134,34 +171,30 @@ export default class GestionResiduos extends Component {
         if (this.state.horas.length !== 0) {
             lunes = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
-                // console.log(hora);
                 if (fech.getDay() === 0) {
-                    console.log(fech.getDay());
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                      <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span>{hora.datosServicio[0].nombre}</span>
+                        <span> {hora.datosSectores[0].nombre}</span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
             });
             martes = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
-                console.log(hora.datosServicio[0].nombre);
                 if (fech.getDay() === 1) {
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                         <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span>{hora.datosServicio[0].nombre}</span>
+                        <span> {hora.datosSectores[0].nombre}</span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
             });
             miercoles = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
-                console.log(hora);
                 if (fech.getDay() === 2) {
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                       <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span>{hora.datosServicio[0].nombre}</span>
+                        <span> {hora.datosSectores[0].nombre}</span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
@@ -169,10 +202,9 @@ export default class GestionResiduos extends Component {
             jueves = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
                 if (fech.getDay() === 3) {
-                    console.log("asd");
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
                         <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span> {hora.datosSectores[0].nombre}</span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
@@ -183,7 +215,7 @@ export default class GestionResiduos extends Component {
                 if (fech.getDay() === 4) {
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
                         <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span> {hora.datosSectores[0].nombre}</span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
@@ -193,23 +225,36 @@ export default class GestionResiduos extends Component {
                 if (fech.getDay() === 5) {
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
                         <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span> {hora.datosSectores[0].nombre}</span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
             });
             domingo = this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
-                console.log(hora);
                 if (fech.getDay() === 6) {
                     return (<div className="prueba" data-id={hora._id} onClick={this.pushDetalle} style={componente.calculaPosicion(hora)}>
-                       <span>{hora.datosServicio[0].nombre}</span>
-                        <span> {hora.datosSectores[0].nombre}</span> 
+                        <span>{hora.datosServicio[0].nombre}</span>
+                        <span> {hora.datosSectores[0].nombre}</span>
                         <span> {hora.inicio} - {hora.termino} </span>
                     </div>)
                 }
             });
-            
+
+        }
+        let clientes;
+        if (this.state.clientes) {
+            console.log(this.state.clientes);
+            clientes = this.state.clientes.map((cliente, index) => {
+                return (<option value={cliente.rut} data-rut={cliente.rut}>{cliente.nombre}</option>)
+            });
+        }
+        let sectores;
+        if (this.state.sectores) {
+            console.log(this.state.sectores);
+            sectores = this.state.sectores.map((sector, index) => {
+                return (<option value={sector.key}>{sector.nombre}</option>)
+            });
         }
 
         return (
@@ -223,20 +268,22 @@ export default class GestionResiduos extends Component {
                         <div className="seccion">
                             <div className="filtros">
                                 <div className="sup">
-                                    <button>Filtros</button>
+                                    <button className="btcabecera"><Filtro />Filtros</button>
                                 </div>
                                 <div>
                                     <form>
                                         <div className="form-group ">
-                                            <select className="input-generico">
-                                                <option>Todos los Sectores</option>
+                                            <select className="input-generico" value={this.state.cliente} onChange={this.changeCliente}>
+                                                <option value="">Todos los clientes</option>
+                                                {clientes}
                                             </select>
-                                            <select className="input-generico">
-                                                <option>Todos los clientes</option>
+                                            <select className="input-generico" value={this.state.sector} onChange={this.changeSector}>
+                                                <option value="">Todos los Sectores</option>
+                                                {sectores}
                                             </select>
                                             <div className="buttons-space">
-                                                <button className="boton-generico btazul" type="button">Filtrar</button>
-                                                <button className="boton-generico btblanco" type="button">Limpiar</button>
+                                                <button className="boton-generico btazul" type="button" onClick={this.filtrar}>Filtrar</button>
+                                                <button className="boton-generico btblanco" type="button" onClick={this.limpiaFiltro}>Limpiar</button>
                                             </div>
                                         </div>
                                     </form>
@@ -245,8 +292,9 @@ export default class GestionResiduos extends Component {
                         </div>
                         <div className="seccion calendario">
                             <div className="encabezado flex">
-                                <Link to="/personas/turnos/crear-turno">+ Agregar Turno</Link>
-                                <input className="fechaProgra" onChange={this.obtenerRetiros} type="date"></input>
+                                <Link to="/personas/turnos/crear-turno"><Plus /> Agregar Turno</Link>
+                                <input className="fechaProgra input-generico" onChange={this.changeFecha} type="date"></input>
+
                             </div>
                             <div className="grilla">
                                 <table className="fondo encabezado" >
