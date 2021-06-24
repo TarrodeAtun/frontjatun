@@ -54,6 +54,7 @@ export default class login extends Component {
         e.preventDefault();
         var respuesta = await autenticacion.login(this.state.rut, this.state.password);
         if (respuesta) {
+            console.log(respuesta);
             await this.setState({ mensaje: respuesta, errorForm: 'incorrecto', password: '', });
             this.resetMensaje();
         } else {

@@ -147,6 +147,7 @@ class App extends React.Component {
         this.mostrarNavegador();
       }
     }
+    console.log(this.state.currentUser.data);
   }
 
   render() {
