@@ -52,6 +52,7 @@ export default class SoporteLogin extends Component {
     onSubmit = async e => {
         e.preventDefault();
         var campoVacio = false;
+        let componente = this;
         await Object.entries(this.state.form).map((t, k) => {
             if (t[1] === "" || t[1] === null) {
                 campoVacio = true;
@@ -67,6 +68,7 @@ export default class SoporteLogin extends Component {
             })
                 .then(res => {
                    toast.success("Mensaje enviado satisfactoriamente", toastoptions);
+                   componente.props.closeModal();
                 })
                 .catch(err => {
                     console.log(err);

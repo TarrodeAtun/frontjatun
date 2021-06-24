@@ -731,6 +731,7 @@ padding-left: 30px;
   .listado-simple .encabezado{
    display:flex;
    flex-wrap: wrap;
+   align-items: center;
    padding-left: 32px;
    padding-right: 32px;
   }
@@ -1465,4 +1466,30 @@ display: flex;
   color:white;
   font-family: "OSbold";
   cursor:default;
+}
+.calendario-reemplazo{
+  display:flex;
+flex-wrap: wrap;
+justify-content: center;
+}
+.rmdp-shadow{
+  box-shadow:none !important;
+}
+.rmdp-wrapper{
+  background:#fcfcfc !important;
+}
+.rmdp-day:not(.rmdp-disabled):not(.rmdp-day-hidden) span{
+  background:#039DE3;
+  color:white;
+  border-radius: 50%;
+}
+.rmdp-selected span{
+  background:#67B963 !important;
+}
+/* .form-fix{
+jus
+} */
+.form-fix > select, .form-fix > input{
+width:31% !important;
+/* margin: 0px !important; */
 }

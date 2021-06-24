@@ -224,7 +224,7 @@ export default class GestionResiduos extends Component {
                                 <h3><Link to="/perfil/turnos/historial"><span>Historial de turnos</span><button><Flechaam /></button></Link></h3>
                             </div>
                             <div className="seccion seccionparalela">
-                                <h3><Link to="/personas/listar-trabajadores"><span>Solicitudes de reemplazo</span><button><Flechaam /></button></Link></h3>
+                                <h3><Link to="/perfil/turnos/mis-solicitudes"><span>Solicitudes de reemplazo</span><button><Flechaam /></button></Link></h3>
                             </div>
                         </div>
                         <div className="seccion calendario">

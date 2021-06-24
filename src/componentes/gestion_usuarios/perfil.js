@@ -142,6 +142,11 @@ export default class Perfil extends Component {
             }
         });
     }
+    cancelar = async e => {
+        this.setState({showModificar:false});
+        toast.warning("Operacion cancelada, se han retornado los datos originales", toastoptions);
+        this.cargarDatos();
+    }
     actualizaDatos = async e => {
         const { id } = this.props.match.params;
         e.preventDefault();
@@ -319,14 +324,14 @@ export default class Perfil extends Component {
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Administrador</option>
                                             <option value="2">Jefe Cuadrilla</option>
-                                            <option value="3">Operario</option>
+                                            <option value="3">operador</option>
                                         </select>
                                     </span>
                                     :
                                     <span>
-                                        {this.state.form.formPerfil1 === "1" && 'Administrador'}
-                                        {this.state.form.formPerfil1 === "2" && 'Jefe Cuadrilla'}
-                                        {this.state.form.formPerfil1 === "3" && 'Operario'}
+                                        {this.state.form.formPerfil1 === 1 && 'Administrador'}
+                                        {this.state.form.formPerfil1 === 2 && 'Jefe Cuadrilla'}
+                                        {this.state.form.formPerfil1 === 3 && 'Operador'}
                                     </span>
 
                                 }
@@ -338,14 +343,14 @@ export default class Perfil extends Component {
                                         <select name="formCargo" onChange={this.onChangeInput} value={this.state.form.formCargo} className="input-generico">
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Jefe Cuadrilla</option>
-                                            <option value="2">Operario</option>
+                                            <option value="2">Operador</option>
                                         </select>
                                     </span>
                                     :
                                     <span>
-                                        {this.state.form.formPerfil2 === "1" && 'Administrador'}
-                                        {this.state.form.formPerfil2 === "2" && 'Jefe Cuadrilla'}
-                                        {this.state.form.formPerfil2 === "3" && 'Operario'}
+                                        {this.state.form.formPerfil2 === 1 && 'Administrador'}
+                                        {this.state.form.formPerfil2 === 2 && 'Jefe Cuadrilla'}
+                                        {this.state.form.formPerfil2 === 3 && 'Operador'}
                                     </span>
                                 }
                             </div>
@@ -359,13 +364,13 @@ export default class Perfil extends Component {
                                         <select name="formCargo" onChange={this.onChangeInput} value={this.state.form.formCargo} className="input-generico">
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Jefe Cuadrilla</option>
-                                            <option value="2">Operario</option>
+                                            <option value="2">Operador</option>
                                         </select>
                                     </span>
                                     :
                                     <span>
-                                        {this.state.form.formCargo === "1" && 'Jefe Cuadrilla'}
-                                        {this.state.form.formCargo === "2" && 'Operario'}
+                                        {this.state.form.formCargo === 1 && 'Jefe Cuadrilla'}
+                                        {this.state.form.formCargo === 2 && 'Operador'}
                                     </span>
                                 }
                             </div>
@@ -403,7 +408,7 @@ export default class Perfil extends Component {
                         {this.state.showModificar &&
                             <div className="form-group buttons">
                                 <button className="boton-generico btazul" onClick={this.actualizaDatos}>Guardar</button>
-                                <button className="boton-generico btgris" type="button">Cancelar</button>
+                                <button className="boton-generico btgris" onClick={this.cancelar} type="button">Cancelar</button>
                             </div>
                         }
                     </div>

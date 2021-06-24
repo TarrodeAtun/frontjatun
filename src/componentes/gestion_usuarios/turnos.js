@@ -59,12 +59,14 @@ export default class GestionResiduos extends Component {
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                console.log(err);
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 return;
             });
         var node = this.myRef.current;
         this.recalculaEspacios(node);
         await this.setState({ clientes: await funciones.obtenerClientes() });
+        // funciones.obtenerClientes(this);
     }
     changeFecha = async (e) => {
         var fecha = e.target.value;
@@ -105,6 +107,7 @@ export default class GestionResiduos extends Component {
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                console.log(err);
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 return;
             });
@@ -263,7 +266,7 @@ export default class GestionResiduos extends Component {
                     <h2 className="amarillo"><Link to="/personas/gestion"> <Bamarillorev /></Link><span className="amarillo"> Gestión de personas</span> / <strong>Turnos</strong></h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
-                            <h3><Link to="/personas/listar-trabajadores"><span>Solicitudes de reemplazo</span><button><Flechaam /></button></Link></h3>
+                            <h3><Link to="/personas/turnos/solicitudes"><span>Solicitudes de reemplazo</span><button><Flechaam /></button></Link></h3>
                         </div>
                         <div className="seccion">
                             <div className="filtros">

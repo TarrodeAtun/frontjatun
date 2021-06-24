@@ -103,7 +103,7 @@ export default class ListarTrabajadores extends Component {
                 </tr>)
             })
         } else {
-            <tr><td colSpan="3">No hay turnos registrados para esta fecha</td></tr>
+            registros = <tr><td colSpan="3">No hay turnos registrados para esta fecha</td></tr>
         }
 
         return (

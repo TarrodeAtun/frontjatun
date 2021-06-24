@@ -25,7 +25,6 @@ async function formatearRut(rutCrudo, dv) {
     var sRutFormateado = '';
     sRut = quitarFormato(sRut);
     if (dv) {
-        console.log(":D");
         var sDV = sRut.charAt(sRut.length - 1);
         sRut = sRut.substring(0, sRut.length - 1);
     }
@@ -33,7 +32,6 @@ async function formatearRut(rutCrudo, dv) {
         sRutFormateado = "." + sRut.substr(sRut.length - 3) + sRutFormateado;
         sRut = sRut.substring(0, sRut.length - 3);
     }
-    console.log(sDV);
     sRutFormateado = sRut + sRutFormateado;
     if (sRutFormateado != "" && dv) {
         sRutFormateado += "-" + sDV;
@@ -95,19 +93,15 @@ async function validarEmail(valor) {
 }
 
 function nombreDia(fecha) {
-    console.log(fecha);
     var arrayOfWeekdays = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado"]
     var weekdayNumber = fecha.getDay();
-    console.log(weekdayNumber);
     var weekdayName = arrayOfWeekdays[weekdayNumber]
     return weekdayName;
 }
 
 
 function paginacion(paginas, paginaActual, trig) {
-    console.log(paginas);
     let paginacion = [];
-    console.log(paginaActual);
 
     if (paginas === 1) {
 
@@ -129,7 +123,9 @@ async function obtenerClientes() { //genera una peticion get por axios a la api 
     let registro;
     await Axios.get('/api/generales/clientes/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
+            if (res.data.data.length > 0) {
             registro = res.data.data
+            }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
             handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -141,7 +137,9 @@ function obtenerSectores() { //genera una peticion get por axios a la api de usu
     let registro;
     Axios.get('/api/generales/sectores/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
+            if (res.data.data.length > 0) {
             registro = res.data.data
+            }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
             handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -153,7 +151,9 @@ async function obtenerServicios() { //genera una peticion get por axios a la api
     let registro;
     await Axios.get('/api/generales/servicios/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
+            if (res.data.data.length > 0) {
             registro = res.data.data
+            }
 
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -166,7 +166,9 @@ function obtenerTiposTurno() { //genera una peticion get por axios a la api de u
     let registro;
     const res = Axios.get('/api/generales/tiposTurno', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {   //si la peticion es satisfactoria entonces
+            if (res.data.data.length > 0) {
             registro = res.data.data
+            }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
             handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -178,7 +180,9 @@ function obtenerTrabajadores() { //genera una peticion get por axios a la api de
     let registro;
     const res = Axios.get('/api/users/worker/obtenertrabajadores', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
+            if (res.data.data.length > 0) {
             registro = res.data.data
+            }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
             handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -190,7 +194,9 @@ function obtenerJefesCuadrilla() { //genera una peticion get por axios a la api 
     let registro;
     const res = Axios.get('/api/users/worker/obtenerjefes', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
+            if (res.data.data.length > 0) {
             registro = res.data.data
+            }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
             handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -202,7 +208,9 @@ function obtenerCentrosCostos() { //genera una peticion get por axios a la api d
     let registro;
     Axios.get('/api/generales/centroscostos/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
+            if (res.data.data.length > 0) {
             registro = res.data.data
+            }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
             handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente

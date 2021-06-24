@@ -45,7 +45,7 @@ export default class ListarTrabajadores extends Component {
             registros: [],
             pagina: 1,
             paginas: '',
-
+            estado : 3
         };
     }
 
@@ -69,7 +69,7 @@ export default class ListarTrabajadores extends Component {
     listadoTurnos = async () => {
         var componente = this;
         var rut = autenticacion.currentUserValue.data.usuariobd.rut;
-        const res = Axios.post('/api/users/worker/turnos/general', { rut: rut, pagina: this.state.pagina }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/users/worker/turnos/general', { rut: rut, pagina: this.state.pagina, estado:this.state.estado  }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ registros: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -112,13 +112,16 @@ export default class ListarTrabajadores extends Component {
         if (this.state.registros.length > 0) {
             registros = this.state.registros.map(registro => {
                 var url = '';
-                registro.imagen.forEach(archivo => {
-                    if (archivo.input === "fotoGrupal") {
-                        url = archivo.url;
-                    }
-                });
+                if (registro.imagen) {
+                    registro.imagen.forEach(archivo => {
+                        if (archivo.input === "fotoGrupal") {
+                            url = archivo.url;
+                        }
+                    });
+                }
                 const resultado = registro.trabajadores.find(trabajador => trabajador.rut === autenticacion.currentUserValue.data.usuariobd.rut);
                 var estado = resultado.estado;
+                console.log(estado);
                 return (<tr>
                     <td className="columna">
                         <span>{moment(registro.fecha).utc().format("DD/MM/YYYY")}</span>
@@ -126,11 +129,12 @@ export default class ListarTrabajadores extends Component {
 
                     </td>
                     <td className="columna">
-                        <span>{registro.datosServicio.nombre}</span>
-                        <span>{registro.datosSectores.nombre}</span>
+                        <span>{registro.datosServicio[0].nombre}</span>
+                        <span>{registro.datosSectores[0].nombre}</span>
                     </td>
                     <td className="columna">
                         <span>
+                            {/* {estado === 0 && "Pendiente"} */}
                             {estado === 1 && "Asiste"}
                             {estado === 2 && "Atrasado"}
                             {estado === 3 && "Falta"}
@@ -144,7 +148,7 @@ export default class ListarTrabajadores extends Component {
                 </tr>)
             })
         } else {
-            <tr><td colSpan="3">No hay turnos registrados para esta fecha</td></tr>
+            registros = <tr><td colSpan="4">No hay turnos registrados</td></tr>
         }
         let paginacion = funciones.paginacion(this.state.paginas, this.state.pagina, this.paginar);
 

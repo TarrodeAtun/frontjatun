@@ -244,6 +244,9 @@ export default class GestionResiduos extends Component {
                         <div className="seccion">
                             <h3><Link to={`/personas/turnos/trabajador/historial/${this.state.datosUsuario._id}`}><span>Historial de turnos</span><button><Flechaam /></button></Link></h3>
                         </div>
+                        <div className="seccion">
+                            <h3><Link to={`/personas/turnos/trabajador/solicitudes/${this.state.datosUsuario.rut}`}><span>Solicitudes Reemplazo</span><button><Flechaam /></button></Link></h3>
+                        </div>
                         <div className="seccion calendario">
                             <div className="encabezado flex">
                                 <h3>asdsda</h3>

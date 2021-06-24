@@ -68,6 +68,11 @@ import Asistencias from './componentes/gestion_usuarios/asistencias';
 import ControlAsistencia from './componentes/gestion_usuarios/asistencias/control';
 import ControlAsistenciaTurno from './componentes/gestion_usuarios/asistencias/controlTurno';
 import AsistenciasTrabajador from './componentes/gestion_usuarios/asistencias/control';
+import EmergenciasAsistencia from './componentes/gestion_usuarios/asistencias/listaEmergencias';
+import CrearAsistenciaEmergencia from './componentes/gestion_usuarios/asistencias/crearEmergencia';
+import DetalleAsistenciaEmergencia from './componentes/gestion_usuarios/asistencias/detalleEmergencia';
+
+
 import Turnos from './componentes/gestion_usuarios/turnos';
 import TurnosTrabajador from './componentes/gestion_usuarios/turnosTrabajador';
 import TurnosHistorialTrabajador from './componentes/gestion_usuarios/historialTurnos';
@@ -75,6 +80,8 @@ import CrearTurno from './componentes/gestion_usuarios/crearturnos';
 import DetalleTurno from './componentes/gestion_usuarios/detalleturno';
 import DetalleAsistencia from './componentes/gestion_usuarios/asistencias/detalleasistencia';
 import EvaluarTurno from './componentes/gestion_usuarios/asistencias/evaluarturno';
+import Solicitudes from './componentes/gestion_usuarios/solicitudesReemplazo';
+import SolicitudesTrabajador from './componentes/gestion_usuarios/solicitudesReemplazoTrabajador';
 
 //Bienestar
 import Bienestar from './componentes/bienestar/bienestar';
@@ -101,6 +108,8 @@ import HojaDeVidaPersonal from './componentes/perfil/hojadevida';
 import PrevisionPersonal from './componentes/perfil/previsionTrabajador';
 import RegistrosGraficosPersonal from './componentes/perfil/registrosgraficos';
 import IndicadoresPersonal from './componentes/perfil/indicadoresdesempeño';
+import Missolicitudes from './componentes/perfil/missolicitudes';
+import CrearSolicitud from './componentes/perfil/crearSolicitud';
 
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -192,12 +201,18 @@ class App extends React.Component {
                   <RutaPrivada exact path="/personas/asistencias/control-asistencia/turno/:id" component={ControlAsistenciaTurno} />
                   <RutaPrivada exact path="/personas/asistencias/control-asistencia/turno/evaluar/:id" component={EvaluarTurno} />
                   <RutaPrivada exact path="/personas/asistencias/control-asistencia/turno/detalle/:id" component={DetalleAsistencia} />
+                  <RutaPrivada exact path="/personas/asistencias/emergencias/" component={EmergenciasAsistencia} />
+                  <RutaPrivada exact path="/personas/asistencias/emergencias/agregar" component={CrearAsistenciaEmergencia} />
+                  <RutaPrivada exact path="/personas/asistencias/emergencias/detalle/:id" component={DetalleAsistenciaEmergencia} />
 
                   <RutaPrivada exact path="/personas/turnos/detalle/:id" component={DetalleTurno} />
                   <RutaPrivada exact path="/personas/turnos/" component={Turnos} />
                   <RutaPrivada exact path="/personas/turnos/trabajador/:id" component={TurnosTrabajador} />
                   <RutaPrivada exact path="/personas/turnos/trabajador/historial/:id" component={TurnosHistorialTrabajador} />
                   <RutaPrivada exact path="/personas/turnos/crear-turno" component={CrearTurno} />
+                  <RutaPrivada exact path="/personas/turnos/solicitudes" component={Solicitudes} />
+                  <RutaPrivada exact path="/personas/turnos/trabajador/solicitudes/:rut" component={SolicitudesTrabajador} />
+                  
 
 
                   {/*Perfil */}
@@ -212,6 +227,8 @@ class App extends React.Component {
                   <RutaPrivada exact path="/perfil/ficha-personal/hoja-de-vida" component={HojaDeVidaPersonal} />
                   <RutaPrivada exact path="/perfil/ficha-personal/registros-graficos" component={RegistrosGraficosPersonal} />
                   <RutaPrivada exact path="/perfil/ficha-personal/indicadores-desempeño" component={IndicadoresPersonal} />
+                  <RutaPrivada exact path="/perfil/turnos/mis-solicitudes" component={Missolicitudes} />
+                  <RutaPrivada exact path="/perfil/turnos/mis-solicitudes/solicitar" component={CrearSolicitud} />
 
 
 

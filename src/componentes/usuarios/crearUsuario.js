@@ -295,7 +295,7 @@ export default class CrearUsuario extends Component {
                                     <span>
                                         {this.state.form.formPerfil1 === "1" && 'Administrador'}
                                         {this.state.form.formPerfil1 === "2" && 'Jefe Cuadrilla'}
-                                        {this.state.form.formPerfil1 === "3" && 'Operario'}
+                                        {this.state.form.formPerfil1 === "3" && 'Operador'}
                                     </span>
                                     :
                                     <span>
@@ -303,7 +303,7 @@ export default class CrearUsuario extends Component {
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Administrador</option>
                                             <option value="2">Jefe Cuadrilla</option>
-                                            <option value="3">Operario</option>
+                                            <option value="3">Operador</option>
                                         </select>
                                     </span>
                                 }
@@ -315,7 +315,7 @@ export default class CrearUsuario extends Component {
                                     <span>
                                         {this.state.form.formPerfil2 === "1" && 'Administrador'}
                                         {this.state.form.formPerfil2 === "2" && 'Jefe Cuadrilla'}
-                                        {this.state.form.formPerfil2 === "3" && 'Operario'}
+                                        {this.state.form.formPerfil2 === "3" && 'Operador'}
                                     </span>
                                     :
                                     <span>
@@ -323,7 +323,7 @@ export default class CrearUsuario extends Component {
                                             <option>Seleccione un perfil</option>
                                             <option value="1" >Administrador</option>
                                             <option value="2" >Jefe Cuadrilla</option>
-                                            <option value="3" >Operario</option>
+                                            <option value="3" >Operador</option>
                                         </select>
                                     </span>
                                 }
@@ -336,13 +336,13 @@ export default class CrearUsuario extends Component {
                                 {this.state.showIngresar
                                     ? <span>
                                         {this.state.form.formCargo === "1" && 'Jefe Cuadrilla'}
-                                        {this.state.form.formCargo === "2" && 'Operario'}
+                                        {this.state.form.formCargo === "2" && 'Operador'}
                                     </span>
                                     : <span>
                                         <select name="formCargo" onChange={this.onChangeInput} value={this.state.form.formCargo} className="input-generico">
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Jefe Cuadrilla</option>
-                                            <option value="2">Operario</option>
+                                            <option value="2">Operador</option>
                                         </select>
                                     </span>
                                 }

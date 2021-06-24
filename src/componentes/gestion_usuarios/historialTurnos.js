@@ -72,7 +72,7 @@ export default class ListarTrabajadores extends Component {
     listadoTurnos = async () => {
         var componente = this;
         var rut = this.state.datosUsuario.rut;
-        const res = Axios.post('/api/users/worker/turnos/general', { rut: rut, pagina: this.state.pagina }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/users/worker/turnos/general', { rut: rut, pagina: this.state.pagina, estado:3 }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ registros: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)

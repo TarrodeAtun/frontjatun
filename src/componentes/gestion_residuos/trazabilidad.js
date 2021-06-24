@@ -53,7 +53,7 @@ export default class Trazabilidad extends Component {
     render() {
 
         let items;
-        if (this.state.ordenes) {
+        if (this.state.ordenes.length > 0) {
             console.log(this.state.ordenes);
             items = this.state.ordenes.map((orden, index) =>
                 <tr className="">
@@ -101,6 +101,8 @@ export default class Trazabilidad extends Component {
                     </td>
                 </tr>
             )
+        }else{
+            items = <tr><td colSpan="7">No hay registros actualmente</td></tr>
         }
 
 

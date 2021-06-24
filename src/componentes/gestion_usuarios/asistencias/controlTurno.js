@@ -174,10 +174,12 @@ export default class ListarTrabajadores extends Component {
                                     headers: authHeader()
                                 })
                                     .then(res => {
+                                        console.log(res);
                                         if (res.data.estado === "success") {
-                                            componente.setState({ turnos: { ...this.state.turnos, estado: res.data.data.estado }, trabajadores: res.data.data.trabajadores })
+                                            componente.setState({ turnos: { ...this.state.turnos, estado: 1 } })
                                             toast.success(res.data.mensaje, toastoptions);
                                             onClose();
+                                            window.location.reload();
                                         }
                                     })
                                     .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -293,7 +295,7 @@ export default class ListarTrabajadores extends Component {
                 </div>
                 <div className="panel-dashboard-link">
                     <div className="seccion">
-                        <h3><span> {(this.state.turnos.fecha) ? funciones.nombreDia(fecha) : ""} {moment(this.state.turnos.fecha).format("DD - MM - YYYY")}</span><button onClick={this.iniciarTurno}><span className="flex"><Plus /> Iniciar Turno</span></button></h3>
+                        <h3><span> {(this.state.turnos.fecha) ? funciones.nombreDia(fecha) : ""} {moment(this.state.turnos.fecha).format("DD - MM - YYYY")}</span></h3>
                     </div>
                 </div>
                 <div className="listado">

@@ -8,6 +8,7 @@ import { handleResponse } from '../../helpers/manejador';
 import { historial } from '../../helpers/historial';
 import { funciones } from '../../servicios/funciones';
 import { toast } from 'react-toastify';
+import { confirmAlert } from 'react-confirm-alert';
 
 // importaciones de iconos 
 import imagen from "../../assets/persona.svg";
@@ -129,6 +130,25 @@ export default class EquipoTrabajador extends Component {
                 return;
             });
             await console.log(this.state.cedula);
+    }
+    retorno = () => {
+        var componente = this;
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-confirm '>
+                        <p>¿Quieres guardar antes de salir?</p>
+                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
+                        <button className="boton-generico btazul" onClick={function () { componente.pushLista(); onClose(); }}>No guardar</button>
+                        <button className="boton-generico btazul"
+                            onClick={componente.enviaDatos}
+                        >
+                            Aceptar
+                    </button>
+                    </div>
+                );
+            }
+        });
     }
     onChangeInput = (e) => {
         console.log(e.target.value);

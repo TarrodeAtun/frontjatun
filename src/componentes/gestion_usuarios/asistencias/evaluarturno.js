@@ -222,7 +222,7 @@ export default class ListarTrabajadores extends Component {
                 </div>
                 <div className="panel-dashboard-link">
                     <div className="seccion">
-                        <h3><span> {(this.state.turnos.fecha) ? funciones.nombreDia(fecha) : ""} {moment(this.state.turnos.fecha).utc().format("DD - MM - YYYY")}</span><button onClick={this.iniciarTurno}><span className="flex"><Plus /> Iniciar Turno</span></button></h3>
+                        <h3><span> {(this.state.turnos.fecha) ? funciones.nombreDia(fecha) : ""} {moment(this.state.turnos.fecha).utc().format("DD - MM - YYYY")}</span></h3>
                     </div>
                     <div className="listado-simple seccion">
                         <div class="encabezado"><h3 class="amarillo">Foto grupal</h3></div>
