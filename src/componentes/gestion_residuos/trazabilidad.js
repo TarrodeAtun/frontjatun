@@ -74,19 +74,37 @@ export default class Trazabilidad extends Component {
                     }
                     {orden.estado === 1 &&
                         <td className="verde">  <div>
-                            asignado
+                            Asignado
                       </div></td>
 
                     }
                     {orden.estado === 2 &&
                         <td className="azul"> <div>
-                            finalizado
+                            Ruta Asignada
                       </div></td>
 
                     }
-                    {orden.estado === 3 &&
+                     {orden.estado === 3 &&
+                        <td className="azul"> <div>
+                            Trazabilidad 1ra Clas
+                      </div></td>
+
+                    }
+                     {orden.estado === 4 &&
+                        <td className="azul"> <div>
+                            Trazabilidad 2da Clas
+                      </div></td>
+
+                    }
+                     {orden.estado === 5 &&
+                        <td className="azul"> <div>
+                            Finalizado
+                      </div></td>
+
+                    }
+                    {orden.estado === 6 &&
                         <td className=""> <div>
-                            anulado
+                            Anulado
                      </div></td>
 
                     }
@@ -110,7 +128,7 @@ export default class Trazabilidad extends Component {
         return (
             <div className="principal gestion-personas" id="component-listar-trabajadores">
                 <div>
-                    <h2 className="verde"><Link to="/residuos/control-retiro"> <Bverderev /></Link> <span className="verde">Gestión de residuos / </span> <strong>Trazabilidad de Residuos</strong></h2>
+                    <h2 className="verde"><Link to="/residuos/gestion"> <Bverderev /></Link> <span className="verde">Gestión de residuos / </span> <strong>Trazabilidad de Residuos</strong></h2>
                 </div>
                 <div className="listado">
                     <table className="tableor">

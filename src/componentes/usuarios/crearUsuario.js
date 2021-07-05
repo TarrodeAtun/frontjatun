@@ -1,6 +1,6 @@
 
 //importaciones de bibliotecas
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { autenticacion } from '../../servicios/autenticacion';
 import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
@@ -24,6 +24,7 @@ import edit from "../../assets/iconos/edit.svg";
 
 import fichaper from "../../assets/iconos/fichaper.svg";
 import turnos from "../../assets/iconos/turnos.svg";
+import camara from "../../assets/iconos/camara.svg";
 
 //importamos manejadores de modal
 import Modal from '../includes/modal';
@@ -41,7 +42,7 @@ const toastoptions = {
     draggable: true,
     progress: undefined,
 }
-
+const direccionImagen = funciones.obtenerRutaUsuarios();
 export default class CrearUsuario extends Component {
     constructor(props) {
         super(props);
@@ -70,14 +71,33 @@ export default class CrearUsuario extends Component {
                 formBanco: '',
                 formTipoCuenta: '',
                 formNumCuenta: '',
+                formCentro: '',
             },
             showIngresar: false,
             showOptions: true,
-            idUsuario: ''
+            idUsuario: '',
+            centrosCostos: '',
         };
     }
     async componentDidMount() {
+        if (this.state.datosUsuario.imagen) {
+            if (this.state.datosUsuario.imagen.length > 0) {
+                this.setState({
+                    fotoPerfil: direccionImagen + this.state.datosUsuario.imagen[0].url
+                })
+            } else {
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        } else {
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
 
+        await this.setState({ centrosCostos: await funciones.obtenerCentrosCostos() });
+        console.log(this.state.centrosCostos);
     }
     async componentWillUnmount() {
 
@@ -103,6 +123,14 @@ export default class CrearUsuario extends Component {
             })
         });
     }
+    onChangeImage = (e) => {
+        console.log(e.target.files[0]);
+        this.setState({
+            fotoPerfil: URL.createObjectURL(e.target.files[0]),
+            imagen: e.target.files[0]
+
+        })
+    }
 
     retorno = (e) => {
         historial.push('/personas/gestion');
@@ -111,59 +139,94 @@ export default class CrearUsuario extends Component {
     enviaDatos = async e => {
         e.preventDefault();
         var campoVacio = false;
-        await Object.entries(this.state.form).map((t, k) => {
-            if (t[1] === "" || t[1] === null) {
+        var formData = new FormData();
+        // formData.append('id', this.state.currentUser.data.usuariobd._id);
+        formData.append('nombre', this.state.form.formNombre);
+        formData.append('apellido', this.state.form.formApellido);
+        formData.append('rut', this.state.form.formRut);
+        formData.append('fechaNac', this.state.form.formFechanac);
+        formData.append('email', this.state.form.formEmail);
+        formData.append('telefono', this.state.form.formTelefono);
+        formData.append('hijos', this.state.form.formHijos);
+        formData.append('password', this.state.form.formPass);
+        formData.append('emergencias', JSON.stringify({
+            contacto: this.state.form.formContacto,
+            parentesco: this.state.form.formParentesco,
+            telefono1: this.state.form.formTelefonoFijo,
+            telefono2: this.state.form.formTelefonoMovil,
+            direccion: this.state.form.formDireccion,
+            comuna: this.state.form.formComuna,
+            ciudad: this.state.form.formCiudad
+        }));
+        formData.append('perfil', this.state.form.formPerfil1);
+        formData.append('perfilSec', this.state.form.formPerfil2);
+        formData.append('cargo', this.state.form.formCargo);
+        formData.append('bancarios', JSON.stringify({
+            banco: this.state.form.formBanco,
+            tipo: this.state.form.formTipoCuenta,
+            numero: this.state.form.formNumCuenta
+        }));
+        formData.append('centroCosto', this.state.form.formCentro);
+        for (var elem of formData.entries()) {
+            console.log(elem);
+            if (elem[1] === "" || elem[1] === null) {
+                console.log(elem[1]);
                 campoVacio = true;
             }
-        });
+        }
+        if (this.state.imagen) {
+            formData.append('imagen', this.state.imagen);
+        }
         if (!campoVacio) {
-            const res = await Axios.post('/api/users/worker/create/', {
-                id: this.state.currentUser.data.usuariobd._id,
-                nombre: this.state.form.formNombre,
-                apellido: this.state.form.formApellido,
-                rut: this.state.form.formRut,
-                fechaNac: this.state.form.formFechanac,
-                email: this.state.form.formEmail,
-                telefono: this.state.form.formTelefono,
-                hijos: this.state.form.formHijos,
-                password: this.state.form.formPass,
-                emergencias: {
-                    contacto: this.state.form.formContacto,
-                    parentesco: this.state.form.formParentesco,
-                    telefono1: this.state.form.formTelefonoFijo,
-                    telefono2: this.state.form.formTelefonoMovil,
-                    direccion: this.state.form.formDireccion,
-                    comuna: this.state.form.formComuna,
-                    ciudad: this.state.form.formCiudad
-                },
-                perfil: this.state.form.formPerfil1,
-                perfilSec: this.state.form.formPerfil2,
-                cargo: this.state.form.formCargo,
-                bancarios: {
-                    banco: this.state.form.formBanco,
-                    tipo: this.state.form.formTipoCuenta,
-                    numero: this.state.form.formNumCuenta
-                }
-            }, { headers: authHeader() })
-                .then(respuesta => {
-                    this.setState({ idUsuario: respuesta.data.id });
-                    if (respuesta.data.estado === "success") {
-                        toast.success(respuesta.data.mensaje, toastoptions);
-                        this.setState({ showIngresar: true, showOptions: false });
-                    } else if (respuesta.data.estado === "warning") {
-                        toast.warning(respuesta.data.mensaje, toastoptions);
-                    }
+            let rut = this.state.form.formRut;
+            let valido = true
+            let verificacionRut = funciones.verificaRut(rut);
+            let verificaemail = funciones.validarEmail(this.state.form.formEmail);
+            console.log(verificaemail);
+            if(!verificacionRut){
+                valido=false;
+                toast.warning("El rut ingresado no es valido", toastoptions);
+            }
+            if(!verificaemail){
+                valido=false;
+                toast.warning("El email ingresado no es valido", toastoptions);
+            }
+            console.log(valido);
+            if (valido) {
+                const res = await Axios.post('/api/users/worker/create/', formData
+                , { headers: authHeader() })
+                    .then(respuesta => {
+                        // this.setState({ idUsuario: respuesta.data.id });
+                        if (respuesta.data.estado === "success") {
+                            toast.success(respuesta.data.mensaje, toastoptions);
+                            this.setState({ showIngresar: true, showOptions: false });
+                            historial.push('/personas/perfil/'+respuesta.data.id);
+                        } else if (respuesta.data.estado === "warning") {
+                            toast.warning(respuesta.data.mensaje, toastoptions);
+                        }
 
-                })
-                .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                    handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                    toast.error("Ha habido un error al enviar los datos", toastoptions);
-                });
-        }else{
+                    })
+                    .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                        handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                        toast.error("Ha habido un error al enviar los datos", toastoptions);
+                    });
+            } 
+        } else {
             toast.warning("Debes llenar todos los campos", toastoptions);
         }
+
     }
     render() {
+
+
+        let centrosCostos;
+        if (this.state.centrosCostos) {
+            console.log(this.state.centrosCostos);
+            centrosCostos = this.state.centrosCostos.map((centro, index) => {
+                return (<option value={centro.key} data-key={centro.key}>{centro.nombre}</option>)
+            });
+        }
+
         return (
             <div className="principal" id="component-perfil">
                 <div>
@@ -171,7 +234,13 @@ export default class CrearUsuario extends Component {
                     <div className="fichaPerfil">
                         <div className="seccion">
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    <Fragment>
+                                        <input type="file" onChange={this.onChangeImage} id="editaFoto"></input>
+                                        <label id="labelEditaFoto" for="editaFoto"><img src={camara} /></label>
+                                    </Fragment>
+                                </div>
                             </div>
                             <div>
                                 <span>Nombre</span>
@@ -348,7 +417,13 @@ export default class CrearUsuario extends Component {
                                 }
                             </div>
                             <div>
-                                <span>Centro de costos</span><span>Provisorio</span>
+                                <span>Centro de costos</span>
+                                <span>
+                                    <select name="formCentro" onChange={this.onChangeInput} value={this.state.form.formCentro} className="input-generico">
+                                        <option>Seleccione un centro de costos</option>
+                                        {centrosCostos}
+                                    </select>
+                                </span>
                             </div>
                         </div>
                         <div className="seccion">
@@ -377,10 +452,10 @@ export default class CrearUsuario extends Component {
                             </div>
                         </div>
                         {this.state.showOptions &&
-                        <div className="form-group buttons">
-                            <button className="boton-generico btazul" onClick={this.enviaDatos}>Guardar</button>
-                            <button className="boton-generico btgris" type="button" onClick={this.retorno}>Cancelar</button>
-                        </div>
+                            <div className="form-group buttons">
+                                <button className="boton-generico btazul" onClick={this.enviaDatos}>Guardar</button>
+                                <button className="boton-generico btgris" type="button" onClick={this.retorno}>Cancelar</button>
+                            </div>
                         }
 
                     </div>

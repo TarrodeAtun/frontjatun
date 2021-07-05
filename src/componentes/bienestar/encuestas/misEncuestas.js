@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Axios from '../../../helpers/axiosconf';
 import { authHeader } from '../../../helpers/auth-header';
 import { handleResponse } from '../../../helpers/manejador';
+import { confirmAlert } from 'react-confirm-alert';
 
 // importaciones de estilos 
 import '../../../styles/fichaTrabajador.css';
@@ -58,32 +59,54 @@ export default class MisEncuestas extends Component {
             });
     }
     eliminarEncuesta = async (e) => {
-        var componente = this;
-        var id = e.currentTarget.dataset.id;
-        await Axios.post('/api/bienestar/encuestas/delete/', {
-            id: id
-        }, { headers: authHeader() })
-            .then(respuesta => {
-                toast.success(respuesta.mensaje, toastoptions);
-                componente.obtenerEncuestas();
-                console.log(respuesta);
-            });
+        let componente = this;
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-confirm '>
+                        <p>¿Estas seguro de eliminar la encuesta, los datos no se pueden recuperar?</p>
+                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
+                        <button className="boton-generico btazul"
+                            onClick={async () => {
+                                var id = e.currentTarget.dataset.id;
+                                await Axios.post('/api/bienestar/encuestas/delete/', {
+                                    id: id
+                                }, { headers: authHeader() })
+                                    .then(respuesta => {
+                                        toast.success(respuesta.mensaje, toastoptions);
+                                        componente.obtenerEncuestas();
+                                        console.log(respuesta);
+                                    });
+                                onClose();
+                            }} >
+                            Aceptar
+                        </button>
+                    </div>
+                );
+            }
+        });
     }
 
 
     render() {
         let items;
         if (this.state.encuestas) {
-            items = this.state.encuestas.map((encuesta, index) =>
-                <div key={index} className="elemento">
-                    <span>{encuesta.nombre}</span>
-                    <div className="acciones ml">
-                        <Link to={`/bienestar/encuestas/contestar-encuesta/${encuesta._id}`}><img src={ojo} /></Link>
-                        <Link to={`/bienestar/encuestas/editar-encuesta/${encuesta._id}`}><img src={edit} /></Link>
-                        <button onClick={this.eliminarEncuesta} data-id={encuesta._id}><img src={basurero} /></button>
+            if (this.state.encuestas.length > 0) {
+                items = this.state.encuestas.map((encuesta, index) =>
+                    <div key={index} className="elemento">
+                        <span>{encuesta.nombre}</span>
+                        <div className="acciones ml">
+                            {/* <Link to={`/bienestar/encuestas/contestar-encuesta/${encuesta._id}`}><img src={ojo} /></Link> */}
+                            <Link to={`/bienestar/encuestas/editar-encuesta/${encuesta._id}`}><img src={edit} /></Link>
+                            <button onClick={this.eliminarEncuesta} data-id={encuesta._id}><img src={basurero} /></button>
+                        </div>
                     </div>
-                </div>
-            )
+                )
+            } else {
+                items = <div className="elemento">
+                <span>No hay encuestas creadas</span>
+            </div>
+            }
         }
 
         return (

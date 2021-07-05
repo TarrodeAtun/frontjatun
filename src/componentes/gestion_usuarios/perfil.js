@@ -1,5 +1,5 @@
 //importaciones de bibliotecas
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { autenticacion } from '../../servicios/autenticacion';
 import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
@@ -18,6 +18,7 @@ import edit from "../../assets/iconos/edit.svg";
 
 import fichaper from "../../assets/iconos/fichaper.svg";
 import turnos from "../../assets/iconos/turnos.svg";
+import camara from "../../assets/iconos/camara.svg";
 
 //importamos manejadores de modal
 import Modal from '../includes/modal';
@@ -34,6 +35,7 @@ const toastoptions = {
     draggable: true,
     progress: undefined,
 }
+const direccionImagen = funciones.obtenerRutaUsuarios();
 
 export default class Perfil extends Component {
     constructor(props) {
@@ -43,7 +45,8 @@ export default class Perfil extends Component {
             showModificar: false,
             datosUsuario: "",
             rutFormateado: "",
-            idUsuario:'',
+            centrosCostos: '',
+            idUsuario: '',
             form: {
                 formNombre: '',
                 formApellido: '',
@@ -65,7 +68,10 @@ export default class Perfil extends Component {
                 formBanco: '',
                 formTipoCuenta: '',
                 formNumCuenta: '',
-            }
+                formCentro: '',
+            },
+            fotoPerfil: '',
+            imagen: ''
         };
     }
     editar = async event => {
@@ -82,7 +88,8 @@ export default class Perfil extends Component {
     async componentDidMount() {
         this.cargarDatos();
         var { id } = this.props.match.params;
-        this.setState({idUsuario:id});
+        this.setState({ idUsuario: id });
+        await this.setState({ centrosCostos: await funciones.obtenerCentrosCostos() });
     }
     toogleModal = toogleModalCore; //copiamos la funcion modal a una funcion local
     manejadorModals = (e, res) => { //creamos una funcion que reciba parametros para pasarlo al toogle modal (esta funcion la pasaremos al cuerpo del modal como propiedad para ejecutarse por autoreferencia)
@@ -105,11 +112,20 @@ export default class Perfil extends Component {
             })
         });
     }
+    onChangeImage = (e) => {
+        console.log(e.target.files[0]);
+        this.setState({
+            fotoPerfil: URL.createObjectURL(e.target.files[0]),
+            imagen: e.target.files[0]
+
+        })
+    }
     cargarDatos = async e => {
         var componente = this;
         const { id } = this.props.match.params;
         await Axios.get('/api/users/worker/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
+                console.log(res.data);
                 componente.setState({ datosUsuario: res.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -138,53 +154,78 @@ export default class Perfil extends Component {
                 formCargo: this.state.datosUsuario.cargo,
                 formBanco: this.state.datosUsuario.bancarios.banco,
                 formTipoCuenta: this.state.datosUsuario.bancarios.tipo,
-                formNumCuenta: this.state.datosUsuario.bancarios.numero
-            }
+                formNumCuenta: this.state.datosUsuario.bancarios.numero,
+                formCentro: this.state.datosUsuario.centroCosto
+            },
+
         });
+        if (this.state.datosUsuario.imagen) {
+            if (this.state.datosUsuario.imagen.length > 0) {
+                this.setState({
+                    fotoPerfil: direccionImagen + this.state.datosUsuario.imagen[0].url
+                })
+            } else {
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        } else {
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
+
     }
     cancelar = async e => {
-        this.setState({showModificar:false});
+        this.setState({ showModificar: false });
         toast.warning("Operacion cancelada, se han retornado los datos originales", toastoptions);
         this.cargarDatos();
     }
-    actualizaDatos = async e => {
+    actualizaDatos = async () => {
         const { id } = this.props.match.params;
-        e.preventDefault();
         var campoVacio = false;
-        await Object.entries(this.state.form).map((t, k) => {
-            if (t[1] === "" || t[1] === null) {
+        var formData = new FormData();
+        formData.append('id', id);
+        formData.append('nombre', this.state.form.formNombre);
+        formData.append('apellido', this.state.form.formApellido);
+        formData.append('rut', this.state.form.formRut);
+        formData.append('fechaNac', this.state.form.formFechanac);
+        formData.append('email', this.state.form.formEmail);
+        formData.append('telefono', this.state.form.formTelefono);
+        formData.append('hijos', this.state.form.formHijos);
+        formData.append('emergencias', JSON.stringify({
+            contacto: this.state.form.formContacto,
+            parentesco: this.state.form.formParentesco,
+            telefono1: this.state.form.formTelefonoFijo,
+            telefono2: this.state.form.formTelefonoMovil,
+            direccion: this.state.form.formDireccion,
+            comuna: this.state.form.formComuna,
+            ciudad: this.state.form.formCiudad
+        }));
+        formData.append('perfil', this.state.form.formPerfil1);
+        formData.append('perfilSec', this.state.form.formPerfil2);
+        formData.append('cargo', this.state.form.formCargo);
+        formData.append('bancarios', JSON.stringify({
+            banco: this.state.form.formBanco,
+            tipo: this.state.form.formTipoCuenta,
+            numero: this.state.form.formNumCuenta
+        }));
+        formData.append('centroCosto', this.state.form.formCentro);
+        for (var elem of formData.entries()) {
+            console.log(elem);
+            if (elem[1] === "" || elem[1] === null) {
                 campoVacio = true;
             }
-        });
+        }
+        if (this.state.imagen) {
+            formData.append('imagen', this.state.imagen);
+        }
+
+        console.log(formData);
 
         if (!campoVacio) {
-            const res = await Axios.put('/api/users/worker/update/', {
-                id: this.state.currentUser.data.usuariobd._id,
-                nombre: this.state.form.formNombre,
-                apellido: this.state.form.formApellido,
-                rut: this.state.form.formRut,
-                fechaNac: this.state.form.formFechanac,
-                email: this.state.form.formEmail,
-                telefono: this.state.form.formTelefono,
-                hijos: this.state.form.formHijos,
-                emergencias: {
-                    contacto: this.state.form.formContacto,
-                    parentesco: this.state.form.formParentesco,
-                    telefono1: this.state.form.formTelefonoFijo,
-                    telefono2: this.state.form.formTelefonoMovil,
-                    direccion: this.state.form.formDireccion,
-                    comuna: this.state.form.formComuna,
-                    ciudad: this.state.form.formCiudad
-                },
-                perfil: this.state.form.formPerfil1,
-                perfilSec: this.state.form.formPerfil2,
-                cargo: this.state.form.formCargo,
-                bancarios: {
-                    banco: this.state.form.formBanco,
-                    tipo: this.state.form.formTipoCuenta,
-                    numero: this.state.form.formNumCuenta
-                }
-            }, { headers: authHeader() })
+            const res = await Axios.put('/api/users/worker/update/', formData
+                , { headers: authHeader() })
                 .then(respuesta => {
                     if (respuesta.data.estado === "success") {
                         toast.success(respuesta.data.mensaje, toastoptions);
@@ -201,6 +242,25 @@ export default class Perfil extends Component {
         }
     }
     render() {
+        var componente = this;
+        // console.log(this.state.form);
+        let centrosCostos;
+        if (this.state.centrosCostos) {
+            // console.log(this.state.centrosCostos);
+            centrosCostos = this.state.centrosCostos.map((centro, index) => {
+                return (<option value={centro.key} data-key={centro.key}>{centro.nombre}</option>)
+            });
+        }
+        let centro;
+        if((this.state.form.formCentro !== "") && (this.state.centrosCostos.length > 0)){
+            console.log(this.state.form.formCentro)
+            this.state.centrosCostos.find(function(cen){
+                if(parseInt(cen.key) === parseInt(componente.state.form.formCentro)){
+                    centro = cen.nombre;
+                }
+            });
+        }
+
         return (
             <div className="principal" id="component-perfil">
                 <div>
@@ -209,7 +269,17 @@ export default class Perfil extends Component {
                         <div className="seccion">
                             <a className="edit-button" onClick={this.editar} data-objetivo="Modificar"><img src={edit} /></a>
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    {this.state.fotoPerfil &&
+                                        <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    }
+                                    {this.state.showModificar &&
+                                        <Fragment>
+                                            <input type="file" onChange={this.onChangeImage} id="editaFoto"></input>
+                                            <label id="labelEditaFoto" for="editaFoto"><img src={camara} /></label>
+                                        </Fragment>
+                                    }
+                                </div>
                             </div>
                             <div>
                                 <span>Nombre</span>
@@ -375,7 +445,19 @@ export default class Perfil extends Component {
                                 }
                             </div>
                             <div>
-                                <span>Centro de costos</span><span>Provisorio</span>
+                                <span>Centro de costos</span>
+                                {this.state.showModificar
+                                    ? <span>
+                                        <select name="formCentro" onChange={this.onChangeInput} value={this.state.form.formCentro} className="input-generico">
+                                            <option>Seleccione un centro de costos</option>
+                                            {centrosCostos}
+                                        </select>
+                                    </span>
+                                    :
+                                    <span>
+                                        {centro}
+                                    </span>
+                                }
                             </div>
                         </div>
                         <div className="seccion">

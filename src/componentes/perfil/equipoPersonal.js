@@ -25,7 +25,7 @@ const toastoptions = {
     draggable: true,
     progress: undefined,
 }
-
+const direccionImagen = funciones.obtenerRutaUsuarios();
 export default class EquipoTrabajador extends Component {
     constructor(props) {
         super(props);
@@ -49,10 +49,25 @@ export default class EquipoTrabajador extends Component {
         await this.setState({
             datosUsuario: this.state.currentUser.data.usuariobd
         });
+        if(this.state.datosUsuario.imagen){
+            if(this.state.datosUsuario.imagen.length > 0){
+                this.setState({
+                    fotoPerfil: direccionImagen+this.state.datosUsuario.imagen[0].url
+                })
+            }else{
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        }else{
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
         await Axios.get('/api/users/worker/ficha/equipo/' + autenticacion.currentUserValue.data.usuariobd.rut, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                componente.setState({ 
-                    form:{
+                componente.setState({
+                    form: {
                         formZapato: res.data.zapato,
                         formPantalon: res.data.pantalon,
                         formPolera: res.data.polera,
@@ -74,7 +89,12 @@ export default class EquipoTrabajador extends Component {
                     <div className="fichaPerfil">
                         <div className="seccion encabezado">
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    {this.state.fotoPerfil &&
+                                        <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    }
+                                </div>
+
                             </div>
                             <div className="datosPersonales">
                                 <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>

@@ -18,7 +18,7 @@ import basurero from "../../assets/iconos/basurero.svg";
 import Modal from '../includes/modal';
 import { toogleModalCore } from '../includes/funciones';
 
-import AgregarMensaje from './soporte/nuevoMensaje';
+import AgregarMensaje from './nuevoMensajeSoporte';
 
 // importaciones de iconos 
 import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
@@ -52,8 +52,9 @@ export default class ResultadosEncuestas extends Component {
     }
 
     async componentDidMount() {
+        console.log(this.state.currentUser.data.usuariobd.rut);
+        console.log(this.state.currentUser.data.usuariobd.rut);
         await this.obtenerConsultas();
-        console.log(this.state.encuestas);
     }
 
     agregarConsulta = async (asunto, primerMensaje) => {
@@ -68,7 +69,7 @@ export default class ResultadosEncuestas extends Component {
 
     obtenerConsultas = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
-        const res = Axios.get('/api/bienestar/soporte', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.get('/api/bienestar/soporte/'+this.state.currentUser.data.usuariobd.rut, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ consultas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -78,18 +79,18 @@ export default class ResultadosEncuestas extends Component {
                 return;
             });
     }
-    eliminarEncuesta = async (e) => {
-        var componente = this;
-        var id = e.currentTarget.dataset.id;
-        await Axios.post('/api/bienestar/encuestas/delete/', {
-            id: id
-        }, { headers: authHeader() })
-            .then(respuesta => {
-                toast.success(respuesta.mensaje, toastoptions);
-                componente.obtenerEncuestas();
-                console.log(respuesta);
-            });
-    }
+    // eliminarEncuesta = async (e) => {
+    //     var componente = this;
+    //     var id = e.currentTarget.dataset.id;
+    //     await Axios.post('/api/bienestar/encuestas/delete/', {
+    //         id: id
+    //     }, { headers: authHeader() })
+    //         .then(respuesta => {
+    //             toast.success(respuesta.mensaje, toastoptions);
+    //             componente.obtenerEncuestas();
+    //             console.log(respuesta);
+    //         });
+    // }
 
 
     render() {
@@ -97,15 +98,15 @@ export default class ResultadosEncuestas extends Component {
         if (this.state.consultas.length !== 0) {
             items = this.state.consultas.map((encuesta, index) =>
                 <tr className="elemento">
-                    <td><Link to={`/bienestar/soporte/ver-mensaje/${encuesta._id}`}><span>{encuesta.asunto}</span><span>{encuesta.datosAutor[0].nombre} {encuesta.datosAutor[0].apellido}</span></Link></td>
+                    <td><Link to={`/perfil/bienestar/soporte/ver-mensaje/${encuesta._id}`}><span>{encuesta.asunto}</span><span>{encuesta.datosAutor[0].nombre} {encuesta.datosAutor[0].apellido}</span></Link></td>
                     <td><span>{moment(encuesta.fechaRespuesta).format('DD-MM-YYYY HH:mm')}</span><span>{encuesta.datosUltimaRespuesta[0].nombre} {encuesta.datosUltimaRespuesta[0].apellido}</span></td>
                     {encuesta.estado === 0
                         ? <td>Pendiente</td>
                         : <td>Finalizado</td>
                     }
-                    <td className="acciones ml">
+                    {/* <td className="acciones ml">
                         <button><img src={basurero} /></button>
-                    </td>
+                    </td> */}
                 </tr>
             )
         } else {
@@ -119,14 +120,14 @@ export default class ResultadosEncuestas extends Component {
                 <div>
                     <div className="prehead">
                         <h3 className="tituloencuesta amarillo">Mensajes</h3>
-                        {/* <button className="ml" onClick={this.manejadorModals} data-objetivo="AgregarMensaje">+ Nuevo Mensaje</button> */}
+                        <button className="ml" onClick={this.manejadorModals} data-objetivo="AgregarMensaje">+ Nuevo Mensaje</button>
                     </div>
                     <table className="listado-simple tabla">
                         <thead>
                             <th>Asunto</th>
                             <th>Última respuesta</th>
                             <th>Estado</th>
-                            <th><img src={basurero} /></th>
+                            {/* <th><img src={basurero} /></th> */}
                         </thead>
                         <tbody>
                             {items}

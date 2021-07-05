@@ -22,10 +22,12 @@ export default class selectperfil extends Component {
     async componentDidMount() {
     }
     seleccionarPerfil = async (e) => {
-        var perfil = e.target.dataset.tipo;
+        var perfil = e.currentTarget.dataset.tipo;
         var usuario = JSON.parse(localStorage.getItem('usuarioActual'));
-        usuario.data.perfilSesion = perfil;
+        usuario.data.perfilSesion = await perfil;
+        console.log(usuario);
         await localStorage.setItem('usuarioActual', JSON.stringify(usuario));
+        await autenticacion.actualizar();
         this.props.impFuncion();
         historial.push('/');
     }

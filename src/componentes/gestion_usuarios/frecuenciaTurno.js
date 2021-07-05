@@ -2,6 +2,7 @@ import Axios from '../../helpers/axiosconf';
 import { funciones } from '../../servicios/funciones';
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 
 const toastoptions = {
@@ -79,6 +80,7 @@ export default class FrecuenciaRetiro extends Component {
         var otrafecha = new Date(this.props.props.fecha.replace(/-/g, '\/'));
         var horaInicio = this.props.props.inicio;
         var horaTermino = this.props.props.termino;
+        var labelFrecuencia;
         console.log("enviando");
         if (this.state.intervalo === "1") {
             if (this.state.termino === "1") {
@@ -87,7 +89,7 @@ export default class FrecuenciaRetiro extends Component {
                 var registro = {};
                 var arrayasd = [];
                 for (otrafecha; otrafecha <= fechaTermino; otrafecha.setDate(otrafecha.getDate() + 1)) {
-                    //aqui va la generacion de weas
+                    //aqui va la generacion de fechas
                     console.log(otrafecha);
                     registro = {
                         fecha: new Date(otrafecha.getFullYear(), otrafecha.getMonth(), otrafecha.getDate()),
@@ -95,8 +97,11 @@ export default class FrecuenciaRetiro extends Component {
                         horaTermino: horaTermino
                     }
                     arrayasd.push(registro);
+
                 }
-                await this.props.props.frecuenciaPersonalizada(arrayasd);
+                let fechaa = new Date(this.props.props.fecha.replace(/-/g, '\/'));
+                labelFrecuencia = "Se repite cada dia desde el " + moment(fechaa).utc().format("DD/MM/YYYY") + " hasta el " + moment(fechaTermino).utc().format("DD/MM/YYYY");
+                await this.props.props.frecuenciaPersonalizada(arrayasd, labelFrecuencia);
             }
             if (this.state.termino === "2") {
                 console.log("repeticiones");
@@ -107,7 +112,7 @@ export default class FrecuenciaRetiro extends Component {
                 var registro = {};
                 var arrayasd = [];
                 for (otrafecha; otrafecha <= fechaClon; otrafecha.setDate(otrafecha.getDate() + 1)) {
-                    //aqui va la generacion de weas
+                    //aqui va la generacion de fechas
                     registro = {
                         fecha: new Date(otrafecha.getFullYear(), otrafecha.getMonth() + 1, otrafecha.getDate()),
                         horaInicio: horaInicio,
@@ -115,7 +120,9 @@ export default class FrecuenciaRetiro extends Component {
                     }
                     arrayasd.push(registro);
                 }
-                this.props.props.frecuenciaPersonalizada(arrayasd);
+                let fechaa = new Date(this.props.props.fecha.replace(/-/g, '\/'));
+                labelFrecuencia = "Se repite cada dia desde el " + moment(fechaa).utc().format("DD/MM/YYYY") + " hasta el " + moment(fechaClon).utc().format("DD/MM/YYYY");
+                this.props.props.frecuenciaPersonalizada(arrayasd, labelFrecuencia);
             }
         }
         if (this.state.intervalo === "2") {
@@ -123,12 +130,13 @@ export default class FrecuenciaRetiro extends Component {
                 var fechaTermino = new Date(this.state.fechaTermino.replace(/-/g, '\/'));
                 var registro = {};
                 var arrayasd = [];
+                var dias = '';
                 for (otrafecha; otrafecha <= fechaTermino; otrafecha.setDate(otrafecha.getDate() + 1)) {
                     for (var dia of this.state.dias) {
                         if (dia.isChecked) {
                             if (dia.valor === otrafecha.getDay()) {
                                 console.log(otrafecha.getMonth());
-                                //aqui va la generacion de weas
+                                //aqui va la generacion de fechas
                                 registro = {
                                     fecha: new Date(otrafecha.getFullYear(), otrafecha.getMonth(), otrafecha.getDate()),
                                     horaInicio: horaInicio,
@@ -139,7 +147,15 @@ export default class FrecuenciaRetiro extends Component {
                         }
                     }
                 }
-                this.props.props.frecuenciaPersonalizada(arrayasd);
+                for (var dia of this.state.dias) {
+                    if (dia.isChecked) {
+                        dias = dias+" "+dia.label;
+                    }
+                }
+
+                let fechaa = new Date(this.props.props.fecha.replace(/-/g, '\/'));
+                labelFrecuencia = "Se repite los " + dias + " desde el " + moment(fechaa).utc().format("DD/MM/YYYY") + " hasta el " + moment(fechaTermino).utc().format("DD/MM/YYYY");
+                this.props.props.frecuenciaPersonalizada(arrayasd, labelFrecuencia);
 
 
             }
@@ -150,24 +166,36 @@ export default class FrecuenciaRetiro extends Component {
                 var fechaTermino = new Date(fechaClon.getFullYear(), fechaClon.getMonth(), fechaClon.getDate() + sumadias);
                 var registro = {};
                 var arrayasd = [];
+                var dias = '';
                 for (otrafecha; otrafecha <= fechaTermino; otrafecha.setDate(otrafecha.getDate() + 1)) {
                     for (var dia of this.state.dias) {
                         if (dia.isChecked) {
                             if (dia.valor === otrafecha.getDay()) {
-                                //aqui va la generacion de weas
+                                //aqui va la generacion de fechas
                                 registro = {
                                     fecha: new Date(otrafecha.getFullYear(), otrafecha.getMonth(), otrafecha.getDate()),
                                     horaInicio: horaInicio,
                                     horaTermino: horaTermino
                                 }
+                                
                                 arrayasd.push(registro);
                             }
                         }
                     }
                 }
-                this.props.props.frecuenciaPersonalizada(arrayasd);
+                for (var dia of this.state.dias) {
+                    if (dia.isChecked) {
+                        dias = dias+" "+dia.label;
+                    }
+                }
+                let fechaa = new Date(this.props.props.fecha.replace(/-/g, '\/'));
+                labelFrecuencia = "Se repite los " + dias + " desde el " + moment(fechaa).utc().format("DD/MM/YYYY") + " hasta el " + moment(fechaTermino).utc().format("DD/MM/YYYY");
+                console.log(arrayasd);
+                this.props.props.frecuenciaPersonalizada(arrayasd, labelFrecuencia);
+                
             }
         }
+        this.props.closeModal();
     }
     render() {
         return (

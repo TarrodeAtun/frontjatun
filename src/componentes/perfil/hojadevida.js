@@ -7,6 +7,7 @@ import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
 import { historial } from '../../helpers/historial';
 import { toast } from 'react-toastify';
+import { funciones } from '../../servicios/funciones';
 import moment from 'moment';
 import { confirmAlert } from 'react-confirm-alert';
 
@@ -35,6 +36,7 @@ const openInNewTab = (url) => {
     const newWindow = window.open(direccion, '_blank', 'noopener,noreferrer')
     if (newWindow) newWindow.opener = null
 }
+const direccionImagen = funciones.obtenerRutaUsuarios();
 
 export default class HojaDeVida extends Component {
     constructor(props) {
@@ -55,6 +57,21 @@ export default class HojaDeVida extends Component {
         var { id } = this.props.match.params;
         this.setState({ idUsuario: id });
         await componente.setState({ datosUsuario: this.state.currentUser.data.usuariobd });
+        if (this.state.datosUsuario.imagen) {
+            if (this.state.datosUsuario.imagen.length > 0) {
+                this.setState({
+                    fotoPerfil: direccionImagen + this.state.datosUsuario.imagen[0].url
+                })
+            } else {
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        } else {
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
         await this.cargarCapacitaciones();
         await this.cargarAmonestaciones();
     }
@@ -148,7 +165,12 @@ export default class HojaDeVida extends Component {
                     <div className="fichaPerfil">
                         <div className="seccion encabezado">
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    {this.state.fotoPerfil &&
+                                        <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    }
+                                </div>
+
                             </div>
                             <div className="datosPersonales">
                                 <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>

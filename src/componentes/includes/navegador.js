@@ -50,7 +50,7 @@ export default class navegador extends Component {
                         <li><Link to="/bienestar/encuestas">Encuestas</Link></li>
                         <li><Link to="/bienestar/soporte">Mensajes / soporte Técnico</Link></li>
                         <hr></hr>
-                        <li><Link to="/">Cambiar Perfil</Link></li>
+                        <li><Link to="/selecciona-perfil">Cambiar Perfil</Link></li>
                         <hr></hr>
                         <li><button onClick={() => this.props.cerrarSesion()}>Cerrar Sesión</button></li>
                         {/* <li><Link to="/usuarios/listar-usuarios">Listar usuarios</Link></li>

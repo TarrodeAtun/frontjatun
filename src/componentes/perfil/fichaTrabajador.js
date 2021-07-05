@@ -46,6 +46,12 @@ export default class fichaTrabajador extends Component {
                         <div className="seccion">
                             <h3><Link to={`/perfil/ficha-personal/indicadores-desempeño`}><span>Indicadores de desempeño</span><button><Flechacel /></button></Link></h3>
                         </div>
+                        <div className="seccion">
+                            <h3><Link to={`/perfil/ficha-personal/encuestas/mis-encuestas`}><span>Mis Encuestas</span><button><Flechacel /></button></Link></h3>
+                        </div>
+                        <div className="seccion">
+                            <h3><Link to={`/perfil/bienestar/soporte`}><span>Soporte</span><button><Flechacel /></button></Link></h3>
+                        </div>
                     </div>
                 </div>
                 <div className="opciones">

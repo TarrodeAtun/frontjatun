@@ -7,13 +7,20 @@ export var funciones = {
     formatearRut,
     quitarFormato,
     getRutFormateado,
+    verificaRut,
+    getDV,
     validarEmail,
     nombreDia,
     paginacion,
+    obtenerRutaServidor,
+    obtenerRutaMedios,
+    obtenerRutaUsuarios,
     obtenerClientes,
     obtenerSectores,
+    obtenerRutaPlanes,
     obtenerServicios,
     obtenerTiposTurno,
+    obtenerTodosTrabajadores,
     obtenerTrabajadores,
     obtenerJefesCuadrilla,
     obtenerCentrosCostos
@@ -53,6 +60,31 @@ function quitarFormato(rutCrudo) {
     return strRut;
 }
 
+
+
+function verificaRut(rutCompleto) {
+    console.log(rutCompleto);
+    var tmp = rutCompleto.split('-');
+    var digv = tmp[1];
+    var rut = quitarFormato(tmp[0]);
+    console.log(tmp);
+    console.log(rut); 
+    console.log(digv);
+    console.log(getDV(rut));
+    if (digv == 'K') digv = 'k';
+    return (getDV(rut) == digv);
+}
+
+function getDV(rut) {
+    var M = 0,
+        S = 1;
+    for (; rut; rut = Math.floor(rut / 10))
+        S = (S + rut % 10 * (9 - M++ % 6)) % 11;
+    return S ? S - 1 : 'k';
+}
+
+
+
 function getDigito(rut) {
     var dvr = '0';
     var suma = 0;
@@ -84,10 +116,12 @@ async function getRutFormateado(rutCrudo, dv) {
     return rut;
 }
 
-async function validarEmail(valor) {
+function validarEmail(valor) {
     if (/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(valor)) {
+        console.log("mail valido");
         return true;
     } else {
+        console.log("mail invalido");
         return false
     }
 }
@@ -124,7 +158,7 @@ async function obtenerClientes() { //genera una peticion get por axios a la api 
     await Axios.get('/api/generales/clientes/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
             if (res.data.data.length > 0) {
-            registro = res.data.data
+                registro = res.data.data
             }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -138,7 +172,7 @@ function obtenerSectores() { //genera una peticion get por axios a la api de usu
     Axios.get('/api/generales/sectores/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
             if (res.data.data.length > 0) {
-            registro = res.data.data
+                registro = res.data.data
             }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -152,7 +186,7 @@ async function obtenerServicios() { //genera una peticion get por axios a la api
     await Axios.get('/api/generales/servicios/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
             if (res.data.data.length > 0) {
-            registro = res.data.data
+                registro = res.data.data
             }
 
         })
@@ -167,7 +201,7 @@ function obtenerTiposTurno() { //genera una peticion get por axios a la api de u
     const res = Axios.get('/api/generales/tiposTurno', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {   //si la peticion es satisfactoria entonces
             if (res.data.data.length > 0) {
-            registro = res.data.data
+                registro = res.data.data
             }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -176,12 +210,26 @@ function obtenerTiposTurno() { //genera una peticion get por axios a la api de u
         });
     return registro;
 }
-function obtenerTrabajadores() { //genera una peticion get por axios a la api de usuarios
+async function obtenerTrabajadores() { //genera una peticion get por axios a la api de usuarios
     let registro;
-    const res = Axios.get('/api/users/worker/obtenertrabajadores', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+    await Axios.get('/api/users/worker/obtenertrabajadores', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
             if (res.data.data.length > 0) {
-            registro = res.data.data
+                registro = res.data.data
+            }
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+async function obtenerTodosTrabajadores() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    await Axios.get('/api/users/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            if (res.data.data.length > 0) {
+                registro = res.data.data
             }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -195,7 +243,7 @@ function obtenerJefesCuadrilla() { //genera una peticion get por axios a la api 
     const res = Axios.get('/api/users/worker/obtenerjefes', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
             if (res.data.data.length > 0) {
-            registro = res.data.data
+                registro = res.data.data
             }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -204,12 +252,13 @@ function obtenerJefesCuadrilla() { //genera una peticion get por axios a la api 
         });
     return registro;
 }
-function obtenerCentrosCostos() { //genera una peticion get por axios a la api de usuarios
+async function obtenerCentrosCostos() { //genera una peticion get por axios a la api de usuarios
     let registro;
-    Axios.get('/api/generales/centroscostos/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+    await Axios.get('/api/generales/centroscostos/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
         .then(function (res) {
+            console.log(res.data);
             if (res.data.data.length > 0) {
-            registro = res.data.data
+                registro = res.data.data
             }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -217,4 +266,19 @@ function obtenerCentrosCostos() { //genera una peticion get por axios a la api d
             return;
         });
     return registro;
+}
+
+//   await this.setState({ clientes: await funciones.obtenerClientes() }); se usa de esta manera
+
+function obtenerRutaServidor() {
+    return("http://localhost:4000/");
+}
+function obtenerRutaMedios() {
+    return("http://localhost:4000/media");
+}
+function obtenerRutaUsuarios() {
+    return("http://localhost:4000/media/users/");
+}
+function obtenerRutaPlanes() {
+    return("http://localhost:4000/media/planes");
 }

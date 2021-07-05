@@ -1,5 +1,5 @@
 //importaciones de bibliotecas
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { autenticacion } from '../../servicios/autenticacion';
 import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
@@ -25,6 +25,7 @@ const toastoptions = {
     draggable: true,
     progress: undefined,
 }
+const direccionImagen = funciones.obtenerRutaUsuarios();
 export default class PrevisionTrabajador extends Component {
     constructor(props) {
         super(props);
@@ -63,6 +64,21 @@ export default class PrevisionTrabajador extends Component {
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 return;
             });
+        if (this.state.datosUsuario.imagen) {
+            if (this.state.datosUsuario.imagen.length > 0) {
+                this.setState({
+                    fotoPerfil: direccionImagen + this.state.datosUsuario.imagen[0].url
+                })
+            } else {
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        } else {
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
         await Axios.get('/api/generales/isapres/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
@@ -133,7 +149,26 @@ export default class PrevisionTrabajador extends Component {
     }
 
     onChangeInput = (e) => {
-
+        if (e.target.name === "apv") {
+            this.setState({
+                form: {
+                    ...this.state.form, valorApv: ""
+                },
+                form: {
+                    ...this.state.form, montoApv: ""
+                }
+            })
+        }
+        if (e.target.name === "pactada") {
+            this.setState({
+                form: {
+                    ...this.state.form, valorSalud: ""
+                },
+                form: {
+                    ...this.state.form, montoSalud: ""
+                }
+            })
+        }
         this.setState({
             form: {
                 ...this.state.form, [e.target.name]: e.target.value
@@ -193,6 +228,7 @@ export default class PrevisionTrabajador extends Component {
                 afp: this.state.form.afp,
                 apv: this.state.form.apv,
                 valorApv: this.state.form.valorApv,
+                montoApv: this.state.form.montoApv,
                 tipoSalud: this.state.form.tipoSalud,
                 prevision: this.state.form.prevision,
                 pactada: this.state.form.pactada,
@@ -219,6 +255,7 @@ export default class PrevisionTrabajador extends Component {
 
         let salud;
         console.log(this.state.form.tipoSalud);
+        console.log(this.state.form.apv);
         if (this.state.form.tipoSalud === "1" || this.state.form.tipoSalud === 1) {
             console.log("asd");
             salud = this.state.isapres.map((isapre, index) =>
@@ -243,7 +280,11 @@ export default class PrevisionTrabajador extends Component {
                     <div className="fichaPerfil">
                         <div className="seccion encabezado">
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    {this.state.fotoPerfil &&
+                                        <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    }
+                                </div>
                             </div>
                             <div className="datosPersonales">
                                 <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>
@@ -290,46 +331,50 @@ export default class PrevisionTrabajador extends Component {
                                         </span>
                                     }
                                 </div>
-                                <div>
-                                    <span>Valor</span>
-                                    {this.state.showModificar
-                                        ? <span className="radiocontainer">
-                                            {this.state.form.valorApv === "1" || this.state.form.valorApv === 1
-                                                ? <span><input type="radio" checked className="input-generico" name="valorApv" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
-                                                : <span><input type="radio" className="input-generico" name="valorApv" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                {parseInt(this.state.form.apv) === 1 &&
+                                    <Fragment>
+                                        <div>
+                                            <span>Valor</span>
+                                            {this.state.showModificar
+                                                ? <span className="radiocontainer">
+                                                    {this.state.form.valorApv === "1" || this.state.form.valorApv === 1
+                                                        ? <span><input type="radio" checked className="input-generico" name="valorApv" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                                        : <span><input type="radio" className="input-generico" name="valorApv" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                                    }
+                                                    {this.state.form.valorApv === "2" || this.state.form.valorApv === 2
+                                                        ? <span><input type="radio" checked className="input-generico" name="valorApv" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                                        : <span><input type="radio" className="input-generico" name="valorApv" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                                    }
+                                                    {this.state.form.valorApv === "3" || this.state.form.valorApv === 3
+                                                        ? <span><input type="radio" checked className="input-generico" name="valorApv" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
+                                                        : <span><input type="radio" className="input-generico" name="valorApv" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
+                                                    }
+                                                </span>
+                                                : <span className="radiocontainer">
+                                                    {this.state.form.valorApv === "1" || this.state.form.valorApv === 1
+                                                        ? <span><input type="radio" checked disabled className="input-generico" name="valorApv" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                                        : <span><input type="radio" disabled className="input-generico" name="valorApv" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                                    }
+                                                    {this.state.form.valorApv === "2" || this.state.form.valorApv === 2
+                                                        ? <span><input type="radio" checked disabled className="input-generico" name="valorApv" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                                        : <span><input type="radio" disabled className="input-generico" name="valorApv" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                                    }
+                                                    {this.state.form.valorApv === "3" || this.state.form.valorApv === 3
+                                                        ? <span><input type="radio" disabled checked className="input-generico" name="valorApv" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
+                                                        : <span><input type="radio" disabled className="input-generico" name="valorApv" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
+                                                    }
+                                                </span>
                                             }
-                                            {this.state.form.valorApv === "2" || this.state.form.valorApv === 2
-                                                ? <span><input type="radio" checked className="input-generico" name="valorApv" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
-                                                : <span><input type="radio" className="input-generico" name="valorApv" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                        </div>
+                                        <div>
+                                            <span>Monto</span>
+                                            {this.state.showModificar
+                                                ? <span><input className="input-generico" type="number" name="montoApv" value={this.state.form.montoApv} onChange={this.onChangeInput} required /></span>
+                                                : <span>{this.state.form.montoApv}</span>
                                             }
-                                            {this.state.form.valorApv === "3" || this.state.form.valorApv === 3
-                                                ? <span><input type="radio" checked className="input-generico" name="valorApv" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
-                                                : <span><input type="radio" className="input-generico" name="valorApv" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
-                                            }
-                                        </span>
-                                        : <span className="radiocontainer">
-                                            {this.state.form.valorApv === "1" || this.state.form.valorApv === 1
-                                                ? <span><input type="radio" checked disabled className="input-generico" name="valorApv" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
-                                                : <span><input type="radio" disabled className="input-generico" name="valorApv" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
-                                            }
-                                            {this.state.form.valorApv === "2" || this.state.form.valorApv === 2
-                                                ? <span><input type="radio" checked disabled className="input-generico" name="valorApv" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
-                                                : <span><input type="radio" disabled className="input-generico" name="valorApv" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
-                                            }
-                                            {this.state.form.valorApv === "3" || this.state.form.valorApv === 3
-                                                ? <span><input type="radio" disabled checked className="input-generico" name="valorApv" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
-                                                : <span><input type="radio" disabled className="input-generico" name="valorApv" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
-                                            }
-                                        </span>
-                                    }
-                                </div>
-                                <div>
-                                    <span>Monto</span>
-                                    {this.state.showModificar
-                                        ? <span><input className="input-generico" name="montoApv" value={this.state.form.montoApv} onChange={this.onChangeInput} required /></span>
-                                        : <span>{this.state.form.montoApv}</span>
-                                    }
-                                </div>
+                                        </div>
+                                    </Fragment>
+                                }
                             </div>
                             <div className="sub-seccion">
                                 <div>
@@ -384,46 +429,50 @@ export default class PrevisionTrabajador extends Component {
                                         </span>
                                     }
                                 </div>
-                                <div>
-                                    <span>Valor</span>
-                                    {this.state.showModificar
-                                        ? <span className="radiocontainer">
-                                            {this.state.form.valorSalud === "1" || this.state.form.valorSalud === 1
-                                                ? <span><input type="radio" checked className="input-generico" name="valorSalud" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
-                                                : <span><input type="radio" className="input-generico" name="valorSalud" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                {parseInt(this.state.form.pactada) === 1 &&
+                                    <Fragment>
+                                        <div>
+                                            <span>Valor</span>
+                                            {this.state.showModificar
+                                                ? <span className="radiocontainer">
+                                                    {this.state.form.valorSalud === "1" || this.state.form.valorSalud === 1
+                                                        ? <span><input type="radio" checked className="input-generico" name="valorSalud" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                                        : <span><input type="radio" className="input-generico" name="valorSalud" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                                    }
+                                                    {this.state.form.valorSalud === "2" || this.state.form.valorSalud === 2
+                                                        ? <span><input type="radio" checked className="input-generico" name="valorSalud" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                                        : <span><input type="radio" className="input-generico" name="valorSalud" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                                    }
+                                                    {this.state.form.valorSalud === "3" || this.state.form.valorSalud === 3
+                                                        ? <span><input type="radio" checked className="input-generico" name="valorSalud" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
+                                                        : <span><input type="radio" className="input-generico" name="valorSalud" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
+                                                    }
+                                                </span>
+                                                : <span className="radiocontainer">
+                                                    {this.state.form.valorSalud === "1" || this.state.form.valorSalud === 1
+                                                        ? <span><input type="radio" checked disabled className="input-generico" name="valorSalud" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                                        : <span><input type="radio" disabled className="input-generico" name="valorSalud" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
+                                                    }
+                                                    {this.state.form.valorSalud === "2" || this.state.form.valorSalud === 2
+                                                        ? <span><input type="radio" checked disabled className="input-generico" name="valorSalud" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                                        : <span><input type="radio" disabled className="input-generico" name="valorSalud" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                                    }
+                                                    {this.state.form.valorSalud === "3" || this.state.form.valorSalud === 3
+                                                        ? <span><input type="radio" disabled checked className="input-generico" name="valorSalud" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
+                                                        : <span><input type="radio" disabled className="input-generico" name="valorSalud" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
+                                                    }
+                                                </span>
                                             }
-                                            {this.state.form.valorSalud === "2" || this.state.form.valorSalud === 2
-                                                ? <span><input type="radio" checked className="input-generico" name="valorSalud" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
-                                                : <span><input type="radio" className="input-generico" name="valorSalud" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
+                                        </div>
+                                        <div>
+                                            <span>Monto</span>
+                                            {this.state.showModificar
+                                                ? <span><input className="input-generico" type="number" name="montoSalud" value={this.state.form.montoSalud} onChange={this.onChangeInput} required /></span>
+                                                : <span>{this.state.form.montoSalud}</span>
                                             }
-                                            {this.state.form.valorSalud === "3" || this.state.form.valorSalud === 3
-                                                ? <span><input type="radio" checked className="input-generico" name="valorSalud" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
-                                                : <span><input type="radio" className="input-generico" name="valorSalud" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
-                                            }
-                                        </span>
-                                        : <span className="radiocontainer">
-                                            {this.state.form.valorSalud === "1" || this.state.form.valorSalud === 1
-                                                ? <span><input type="radio" checked disabled className="input-generico" name="valorSalud" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
-                                                : <span><input type="radio" disabled className="input-generico" name="valorSalud" value="1" onChange={this.onChangeInput} required /><label>$</label></span>
-                                            }
-                                            {this.state.form.valorSalud === "2" || this.state.form.valorSalud === 2
-                                                ? <span><input type="radio" checked disabled className="input-generico" name="valorSalud" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
-                                                : <span><input type="radio" disabled className="input-generico" name="valorSalud" value="2" onChange={this.onChangeInput} required /><label>UF</label></span>
-                                            }
-                                            {this.state.form.valorSalud === "3" || this.state.form.valorSalud === 3
-                                                ? <span><input type="radio" disabled checked className="input-generico" name="valorSalud" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
-                                                : <span><input type="radio" disabled className="input-generico" name="valorSalud" value="3" onChange={this.onChangeInput} required /><label>Otro</label></span>
-                                            }
-                                        </span>
-                                    }
-                                </div>
-                                <div>
-                                    <span>Monto</span>
-                                    {this.state.showModificar
-                                        ? <span><input className="input-generico" name="montoSalud" value={this.state.form.montoSalud} onChange={this.onChangeInput} required /></span>
-                                        : <span>{this.state.form.montoSalud}</span>
-                                    }
-                                </div>
+                                        </div>
+                                    </Fragment>
+                                }
                                 {this.state.showModificar &&
                                     <div className="form-group buttons">
                                         <button className="boton-generico btazul" onClick={this.enviaDatos}>Guardar</button>

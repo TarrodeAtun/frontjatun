@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import Axios from '../../../helpers/axiosconf';
 import { authHeader } from '../../../helpers/auth-header';
 import { handleResponse } from '../../../helpers/manejador';
+import { funciones } from '../../../servicios/funciones';
+import { confirmAlert } from 'react-confirm-alert';
 
 import { toast } from 'react-toastify';
 
@@ -26,7 +28,7 @@ import { toogleModalCore } from '../../includes/funciones';
 // importaciones de iconos 
 import { ReactComponent as Bamarillorev } from "../../../assets/iconos/bamarillorev.svg";
 import { ReactComponent as Flechaam } from "../../../assets/iconos/flechaam.svg";
-import { empty } from "rxjs";
+import { async, empty } from "rxjs";
 import { historial } from "../../../helpers/historial";
 
 const toastoptions = {
@@ -50,13 +52,20 @@ export default class NuevaEncuesta extends Component {
             preguntas: [],
             showAgregaPregunta: '',
             modifyTarget: '',
-            modifyTargetIndex: ''
+            modifyTargetIndex: '',
+
+            trabajadores: '',
+            trabajadoresSelect: [],
+            selectTrabajador: ''
         };
     }
 
     toogleModal = toogleModalCore; //copiamos la funcion modal a una funcion local
 
 
+    componentDidMount = async (e) => {
+        await this.setState({ trabajadores: await funciones.obtenerTodosTrabajadores() });
+    }
     onChangeInput = (e) => {
         this.setState({
             [e.target.name]: e.target.value
@@ -97,24 +106,84 @@ export default class NuevaEncuesta extends Component {
         this.setState({ preguntas: preguntas });
     }
 
+    onChangeTrabajadores = (e) => {
+        console.log("change");
+        var rut = e.target.value;
+        var dv = e.target[e.target.selectedIndex].dataset.dv
+        var nombre = e.target[e.target.selectedIndex].dataset.nombre
+        var apellido = e.target[e.target.selectedIndex].dataset.apellido
+        var trabajadoresSelect = this.state.trabajadoresSelect;
+        console.log(trabajadoresSelect);
+        var igual = false;
+        for (let trabajador of trabajadoresSelect) {
+            if (trabajador.rut === e.target.value) {
+                igual = true;
+            }
+        }
+        if (!igual) {
+            trabajadoresSelect.push({ rut: rut, dv: dv, nombre: nombre, apellido: apellido });
+            this.setState({
+                trabajadoresSelect: trabajadoresSelect,
+            });
+        }
+        this.setState({
+            selectTrabajador: ''
+        })
+    }
 
+    eliminaTrabajador = (e) => {
+        console.log("elimina");
+        var trabajadores = this.state.trabajadoresSelect;
+        trabajadores.splice(e, 1);
+        this.setState({
+            trabajadoresSelect: trabajadores
+        })
+    }
+
+    enviaDatos = async (e) => {
+        if (this.state.nombreEncuesta !== "") {
+            if (this.state.preguntas.length !== 0) {
+                if (this.state.trabajadoresSelect.length !== 0) {
+                    const res = await Axios.post('/api/bienestar/encuestas/create/', {
+                        nombre: this.state.nombreEncuesta,
+                        preguntas: this.state.preguntas,
+                        trabajadores: this.state.trabajadoresSelect
+                    }, { headers: authHeader() })
+                        .then(respuesta => {
+                            toast.success("Encuesta agregada satisfactoriamente", toastoptions);
+                            historial.push("/bienestar/encuestas/mis-encuestas");
+                            console.log(respuesta);
+                        });
+                } else {
+                    toast.warning("Debes agregar al menos un trabajador", toastoptions);
+                }
+            } else {
+                toast.warning("Debes agregar al menos una pregunta", toastoptions);
+            }
+        } else {
+            toast.warning("Debes agregar un nombre a la pregunta", toastoptions);
+        }
+    }
 
     onSubmit = async (e) => {
-        if (this.state.preguntas.length !== 0) {
-            const res = await Axios.post('/api/bienestar/encuestas/create/', {
-                nombre: this.state.nombreEncuesta,
-                preguntas: this.state.preguntas,
-            }, { headers: authHeader() })
-                .then(respuesta => {
-                    toast.success("Encuesta agregada satisfactoriamente", toastoptions);
-                    historial.push("/bienestar/encuestas/mis-encuestas");
-                    console.log(respuesta);
-                });
-        }
-        else {
-            toast.warning("Debes agregar al menos una pregunta", toastoptions);
-        }
-
+        let componente = this;
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-confirm '>
+                        <p>¿Estas seguro de ingresar la encuesta, una vez enviada no se pueden agregar mas trabajadores?</p>
+                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
+                        <button className="boton-generico btazul"
+                            onClick={() => {
+                                componente.enviaDatos();
+                                onClose();
+                            }} >
+                            Aceptar
+                        </button>
+                    </div>
+                );
+            }
+        });
     }
 
     render() {
@@ -165,6 +234,30 @@ export default class NuevaEncuesta extends Component {
                     </div>
                 </div>
         }
+
+
+        let trabajadores;
+        console.log(this.state.trabajadores);
+        if (this.state.trabajadores) {
+            trabajadores = this.state.trabajadores.map((trabajador, index) =>
+                <option value={trabajador.rut} data-dv={trabajador.dv} data-nombre={trabajador.nombre} data-apellido={trabajador.apellido}>{trabajador.nombre} {trabajador.apellido}</option>
+            )
+        }
+        let trabajadoresAsignados;
+        if (this.state.trabajadoresSelect) {
+            trabajadoresAsignados = this.state.trabajadoresSelect.map((trabajador, index) =>
+                <div className="div-trabajador">
+                    <span>Trabajador {index + 1}</span>
+                    <span className="spanConductor">
+                        <button onClick={e => this.eliminaTrabajador(index)}>X</button>
+                        <span>{trabajador.nombre} {trabajador.apellido}</span>
+                        <span>{trabajador.rut}-{trabajador.dv}</span>
+                    </span>
+                </div>
+            )
+
+        }
+
         return (
             <div className="principal menu-lista-dashboard listaPreguntas">
                 <div>
@@ -179,10 +272,22 @@ export default class NuevaEncuesta extends Component {
                         {items}
                     </div>
                 </div>
+                <div className="seccion seccion-trabajadores-encuestas">
+                    <div>
+                        <span>Trabajadores Asignados</span>
+                        <span className="select-container">
+                            <select name="selectTrabajador" onChange={this.onChangeTrabajadores} value={this.state.selectTrabajador} className="input-generico">
+                                <option>Seleccionar</option>
+                                {trabajadores}
+                            </select>
+                        </span>
+                    </div>
+                    {trabajadoresAsignados}
+                </div>
                 <div className="enviar">
                     {this.state.preguntas.length !== 0
-                    ?<button className="boton-generico btazul" onClick={this.onSubmit}>Enviar</button>
-                    :<button className="boton-generico btgris">Enviar</button>
+                        ? <button className="boton-generico btazul" onClick={this.onSubmit}>Enviar</button>
+                        : <button className="boton-generico btgris">Enviar</button>
                     }
                 </div>
                 <div id="modales">

@@ -10,6 +10,7 @@ import moment from 'moment';
 import { toast } from 'react-toastify';
 import Modal from '../includes/modal';
 import { toogleModalCore } from '../includes/funciones';
+import { funciones } from '../../servicios/funciones';
 
 // importaciones de estilos 
 import '../../styles/fichaTrabajador.css';
@@ -34,8 +35,11 @@ const toastoptions = {
     draggable: true,
     progress: undefined,
 }
-
-
+const openInNewTab = (direccion) => {
+    const newWindow = window.open(direccion, '_blank', 'noopener,noreferrer')
+    if (newWindow) newWindow.opener = null
+}
+const direccionImagen = funciones.obtenerRutaPlanes();
 export default class CrearPlanManejo extends Component {
     constructor(props) {
         super(props);
@@ -157,22 +161,7 @@ export default class CrearPlanManejo extends Component {
 
     volver = () => {
         var componente = this;
-        confirmAlert({
-            customUI: ({ onClose }) => {
-                return (
-                    <div className='custom-confirm '>
-                        <p>¿Quieres guardar antes de salir de la sección crear OR?</p>
-                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
-                        <button className="boton-generico btazul" onClick={function () { componente.pushLista(); onClose(); }}>No guardar</button>
-                        <button className="boton-generico btazul"
-                            onClick={this.enviaDatos}
-                        >
-                            Aceptar
-                    </button>
-                    </div>
-                );
-            }
-        });
+        componente.pushLista();
     }
 
     formatearRutListado = (rutCrudo, dv) => {
@@ -229,7 +218,7 @@ export default class CrearPlanManejo extends Component {
     }
 
     pushLista = () => {
-        historial.push("/residuos/trazabilidad");
+        historial.push(`/residuos/plan-manejo-cliente/${this.props.match.params}`);
     }
 
     enviaDatos = async e => {
@@ -261,17 +250,17 @@ export default class CrearPlanManejo extends Component {
         formData.append('residuosegregado', this.state.residuosegregado);
 
         formData.entries();
-        for(var elem of formData.entries()) {
+        for (var elem of formData.entries()) {
             if (elem[1] === "" || elem[1] === null) {
                 campoVacio = true;
             }
-         }
+        }
         if (!campoVacio) {
             const res = await Axios.post('/api/gestion-residuos/plan-manejo/modificar/', formData, { headers: authHeader() })
                 .then(respuesta => {
                     if (respuesta.data.estado === "success") {
                         toast.success(respuesta.data.mensaje, toastoptions);
-                        historial.push("/residuos/plan-manejo-cliente/"+this.state.datosCliente._id);
+                        historial.push("/residuos/plan-manejo-cliente/" + this.state.datosCliente._id);
                     } else if (respuesta.data.estado === "warning") {
                         toast.warning(respuesta.data.mensaje, toastoptions);
                     }
@@ -313,20 +302,20 @@ export default class CrearPlanManejo extends Component {
             return (<Fragment key={index}>
                 <div className="prehead wauto">
                     <h3 className="amarillo">{residuo.codigo} - {residuo.label}</h3>
-                    <button className="ml verde"><Basurero /></button>
+
                 </div>
                 <div>
                     <span>Proceso del cual proviene</span>
-                    <span><input className="input-generico" onChange={this.onChangeResiduo} value={residuo.proceso} data-key={index} name="proceso"></input></span>
+                    <span>{residuo.proceso}</span>
                 </div>
                 <div>
                     <span>Cantidad</span>
-                    <span> <input className="input-generico" onChange={this.onChangeResiduo} value={residuo.cantidad} data-key={index} name="cantidad"></input></span>
+                    <span>{residuo.cantidad} </span>
                 </div>
                 <div>
                     <span>Clasificacion</span>
                     <span>
-                        <select className="input-generico" onChange={this.onChangeResiduo} value={residuo.clasificacion} data-key={index} name="clasificacion">
+                        <select className="input-generico" disabled readOnly onChange={this.onChangeResiduo} value={residuo.clasificacion} data-key={index} name="clasificacion">
                             <option >Seleccionar</option>
                             {subcategorias}
                         </select>
@@ -337,14 +326,14 @@ export default class CrearPlanManejo extends Component {
                     <span className="introspan">
                         {residuo.pretratamiento === "1"
                             ? <Fragment>
-                                <span> <input type="radio" onChange={this.onChangeResiduo} value="1" checked name="pretratamiento" data-key={index} /> <label>Si</label> </span>
-                                <span> <input type="radio" onChange={this.onChangeResiduo} value="0"  name="pretratamiento" data-key={index} /> <label>No</label> </span>
+                                <span> <input type="radio" disabled onChange={this.onChangeResiduo} value="1" checked name={`pretratamiento${index}`} data-key={index} /> <label>Si</label> </span>
+                                <span> <input type="radio" disabled onChange={this.onChangeResiduo} value="0" name={`pretratamiento${index}`} data-key={index} /> <label>No</label> </span>
                                 <span> <input name="pretatamientoValor" value={residuo.pretratamientoValor} onChange={this.onChangeResiduo} data-key={index} /> </span>
                             </Fragment>
                             : <Fragment>
-                                <span> <input type="radio" onChange={this.onChangeResiduo} value="1"  name="pretratamiento" data-key={index} /> <label>Si</label> </span>
-                                <span> <input type="radio" onChange={this.onChangeResiduo} value="0"  checked name="pretratamiento" data-key={index} /> <label>No</label> </span>
-                                
+                                <span> <input type="radio" disabled onChange={this.onChangeResiduo} value="1" name={`pretratamiento${index}`} data-key={index} /> <label>Si</label> </span>
+                                <span> <input type="radio" disabled onChange={this.onChangeResiduo} value="0" checked name={`pretratamiento${index}`} data-key={index} /> <label>No</label> </span>
+
                             </Fragment>
 
                         }
@@ -364,7 +353,7 @@ export default class CrearPlanManejo extends Component {
                             <h3 className="verde">Editar Plan</h3>
                             <div>
                                 <span>Nombre plan</span>
-                                <span> <input className="input-generico" value={this.state.nombre} onChange={this.onChangeInput} name="nombre"></input></span>
+                                <span>{this.state.nombre}</span>
                             </div>
                             <div>
                                 <span>Fecha</span>
@@ -373,7 +362,7 @@ export default class CrearPlanManejo extends Component {
                             <div>
                                 <span>Centro Costos</span>
                                 <span>
-                                    <select name="centro" value={this.state.centro} onChange={this.onChangeInput} className="input-generico">
+                                    <select disabled name="centro" value={this.state.centro} onChange={this.onChangeInput} className="input-generico">
                                         <option>Seleccionar</option>
                                         {centrocostos}
                                     </select>
@@ -381,22 +370,22 @@ export default class CrearPlanManejo extends Component {
                             </div>
                             <div>
                                 <span>Dirección faena</span>
-                                <span> <input className="input-generico" value={this.state.direccion} onChange={this.onChangeInput} name="direccion"></input></span>
+                                <span> {this.state.direccion}</span>
                             </div>
                             <div>
                                 <span>Comuna</span>
-                                <span><select name="comuna" value={this.state.comuna} onChange={this.onChangeInput} className="input-generico">
+                                <span><select disabled name="comuna" value={this.state.comuna} onChange={this.onChangeInput} className="input-generico">
                                     <option>Seleccione Comuna</option>
                                     {comunas}
                                 </select></span>
                             </div>
                             <div>
                                 <span>ID</span>
-                                <span> <input className="input-generico" value={this.state.id} onChange={this.onChangeInput} name="id"></input></span>
+                                <span> {this.state.id}</span>
                             </div>
                             <div>
                                 <span>VU - RETC</span>
-                                <span> <input className="input-generico" value={this.state.vuretc} onChange={this.onChangeInput} name="vuretc"></input></span>
+                                <span>{this.state.vuretc}</span>
                             </div>
                         </div>
 
@@ -405,7 +394,7 @@ export default class CrearPlanManejo extends Component {
                             <div>
                                 <span>Recoleccion residuos</span>
                                 <span>
-                                    <select className="input-generico" onChange={this.onChangeInput} value={this.state.recoleccion} name="recoleccion">
+                                    <select disabled className="input-generico" onChange={this.onChangeInput} value={this.state.recoleccion} name="recoleccion">
                                         <option >Seleccionar</option>
                                         <option value="1">Recolección completa</option>
                                         <option value="2">Recoleccion parcial</option>
@@ -415,7 +404,7 @@ export default class CrearPlanManejo extends Component {
                             <div>
                                 <span>Valorización completa</span>
                                 <span>
-                                    <select className="input-generico" onChange={this.onChangeInput} value={this.state.valorizacion} name="valorizacion">
+                                    <select disabled className="input-generico" onChange={this.onChangeInput} value={this.state.valorizacion} name="valorizacion">
                                         <option >Seleccionar</option>
                                         <option value="1">Solo Recolección</option>
                                         <option value="2">Todo</option>
@@ -427,7 +416,7 @@ export default class CrearPlanManejo extends Component {
                         <div className="seccion">
                             <div className="prehead wauto">
                                 <h3 className="verde">2. Volumen y clasificación del residuo</h3>
-                                <button className="ml verde" onClick={this.manejadorModals} data-objetivo="AgregarResiduoPlan">+ Nuevo residuo</button>
+
                             </div>
                             {items}
                         </div>
@@ -438,20 +427,24 @@ export default class CrearPlanManejo extends Component {
                             <h3 className="gris">Espacio disponible para acopio: </h3>
                             <div>
                                 <span>Techado</span>
-                                <span> <input className="input-generico" onChange={this.onChangeInput} value={this.state.techadoAltura} name="techadoAltura" placeholder="Superficie"></input></span>
-                                <span> <input className="input-generico" onChange={this.onChangeInput} value={this.state.techadoSuperficie} name="techadoSuperficie" placeholder="Altura"></input></span>
+                                <span> {this.state.techadoAltura} Mts Alto -  {this.state.techadoSuperficie} Mts Superficie</span>
+                                
                             </div>
                             <div>
                                 <span>Cielo Abierto</span>
-                                <span> <input className="input-generico" onChange={this.onChangeInput} value={this.state.superficie} name="superficie" placeholder="Superficie"></input></span>
+                                <span> {this.state.superficie} Mts</span>
                             </div>
                             <div>
-                                <span>Adjuntar Fotografia</span>
-                                <span><input className="input-generico" onChange={this.onChangeFileInput} type="file" name="imagen" placeholder="Subir archivo" /></span>
+                                <span>Adjuntar Fotografía</span>
+                                {
+                                 this.state.imagen[0]   && 
+                                 <span onClick onClick={() => openInNewTab(direccionImagen+this.state.imagen[0].url )}>{ this.state.imagen[0].input}</span>
+                                }
+                                
                             </div>
                             <div>
                                 <span>Comentarios</span>
-                                <span> <textarea className="input-generico" onChange={this.onChangeInput} value={this.state.comentarios} name="comentarios"></textarea></span>
+                                <span> <textarea disabled readOnly className="input-generico" onChange={this.onChangeInput} value={this.state.comentarios} name="comentarios"></textarea></span>
                             </div>
                             <h3 className="gris">¿Posee algún tipo de contenedores segregadores en la faena?</h3>
                             <div className="introspan spanseparado">
@@ -462,20 +455,18 @@ export default class CrearPlanManejo extends Component {
                                     <input className="input-generico" type="radio" name="nombre" value="0" placeholder="Superficie"></input><label>No</label>
                                 </span>
                             </div>
-
                             <div>
                                 <span>¿Cuantos?</span>
-                                <span> <input className="input-generico" onChange={this.onChangeInput} value={this.state.contenedores} name="contenedores"></input></span>
+                                <span>{this.state.contenedores}</span>
                             </div>
                             <div>
                                 <span>¿Que tipo de residuos segrega actualmente?</span>
-                                <span> <textarea className="input-generico" onChange={this.onChangeInput} value={this.state.residuosegregado} name="residuosegregado"></textarea></span>
+                                <span> <textarea disabled readonly className="input-generico" onChange={this.onChangeInput} value={this.state.residuosegregado} name="residuosegregado"></textarea></span>
                             </div>
-                            <div className="form-group buttons">
-
+                            {/* <div className="form-group buttons">
                                 <button className="boton-generico btazulalt" type="button" >Cancelar</button>
                                 <button className="boton-generico btazul" onClick={this.enviaDatos}>Guardar</button>
-                            </div>
+                            </div> */}
                         </div>
 
                     </div>

@@ -213,8 +213,9 @@ export default class CrearPlanManejo extends Component {
     }
 
     pushLista = () => {
-        historial.push("/residuos/plan-manejo");
+        historial.push(`/residuos/plan-manejo-cliente/${this.props.match.params}`);
     }
+
 
     enviaDatos = async e => {
         console.log(this.state);

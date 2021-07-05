@@ -151,7 +151,7 @@ export default class VerTrazabilidad extends Component {
                     datosLer: res.data.data.datosLer,
                     codigoLer: res.data.data.datosRetiro[0].codigoler,
                     categoriaLer: res.data.data.datosRetiro[0].categoria,
-                    residuosagregado: res.data.data.datosTrazabilidad[0].residuos,
+                    residuosagregado: '',
 
                 });
                 if (componente.state.datosTrazabilidad[0]) {
@@ -168,6 +168,7 @@ export default class VerTrazabilidad extends Component {
                 }
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                console.log(err);
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 return;
             });
@@ -201,7 +202,7 @@ export default class VerTrazabilidad extends Component {
                             }}
                         >
                             Aceptar
-                    </button>
+                        </button>
                     </div>
                 );
             }
@@ -337,7 +338,7 @@ export default class VerTrazabilidad extends Component {
         if (!campoVacio) {
             console.log(this.state.residuosagregado);
             const res = await Axios.post('/api/gestion-residuos/trazabilidad/etapatres/', {
-                idor:this.state.idor,
+                idor: this.state.idor,
                 residuos: this.state.residuosagregado,
             }, { headers: authHeader() })
                 .then(respuesta => {
@@ -359,46 +360,48 @@ export default class VerTrazabilidad extends Component {
         }
     }
     render() {
-
-        const items = this.state.residuosagregado.map((residuo, index) => {
-            return (<Fragment key={index}>
-                <div className="prehead wauto">
-                    <h3 className="amarillo">{this.state.codigoLer} - {this.state.datosLer[0].categoria} - {residuo.label}</h3>
-                    {/* <button className="ml verde"><Basurero /></button> */}
-                </div>
-                <div>
-                    <span>Peso de acuerdo a clasif.</span>
-                    <span><input type="number" className="input-generico" value={residuo.pesoClasif} onChange={this.onChangeResiduo} data-key={index} name="pesoClasif"></input></span>
-                </div>
-                <div>
-                    <span>N° Sacas</span>
-                    <span> <input type="number" className="input-generico" value={residuo.sacas} onChange={this.onChangeResiduo} data-key={index} name="sacas"></input></span>
-                </div>
-                <div>
-                    <span>Planificación Tratamiento</span>
-                    <span>
-                        <select className="input-generico" value={residuo.planificacion} onChange={this.onChangeResiduo} data-key={index} name="planificacion">
-                            <option value=""></option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-                    </span>
-                </div>
-                <div>
-                    <span>Destino del residuo</span>
-                    <span>
-                        <select className="input-generico" value={residuo.destino} onChange={this.onChangeResiduo} data-key={index} name="destino">
-                            <option value=""></option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-                    </span>
-                </div>
-            </Fragment>
-            )
-        });
+        let items;
+        if (this.state.residuosagregado) {
+            items = this.state.residuosagregado.map((residuo, index) => {
+                return (<Fragment key={index}>
+                    <div className="prehead wauto">
+                        <h3 className="amarillo">{this.state.codigoLer} - {this.state.datosLer[0].categoria} - {residuo.label}</h3>
+                        {/* <button className="ml verde"><Basurero /></button> */}
+                    </div>
+                    <div>
+                        <span>Peso de acuerdo a clasif.</span>
+                        <span><input type="number" className="input-generico" value={residuo.pesoClasif} onChange={this.onChangeResiduo} data-key={index} name="pesoClasif"></input></span>
+                    </div>
+                    <div>
+                        <span>N° Sacas</span>
+                        <span> <input type="number" className="input-generico" value={residuo.sacas} onChange={this.onChangeResiduo} data-key={index} name="sacas"></input></span>
+                    </div>
+                    <div>
+                        <span>Planificación Tratamiento</span>
+                        <span>
+                            <select className="input-generico" value={residuo.planificacion} onChange={this.onChangeResiduo} data-key={index} name="planificacion">
+                                <option value=""></option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div>
+                        <span>Destino del residuo</span>
+                        <span>
+                            <select className="input-generico" value={residuo.destino} onChange={this.onChangeResiduo} data-key={index} name="destino">
+                                <option value=""></option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </span>
+                    </div>
+                </Fragment>
+                )
+            });
+        }
 
         return (
             <div className="principal" id="component-perfil">

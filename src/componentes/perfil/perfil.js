@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { autenticacion } from '../../servicios/autenticacion';
 import { Link } from 'react-router-dom';
-import Axios  from '../../helpers/axiosconf';
+import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
 import { funciones } from '../../servicios/funciones';
@@ -39,7 +39,7 @@ const toastoptions = {
     draggable: true,
     progress: undefined,
 }
-
+const direccionImagen = funciones.obtenerRutaUsuarios();
 export default class Perfil extends Component {
 
     toogleModal = toogleModalCore; //copiamos la funcion modal a una funcion local
@@ -72,7 +72,7 @@ export default class Perfil extends Component {
         this.state = {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
-            rutFormateado : "",
+            rutFormateado: "",
             users: null,
             showCambiarPass: false,
             showCambiarBasicos: false,
@@ -87,7 +87,9 @@ export default class Perfil extends Component {
             formTelefonoMovil: '',
             formDireccion: '',
             formComuna: '',
-            formCiudad: ''
+            formCiudad: '',
+
+            fotoPerfil: ''
         };
     }
 
@@ -107,7 +109,22 @@ export default class Perfil extends Component {
             formComuna: this.state.datosUsuarios.emergencias.comuna,
             formCiudad: this.state.datosUsuarios.emergencias.ciudad
         });
-        await funciones.getRutFormateado(this.state.datosUsuarios.rut, this.state.datosUsuarios.dv).then(res => {this.setState({ rutFormateado: res })});
+        await funciones.getRutFormateado(this.state.datosUsuarios.rut, this.state.datosUsuarios.dv).then(res => { this.setState({ rutFormateado: res }) });
+        if (this.state.datosUsuarios.imagen) {
+            if (this.state.datosUsuarios.imagen.length > 0) {
+                this.setState({
+                    fotoPerfil: direccionImagen + this.state.datosUsuarios.imagen[0].url
+                })
+            } else {
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        } else {
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
     }
     async componentWillUnmount() {
 
@@ -170,7 +187,12 @@ export default class Perfil extends Component {
                         <div className="seccion">
                             <a className="edit-button" onClick={this.editar} data-objetivo="CambiarBasicos"><img src={edit} /></a>
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    {this.state.fotoPerfil &&
+                                        <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    }
+                                </div>
+
                             </div>
                             <div>
                                 <span>Nombre</span><span>{this.state.datosUsuarios.nombre}</span>
@@ -209,12 +231,15 @@ export default class Perfil extends Component {
                                 </div>
                             }
                         </div>
-                        <div className="seccion">
-                            <a className="edit-button" onClick={this.manejadorModals} data-objetivo="CambiarPass"><img src={edit} /></a>
-                            <div>
-                                <span>Contraseña</span><span>*********</span>
+                        {this.state.datosUsuarios.rut === 18706188
+                            ? ""
+                            : <div className="seccion">
+                                <a className="edit-button" onClick={this.manejadorModals} data-objetivo="CambiarPass"><img src={edit} /></a>
+                                <div>
+                                    <span>Contraseña</span><span>*********</span>
+                                </div>
                             </div>
-                        </div>
+                        }
                         {this.state.datosUsuarios.emergencias
                             ?
                             <div className="seccion">
@@ -273,11 +298,11 @@ export default class Perfil extends Component {
                                     }
                                 </div>
                                 {this.state.showCambiarEmergencias &&
-                                <div className="form-group buttons">
-                                    <button className="boton-generico btazul" onClick={this.actualizaEmergencias}>Guardar</button>
-                                    <button className="boton-generico btgris" type="button">Cancelar</button>
-                                </div>
-                            }
+                                    <div className="form-group buttons">
+                                        <button className="boton-generico btazul" onClick={this.actualizaEmergencias}>Guardar</button>
+                                        <button className="boton-generico btgris" type="button">Cancelar</button>
+                                    </div>
+                                }
                             </div>
                             : null
                         }

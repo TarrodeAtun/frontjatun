@@ -191,6 +191,12 @@ export default class CrearPlanManejo extends Component {
         residuosagregado[llave][e.target.name] = e.target.value;
         this.setState({ residuosagregado: residuosagregado });
     }
+    onChangePretratamiento = (e) => {
+        const llave = e.target.dataset.key;
+        let residuosagregado = this.state.residuosagregado;
+        residuosagregado[llave]["pretratamiento"] = e.target.value;
+        this.setState({ residuosagregado: residuosagregado });
+    }
 
     agregarResiduo = (datos) => {
         const residuo = {
@@ -316,8 +322,8 @@ export default class CrearPlanManejo extends Component {
                 <div>
                     <span>Pretratamiento</span>
                     <span className="introspan">
-                        <span> <input type="radio" onChange={this.onChangeResiduo} value="1" name="pretratamiento" data-key={index} /> <label>Si</label> </span>
-                        <span> <input type="radio" onChange={this.onChangeResiduo} value="0" name="pretratamiento" data-key={index} /> <label>No</label> </span>
+                        <span> <input type="radio" onChange={this.onChangePretratamiento} value="1" name={`pretratamiento${index}`} data-key={index} /> <label>Si</label> </span>
+                        <span> <input type="radio" onChange={this.onChangePretratamiento} value="0" name={`pretratamiento${index}`} data-key={index} /> <label>No</label> </span>
                         <span>
                             {this.state.residuosagregado[index].pretratamiento === "1" &&
                                 <input name="pretratamientoValor" onChange={this.onChangeResiduo} data-key={index} />

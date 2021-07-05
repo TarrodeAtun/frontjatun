@@ -92,7 +92,7 @@ export default class ResultadosEncuestas extends Component {
                         : <td className="amarillo">Finalizado</td>
                     }
                     <td className="acciones">
-                        <span><Link to={`/residuos/plan-manejo`}><Ojo /></Link></span>
+                        <span><Link to={`/residuos/plan-manejo/detalle/${plan._id}`}><Ojo /></Link></span>
                         <span><Link to={`/residuos/plan-manejo/ver/${plan._id}`}><Edit /></Link></span>
                         <span><Link ><Basurero /></Link></span>
                     </td>

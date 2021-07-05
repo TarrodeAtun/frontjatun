@@ -35,6 +35,7 @@ import PlanManejo from './componentes/gestion_residuos/planManejo';
 import PlanManejoCliente from './componentes/gestion_residuos/planmanejocliente';
 import CrearPlanManejo from './componentes/gestion_residuos/crearplanmanejo';
 import VerPlanManejo from './componentes/gestion_residuos/verplanmanejo';
+import VerPlanManejoDetalle from './componentes/gestion_residuos/detalleplanmanejo';
 
 
 import Trazabilidad from './componentes/gestion_residuos/trazabilidad';
@@ -110,6 +111,10 @@ import RegistrosGraficosPersonal from './componentes/perfil/registrosgraficos';
 import IndicadoresPersonal from './componentes/perfil/indicadoresdesempeño';
 import Missolicitudes from './componentes/perfil/missolicitudes';
 import CrearSolicitud from './componentes/perfil/crearSolicitud';
+import MisEncuestasPerfil from './componentes/perfil/misEncuestas';
+import ContestarEncuestaPerfil from './componentes/perfil/contestarEncuesta';
+import MiSoporte from './componentes/perfil/soporte';
+import VerMiMensajeSoporte from './componentes/perfil/verMensaje';
 
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -230,6 +235,13 @@ class App extends React.Component {
                   <RutaPrivada exact path="/perfil/ficha-personal/indicadores-desempeño" component={IndicadoresPersonal} />
                   <RutaPrivada exact path="/perfil/turnos/mis-solicitudes" component={Missolicitudes} />
                   <RutaPrivada exact path="/perfil/turnos/mis-solicitudes/solicitar" component={CrearSolicitud} />
+                  <RutaPrivada exact path="/perfil/ficha-personal/encuestas/mis-encuestas" component={MisEncuestasPerfil} />
+                  <RutaPrivada exact path="/perfil/ficha-personal/encuestas/contestar-encuesta/:id" component={ContestarEncuestaPerfil} />
+                  <RutaPrivada exact path="/perfil/bienestar/soporte" component={MiSoporte} />
+                  <RutaPrivada exact path="/perfil/bienestar/soporte/ver-mensaje/:id" component={VerMiMensajeSoporte} />
+
+
+                  
 
 
 
@@ -250,6 +262,7 @@ class App extends React.Component {
                   <RutaPrivada exact path="/residuos/plan-manejo-cliente/:id" component={PlanManejoCliente} />
                   <RutaPrivada exact path="/residuos/plan-manejo/crear/:id" component={CrearPlanManejo} />
                   <RutaPrivada exact path="/residuos/plan-manejo/ver/:id" component={VerPlanManejo} />
+                  <RutaPrivada exact path="/residuos/plan-manejo/detalle/:id" component={VerPlanManejoDetalle} />
 
                   <RutaPrivada exact path="/residuos/trazabilidad/" component={Trazabilidad} />
                   <RutaPrivada exact path="/residuos/trazabilidad/ver/:id" component={VerTrazabilidad} />

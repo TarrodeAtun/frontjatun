@@ -228,9 +228,9 @@ export default class CrearRetiro extends Component {
                 .then(respuesta => {
                     // this.setState({ idUsuario: respuesta.data.id });
                     if (respuesta.data.estado === "success") {
-                        // toast.success(respuesta.data.mensaje, toastoptions);
-                        // historial.push("/residuos/control-retiro/programacion-retiro");
-                        // this.setState({ showIngresar: true, showOptions: false });
+                        toast.success(respuesta.data.mensaje, toastoptions);
+                        historial.push("/residuos/control-logistico");
+                        this.setState({ showIngresar: true, showOptions: false });
                     } else if (respuesta.data.estado === "warning") {
                         toast.warning(respuesta.data.mensaje, toastoptions);
                     }

@@ -51,7 +51,11 @@ export default class EditarEncuesta extends Component {
             showAgregaPregunta: '',
             showModificarPregunta: '',
             modifyTarget: '',
-            modifyTargetIndex: ''
+            modifyTargetIndex: '',
+
+            trabajadores: '',
+            trabajadoresSelect: [],
+            selectTrabajador: ''
         };
     }
 
@@ -73,11 +77,13 @@ export default class EditarEncuesta extends Component {
         var componente = this;
         const res = Axios.get('/api/bienestar/encuestas/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
+                console.log(res.data.data);
                 let datos = res.data.data;
                 componente.setState({
                     idEncuesta: datos._id,
                     nombreEncuesta: datos.nombre,
-                    preguntas: datos.preguntas
+                    preguntas: datos.preguntas,
+                    trabajadoresSelect: datos.trabajadores
                 });
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -143,6 +149,21 @@ export default class EditarEncuesta extends Component {
 
     render() {
 
+        let trabajadoresAsignados;
+        if (this.state.trabajadoresSelect) {
+            trabajadoresAsignados = this.state.trabajadoresSelect.map((trabajador, index) =>
+                <div className="div-trabajador">
+                    <span>Trabajador {index + 1}</span>
+                    <span className="spanConductor">
+                        {/* <button onClick={e => this.eliminaTrabajador(index)}>X</button> */}
+                        <span>{trabajador.nombre} {trabajador.apellido}</span>
+                        <span>{trabajador.rut}-{trabajador.dv}</span>
+                    </span>
+                </div>
+            )
+
+        }
+
         const compo = this;
         let items;
         if (this.state.preguntas.length !== 0) {
@@ -203,6 +224,14 @@ export default class EditarEncuesta extends Component {
 
                         {items}
                     </div>
+                </div>
+                <div className="seccion seccion-trabajadores-encuestas">
+                    <div>
+                        <span>Trabajadores Asignados</span>
+                        <span className="select-container">
+                        </span>
+                    </div>
+                    {trabajadoresAsignados}
                 </div>
                 <div className="enviar">
                     {this.state.preguntas.length !== 0

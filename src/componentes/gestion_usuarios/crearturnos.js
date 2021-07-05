@@ -67,7 +67,8 @@ export default class CrearRetiro extends Component {
                 inicio: '00:00',
                 termino: '00:00',
                 jefe: '',
-            }
+            },
+            labelFrecuencia: ''
         };
 
     }
@@ -154,6 +155,17 @@ export default class CrearRetiro extends Component {
             }
         })
     }
+    onChangeFecha = (e) => {
+
+        this.setState({
+            form: {
+                ...this.state.form, [e.target.name]: e.target.value
+            },
+            frecuenciaArray: [],
+            labelFrecuencia: '',
+            frecuencia: ''
+        })
+    }
     onChangeTrabajadores = (e) => {
         console.log("change");
         var rut = e.target.value;
@@ -182,15 +194,15 @@ export default class CrearRetiro extends Component {
     onChangeCliente = async (e) => {
         var clienteRut = e.target.value;
         if (e.target.value) {
-            await this.setState({form: {...this.state.form, clienterut: clienteRut } })
-            await this.setState({form: {...this.state.form, sector: '' } })
+            await this.setState({ form: { ...this.state.form, clienterut: clienteRut } })
+            await this.setState({ form: { ...this.state.form, sector: '' } })
             let clientes = await this.state.clientes;
             let clienteSelect = await clientes.find(cliente => parseInt(cliente.rut) === parseInt(clienteRut));
             this.setState({ sectores: clienteSelect.sectores });
         } else {
             console.log("no");
-            await this.setState({form: {...this.state.form, clienterut: '' } })
-            await this.setState({form: {...this.state.form, sector: '' } })
+            await this.setState({ form: { ...this.state.form, clienterut: '' } })
+            await this.setState({ form: { ...this.state.form, sector: '' } })
             await this.setState({ sectores: '' });
         }
     }
@@ -213,18 +225,27 @@ export default class CrearRetiro extends Component {
         var termino = this.state.form.termino;
         var componente = this;
         if (eleccion === "1") {
-            var arrayasd = [];
-            console.log(fecha);
-            var otrafecha = new Date(fecha);
-            registro = {
-                fecha: otrafecha
+            if (fecha) {
+                var arrayasd = [];
+                console.log(fecha);
+                var otrafecha = new Date(moment(fecha).utc().format());
+                registro = {
+                    fecha: otrafecha
+                }
+                arrayasd.push(registro);
+                await componente.setState({ frecuenciaArray: arrayasd, labelFrecuencia: "No se repite" });
+            } else {
+                this.setState({
+                    frecuenciaArray: [],
+                    labelFrecuencia: '',
+                    frecuencia: ''
+                });
+                toast.warning("Debe seleccionar una fecha primero", toastoptions);
             }
-            arrayasd.push(registro);
-            await componente.setState({ frecuenciaArray: arrayasd });
         }
         if (eleccion === "2") {
             if (fecha) {
-                var otrafecha = new Date(fecha);
+                var otrafecha = new Date(moment(fecha).utc().format());
                 var primer = new Date(otrafecha.getFullYear(), otrafecha.getMonth(), 1);
                 var ultimo = new Date(otrafecha.getFullYear(), otrafecha.getMonth() + 1, 0);
                 var numdias = ultimo.getDate();
@@ -233,54 +254,69 @@ export default class CrearRetiro extends Component {
                 var preDOM;
                 var dia = otrafecha.getDate() + 1;
                 var retiros = [];
+                let label = "Se repite cada dia desde el " + moment(primer).utc().format("DD/MM/YYYY") + " hasta el " + moment(ultimo).utc().format("DD/MM/YYYY");
                 for (dia; dia <= numdias; dia++) {
                     registro = {
                         fecha: new Date(otrafecha.getFullYear(), otrafecha.getMonth(), dia)
                     }
                     arrayasd.push(registro);
                 }
+
                 console.log(arrayasd);
-                await componente.setState({ frecuenciaArray: arrayasd });
+                await componente.setState({ frecuenciaArray: arrayasd, labelFrecuencia: label });
             } else {
+                this.setState({
+                    frecuenciaArray: [],
+                    labelFrecuencia: '',
+                    frecuencia: ''
+                });
                 toast.warning("Debe seleccionar una fecha primero", toastoptions);
             }
         }
 
         if (eleccion === "3") {
             if (fecha) {
-                var otrafecha = new Date(fecha);
+                var otrafecha = new Date(moment(fecha).utc().format());
                 var actual = otrafecha.getDate();
                 var ultimo = new Date(otrafecha.getFullYear(), otrafecha.getMonth() + 1, 0);
                 var numdias = ultimo.getDate();
                 var nextweek = new Date(otrafecha.getFullYear(), otrafecha.getMonth(), otrafecha.getDate() + 7);
-                var dia = otrafecha.getDate() + 1
+                var dia = otrafecha.getDate();
                 var registro = {};
                 var arrayasd = [];
                 var preDOM;
                 var retiros = [];
+                let label = "Se repite cada " + funciones.nombreDia(otrafecha) + "  desde el " + moment(otrafecha).utc().format("DD/MM/YYYY") + " hasta el " + moment(ultimo).utc().format("DD/MM/YYYY");
                 for (dia; dia <= numdias; dia = dia + 7) {
                     registro = {
                         fecha: new Date(otrafecha.getFullYear(), otrafecha.getMonth(), dia)
                     }
                     arrayasd.push(registro);
                 }
-                await componente.setState({ frecuenciaArray: arrayasd });
+                await componente.setState({ frecuenciaArray: arrayasd, labelFrecuencia: label });
             } else {
+                this.setState({
+                    frecuenciaArray: [],
+                    labelFrecuencia: '',
+                    frecuencia: ''
+                });
                 toast.warning("Debe seleccionar una fecha primero", toastoptions);
             }
         }
 
         if (eleccion === "4") {
             if (fecha) {
-                var otrafecha = new Date(fecha);
+                var otrafecha = new Date(moment(fecha).utc().format());
                 var primer = new Date(otrafecha.getFullYear(), otrafecha.getMonth(), 1);
                 var ultimo = new Date(otrafecha.getFullYear(), otrafecha.getMonth() + 1, 0);
                 var numdias = ultimo.getDate();
-                var dia = otrafecha.getDate() + 1;
+                var dia = otrafecha.getDate();
                 var registro = {};
                 var arrayasd = [];
                 var preDOM;
                 var retiros = [];
+                let label = "Se repite de lunes a viernes a partir del" + moment(primer).utc().format("DD/MM/YYYY") + " hasta el " + moment(ultimo).utc().format("DD/MM/YYYY");
+
                 for (dia; dia <= numdias; dia++) {
                     var fechaProvisoria = new Date(otrafecha.getFullYear(), otrafecha.getMonth(), dia);
                     if (fechaProvisoria.getDay() !== 0 && fechaProvisoria.getDay() !== 6) {
@@ -290,8 +326,13 @@ export default class CrearRetiro extends Component {
                         arrayasd.push(registro);
                     }
                 }
-                await componente.setState({ frecuenciaArray: arrayasd });
+                await componente.setState({ frecuenciaArray: arrayasd, labelFrecuencia: label });
             } else {
+                this.setState({
+                    frecuenciaArray: [],
+                    labelFrecuencia: '',
+                    frecuencia: ''
+                });
                 toast.warning("Debe seleccionar una fecha primero", toastoptions);
             }
         }
@@ -299,12 +340,17 @@ export default class CrearRetiro extends Component {
             if (fecha) {
                 this.setState({ showFrecuenciaRetiro: true });
             } else {
+                this.setState({
+                    frecuenciaArray: [],
+                    labelFrecuencia: '',
+                    frecuencia: ''
+                });
                 toast.warning("Debe seleccionar una fecha primero", toastoptions);
             }
         }
         console.log(this.state.frecuenciaArray);
     }
-    frecuenciaPersonalizada = async (datos) => {
+    frecuenciaPersonalizada = async (datos, label) => {
         var arrayasd = [];
         var registro = {};
         for await (let dias of datos) {
@@ -314,7 +360,7 @@ export default class CrearRetiro extends Component {
             }
             arrayasd.push(registro);
         }
-        await this.setState({ frecuenciaArray: arrayasd });
+        await this.setState({ frecuenciaArray: arrayasd, labelFrecuencia: label });
     }
 
     abrirmodal = () => {
@@ -337,7 +383,7 @@ export default class CrearRetiro extends Component {
                                 onClose();
                             }} >
                             Aceptar
-                    </button>
+                        </button>
                     </div>
                 );
             }
@@ -448,6 +494,7 @@ export default class CrearRetiro extends Component {
             )
 
         }
+        let fechasSeleccionadas;
 
         return (
             <div className="principal" id="component-perfil">
@@ -495,7 +542,7 @@ export default class CrearRetiro extends Component {
                             <h3 className="verde">Fecha y Frecuencia*</h3>
                             <div>
                                 <span>Fecha</span>
-                                <span><input type="date" onChange={this.onChangeInput} value={this.state.form.fecha} className="input-generico" name="fecha" /></span>
+                                <span><input type="date" onChange={this.onChangeFecha} value={this.state.form.fecha} className="input-generico" name="fecha" /></span>
                             </div>
                             <div>
                                 <span>Horario Inicio</span>
@@ -607,7 +654,7 @@ export default class CrearRetiro extends Component {
                                 <span>Frecuencia</span>
                                 <span>
                                     <select name="frecuencia" onChange={this.onChangeInputFrecuencia} value={this.state.frecuencia} className="input-generico">
-                                        <option>Seleccione una categoría</option>
+                                        <option value="">Seleccione una categoría</option>
                                         <option value="1">No se repite</option>
                                         <option value="2">Cada día del mes</option>
                                         <option value="3">Cada semana del mes</option>
@@ -616,6 +663,12 @@ export default class CrearRetiro extends Component {
                                     </select>
                                 </span>
                             </div>
+                            {this.state.labelFrecuencia &&
+                                <div>
+                                    <span></span>
+                                    <span>{this.state.labelFrecuencia}</span>
+                                </div>
+                            }
                             <h3 className="verde">Trabajadores*</h3>
                             <div>
                                 <span>Jefe de Cuadrilla</span>

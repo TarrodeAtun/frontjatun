@@ -32,6 +32,7 @@ const openInNewTab = (url) => {
     const newWindow = window.open(direccion, '_blank', 'noopener,noreferrer')
     if (newWindow) newWindow.opener = null
 }
+const direccionImagen = funciones.obtenerRutaUsuarios();
 export default class EquipoTrabajador extends Component {
     constructor(props) {
         super(props);
@@ -96,6 +97,21 @@ export default class EquipoTrabajador extends Component {
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 return;
             });
+        if (this.state.datosUsuario.imagen) {
+            if (this.state.datosUsuario.imagen.length > 0) {
+                this.setState({
+                    fotoPerfil: direccionImagen + this.state.datosUsuario.imagen[0].url
+                })
+            } else {
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        } else {
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
         //datos contractuales trabajador
         await Axios.get('/api/users/worker/ficha/contractuales/' + this.state.datosUsuario.rut, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
@@ -114,22 +130,23 @@ export default class EquipoTrabajador extends Component {
                         formTipoContrato: res.data.tipoContrato,
                     }
                 });
-                res.data.archivos.forEach(archivo=>{
+                console.log(res.data.archivos);
+                res.data.archivos.forEach(archivo => {
                     console.log(archivo);
                     componente.setState({
-                        [archivo.input]:{
-                            name:[archivo.input],
+                        [archivo.input]: {
+                            name: [archivo.input],
                             link: [archivo.url]
                         }
                     })
                 });
-               
+
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 // handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 return;
             });
-            await console.log(this.state.cedula);
+        await console.log(this.state.cedula);
     }
     retorno = () => {
         var componente = this;
@@ -144,7 +161,7 @@ export default class EquipoTrabajador extends Component {
                             onClick={componente.enviaDatos}
                         >
                             Aceptar
-                    </button>
+                        </button>
                     </div>
                 );
             }
@@ -176,6 +193,7 @@ export default class EquipoTrabajador extends Component {
         }
     }
     enviaDatos = async e => {
+        let componente = this;
         e.preventDefault();
         var formData = new FormData();
         // if(this.state.formAntecedentes !== "" || this.state.formAntecedentes !== null){
@@ -212,13 +230,38 @@ export default class EquipoTrabajador extends Component {
         formData.append("fechaterm", this.state.form.formFechaterm);
         formData.append("tipoContrato", this.state.form.formTipoContrato);
         const res = await Axios.post('/api/users/worker/ficha/contractuales/', formData, { headers: authHeader() })
-            .then(respuesta => {
-                console.log(respuesta);
-                if (respuesta.data.estado === "success") {
-                    toast.success(respuesta.data.mensaje, toastoptions);
-                    this.setState({ showModificar: false });
-                } else if (respuesta.data.estado === "warning") {
-                    toast.warning(respuesta.data.mensaje, toastoptions);
+            .then(res => {
+                console.log(res);
+                if (res.data.estado === "success") {
+                    toast.success(res.data.mensaje, toastoptions);
+                    componente.setState({ showModificar: false });
+                    componente.setState({
+                        form: {
+                            formDireccion: res.data.data.direccion,
+                            formComuna: res.data.data.comuna,
+                            formCiudad: res.data.data.ciudad,
+                            formNacionalidad: res.data.data.nacionalidad,
+                            formProfesion: res.data.data.profesion,
+                            formEstadocivil: res.data.data.estadocivil,
+                            formHijos: res.data.data.hijos,
+                            formCarga: res.data.data.carga,
+                            formFechainic: res.data.data.fechainic,
+                            formFechaterm: res.data.data.fechaterm,
+                            formTipoContrato: res.data.data.tipoContrato,
+                        }
+                    });
+                    console.log(res.data.data.archivos);
+                    res.data.data.archivos.forEach(archivo => {
+                        console.log(archivo);
+                        componente.setState({
+                            [archivo.input]: {
+                                name: [archivo.input],
+                                link: [archivo.url]
+                            }
+                        })
+                    });
+                } else if (res.data.estado === "warning") {
+                    toast.warning(res.data.mensaje, toastoptions);
                 }
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -234,7 +277,11 @@ export default class EquipoTrabajador extends Component {
                     <div className="fichaPerfil">
                         <div className="seccion encabezado">
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    {this.state.fotoPerfil &&
+                                        <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    }
+                                </div>
                             </div>
                             <div className="datosPersonales">
                                 <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>
@@ -298,7 +345,7 @@ export default class EquipoTrabajador extends Component {
                                     ? <span className="formRadio" name="formCarga" onChange={this.onChangeInput}>
                                         <input type="radio" value="1" name="formCarga" /> Si
                                         <input type="radio" value="0" name="formCarga" /> No
-                                      </span>
+                                    </span>
                                     : <span>
                                         {this.state.form.formPerfil1 === "1" && 'Si'}
                                         {this.state.form.formPerfil1 === "0" && 'Nno'}
@@ -332,7 +379,7 @@ export default class EquipoTrabajador extends Component {
                                 {this.state.showModificar
                                     ? <span className="formCheckbox">
                                         <input type="checkbox" name="formTermUndefined" /> indefinido
-                                            <input className="input-generico" type="date" disabled name="formFechaterm" value={this.state.form.formFechaterm} onChange={this.onChangeInput} />
+                                        <input className="input-generico" type="date" disabled name="formFechaterm" value={this.state.form.formFechaterm} onChange={this.onChangeInput} />
                                     </span>
                                     : <span>{this.state.form.formFechaterm}</span>
                                 }

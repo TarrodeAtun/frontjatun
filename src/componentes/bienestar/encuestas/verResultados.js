@@ -25,7 +25,8 @@ export default class VerResultados extends Component {
             nombreEncuesta: '',
             preguntas: [],
             preguntasoptions: [],
-            respuestas: []
+            respuestas: [],
+            trabajadores:[]
         };
     }
 
@@ -43,7 +44,8 @@ export default class VerResultados extends Component {
                     nombreEncuesta: datos.nombre,
                     preguntas: datos.preguntas,
                     preguntasoptions: datos.opciones,
-                    respuestas: datos.respuestas
+                    respuestas: datos.respuestas,
+                    trabajadores: datos.trabajadores
                 });
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -87,6 +89,7 @@ export default class VerResultados extends Component {
                         ],
                     }]
                 }
+
                 return (
                     <div key={index} data-key={index} className="elemento">
                         <div className="enunciado">
@@ -102,21 +105,51 @@ export default class VerResultados extends Component {
 
             });
         }
-    
 
-    return(
-            <div className = "principal menu-lista-dashboard listaPreguntas" >
+        let listatrabajadores;
+        let numTrabajadores = this.state.trabajadores.length;
+        let respondidos = 0;
+        if (this.state.trabajadores) {
+            listatrabajadores = this.state.trabajadores.map((trabajador) => {
+                if (trabajador.estado === 1) {
+                    respondidos = respondidos + 1;
+                } else {
+                    return (
+                        <li>{trabajador.nombre} {trabajador.apellido}</li>
+                    )
+                }
+            });
+        }
+
+        return (
+            <div className="principal menu-lista-dashboard listaPreguntas" >
                 <div>
                     <h2 className="naranjo"><Link to="/bienestar/encuestas/resultados"> <Bamarillorev /></Link> Mis Encuestas / <strong>Responder Encuesta</strong></h2>
                 </div>
+                <div className="seccion cabecera-resultados-encuesta">
+                    <h3 className="tituloencuesta naranjo amarillo">{this.state.nombreEncuesta}</h3>
+                    <div>
+                        <span>Total Contestadas</span>
+                        <span>{respondidos}/{this.state.trabajadores.length}</span>
+                    </div>
+                    <div>
+                        <span>No ha contestado</span>
+                        <span>
+                            <ul>
+                                {listatrabajadores}
+                            </ul>
+                        </span>
+                    </div>
+                </div>
                 <div className="listado-simple">
                     <div className="encabezado">
-                        <h3 className="tituloencuesta naranjo amarillo">{this.state.nombreEncuesta}</h3>
+                        <h3 className="tituloencuesta naranjo amarillo">Resultados</h3>
                     </div>
                     <div ref={this.myref} className="elementos">
                         {items}
                     </div>
                 </div>
+
             </div>
         );
     }

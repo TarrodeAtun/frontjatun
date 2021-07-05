@@ -31,6 +31,7 @@ const openInNewTab = (url) => {
     const newWindow = window.open(direccion, '_blank', 'noopener,noreferrer')
     if (newWindow) newWindow.opener = null
 }
+const direccionImagen = funciones.obtenerRutaUsuarios();
 export default class EquipoTrabajador extends Component {
     constructor(props) {
         super(props);
@@ -89,6 +90,21 @@ export default class EquipoTrabajador extends Component {
         await this.setState({
             datosUsuario: this.state.currentUser.data.usuariobd
         });
+        if(this.state.datosUsuario.imagen){
+            if(this.state.datosUsuario.imagen.length > 0){
+                this.setState({
+                    fotoPerfil: direccionImagen+this.state.datosUsuario.imagen[0].url
+                })
+            }else{
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        }else{
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
         await Axios.get('/api/users/worker/ficha/contractuales/' + autenticacion.currentUserValue.data.usuariobd.rut, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 componente.setState({
@@ -106,10 +122,10 @@ export default class EquipoTrabajador extends Component {
                         formTipoContrato: res.data.tipoContrato,
                     }
                 });
-                this.state.res.data.archivos.forEach(archivo=>{
+                this.state.res.data.archivos.forEach(archivo => {
                     this.setState({
-                        [archivo.input]:{
-                            name:[archivo.input],
+                        [archivo.input]: {
+                            name: [archivo.input],
                             link: [archivo.url]
                         }
                     })
@@ -128,7 +144,12 @@ export default class EquipoTrabajador extends Component {
                     <div className="fichaPerfil">
                         <div className="seccion encabezado">
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    {this.state.fotoPerfil &&
+                                        <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    }
+                                </div>
+
                             </div>
                             <div className="datosPersonales">
                                 <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>
@@ -191,7 +212,7 @@ export default class EquipoTrabajador extends Component {
                                     ? <span className="formRadio" name="formCarga" onChange={this.onChangeInput}>
                                         <input type="radio" value="1" name="formCarga" /> Si
                                         <input type="radio" value="0" name="formCarga" /> No
-                                      </span>
+                                    </span>
                                     : <span>
                                         {this.state.form.formPerfil1 === "1" && 'Si'}
                                         {this.state.form.formPerfil1 === "0" && 'Nno'}
@@ -225,7 +246,7 @@ export default class EquipoTrabajador extends Component {
                                 {this.state.showModificar
                                     ? <span className="formCheckbox">
                                         <input type="checkbox" name="formTermUndefined" /> indefinido
-                                            <input className="input-generico" type="date" disabled name="formFechaterm" value={this.state.form.formFechaterm} onChange={this.onChangeInput} />
+                                        <input className="input-generico" type="date" disabled name="formFechaterm" value={this.state.form.formFechaterm} onChange={this.onChangeInput} />
                                     </span>
                                     : <span>{this.state.form.formFechaterm}</span>
                                 }

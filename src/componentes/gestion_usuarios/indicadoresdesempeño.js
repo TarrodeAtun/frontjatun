@@ -27,7 +27,7 @@ const toastoptions = {
     draggable: true,
     progress: undefined,
 }
-
+const direccionImagen = funciones.obtenerRutaUsuarios();
 // var originalDoughnutDraw = Chart.controllers.doughnut.prototype.draw;
 // Chart.helpers.extend(Chart.controllers.doughnut.prototype, {
 //   draw: function () {
@@ -50,23 +50,23 @@ const toastoptions = {
 const options1 = {
     responsive: true,
     legend: {
-      display: false,
-      position: "bottom",
-      labels: {
-        fontSize: 18,
-        fontColor: "#6D7278",
-        fontFamily: "kanit light"
-      }
+        display: false,
+        position: "bottom",
+        labels: {
+            fontSize: 18,
+            fontColor: "#6D7278",
+            fontFamily: "kanit light"
+        }
     },
     tooltip: {
         callbacks: {
-           label: function (tooltipItem, data) {
-                  const value = data['datasets'][0]['data'];
-                  return '$' + (value == -1 ? 0 : value);
-           }
+            label: function (tooltipItem, data) {
+                const value = data['datasets'][0]['data'];
+                return '$' + (value == -1 ? 0 : value);
+            }
         }
-      }
-  };
+    }
+};
 
 export default class EquipoTrabajador extends Component {
     constructor(props) {
@@ -79,7 +79,7 @@ export default class EquipoTrabajador extends Component {
             datos: '',
             showOptions: true,
             idUsuario: '',
-            fecha:''
+            fecha: ''
         };
     }
     async componentDidMount() {
@@ -93,12 +93,27 @@ export default class EquipoTrabajador extends Component {
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 return;
             });
+        if (this.state.datosUsuario.imagen) {
+            if (this.state.datosUsuario.imagen.length > 0) {
+                this.setState({
+                    fotoPerfil: direccionImagen + this.state.datosUsuario.imagen[0].url
+                })
+            } else {
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        } else {
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
         await this.obtenerRegistrosDesempeno();
 
     }
     obtenerRegistrosDesempeno = async () => {
         var componente = this;
-        await Axios.post('/api/users/worker/desempeno/', { rut: this.state.datosUsuario.rut, fecha : this.state.fecha }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        await Axios.post('/api/users/worker/desempeno/', { rut: this.state.datosUsuario.rut, fecha: this.state.fecha }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data[0]);
                 componente.setState({ datos: res.data.data[0] });
@@ -108,17 +123,13 @@ export default class EquipoTrabajador extends Component {
             });
     }
     onChangeInput = (e) => {
-        this.setState({[e.target.name]: e.target.value});
+        this.setState({ [e.target.name]: e.target.value });
     }
-    filtrar = ()  =>{
+    filtrar = () => {
         this.obtenerRegistrosDesempeno();
     }
 
     render() {
-
-        
-
-
         let chartData1 = [this.state.datos.numAsistenciasAnterior, this.state.datos.numTotalTurnosAnterior - this.state.datos.numAsistenciasAnterior]
         let showData1 = chartData1[0] + "%";
         var data1 = {
@@ -134,10 +145,10 @@ export default class EquipoTrabajador extends Component {
                     'rgba(237, 237, 237, 1)',
                 ],
             }]
-            ,text: showData1
+            , text: showData1
         }
 
-        let chartData2 =  [this.state.datos.numAsistencias, this.state.datos.numTotalTurnos - this.state.datos.numAsistencias];
+        let chartData2 = [this.state.datos.numAsistencias, this.state.datos.numTotalTurnos - this.state.datos.numAsistencias];
         let showData2 = chartData2[0] + "%";
         var data2 = {
             datasets: [{
@@ -162,7 +173,11 @@ export default class EquipoTrabajador extends Component {
                     <div className="fichaPerfil">
                         <div className="seccion encabezado">
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    {this.state.fotoPerfil &&
+                                        <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    }
+                                </div>
                             </div>
                             <div className="datosPersonales">
                                 <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>

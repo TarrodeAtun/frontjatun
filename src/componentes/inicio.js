@@ -46,7 +46,8 @@ export default class inicio extends Component {
         if (this.state.datosUsuarios.rut) {
             this.consultarTurno();
         }
-        console.log(this.state.datosUsuarios);
+        console.log(this.state.currentUser.data);
+
         // this.props.impFuncion();
     }
 

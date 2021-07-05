@@ -220,6 +220,8 @@ export default class GestionResiduos extends Component {
                         <span>desde 03/03/2021</span>
                         <span>hasta 31/03/2021</span> */}
                     </td>
+                    <td>{hora.inicio} - {hora.termino}</td>
+                    <td>{this.pad(hora.or, 8)}</td>
                     <td className="asignado">Asignado</td>
                     <td className="acciones">
                         <span><Link to={`/residuos/control-retiro/ver-retiro/${hora._id}`}><Ojo /></Link></span>
@@ -334,7 +336,9 @@ export default class GestionResiduos extends Component {
                                 <thead>
                                     <th>Cliente</th>
                                     <th>Centro Costos</th>
-                                    <th>Frecuencia retiro</th>
+                                    <th>Fecha retiro</th>
+                                    <th>Jornada</th>
+                                    <th>Referencia</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </thead>

@@ -98,7 +98,7 @@ export default class CrearRetiro extends Component {
         var componente = this;
         const res = Axios.get('/api/generales/centroscostos/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data)
+
                 componente.setState({ centros: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -110,7 +110,7 @@ export default class CrearRetiro extends Component {
         var componente = this;
         const res = Axios.get('/api/gestion-residuos/ordenes-retiro/no-asignados', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data);
+
                 componente.setState({ ordenesNoAsignadas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -133,7 +133,7 @@ export default class CrearRetiro extends Component {
         var componente = this;
         const res = Axios.get('/api/generales/codigosler/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data);
+
                 componente.setState({ codigos: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -143,10 +143,10 @@ export default class CrearRetiro extends Component {
     }
     obtenerCategoriasLer = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
-        console.log(this.state.form.codigoler);
+
         const res = Axios.post('/api/generales/categoriasler/', { codigo: this.state.form.codigoler }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data);
+
                 componente.setState({ categorias: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -156,9 +156,9 @@ export default class CrearRetiro extends Component {
     }
 
     changeOR = async (index, e) => {
-        console.log(e);
+
         var retiros = await this.state.retiros;
-        console.log(retiros);
+
         retiros[index].or = e.target.value;
         this.setState({ retiros: retiros });
     }
@@ -183,9 +183,17 @@ export default class CrearRetiro extends Component {
             }
         })
     }
+    onChangeInputEspecial = (e) => {
+        this.setState({
+            form: {
+                ...this.state.form, [e.target.name]: e.target.value
+            }
+        });
+        this.onChangeFrecuencia();
+    }
 
     onChangeCodigo = async (e) => {
-        console.log(e.target.value);
+
         await this.setState({
             form: {
                 ...this.state.form, [e.target.name]: e.target.value
@@ -223,13 +231,18 @@ export default class CrearRetiro extends Component {
                 await componente.setState({ frecuenciaArray: arrayasd });
                 preDOM = await arrayasd.map((orden, index) => {
                     retiros.push({ fecha: moment(orden.fecha).utc().format('YYYY-MM-DD'), or: '' });
+                    let opciones = this.optionsOrdenesAsignadas(orden.fecha);
+                    let disabled = "";
+                    if (opciones.length > 0) {
+                        disabled = "disabled";
+                    }
                     return (<tr>
                         <td><input type="hidden" value={orden.fecha} />{funciones.nombreDia(orden.fecha)} {orden.fecha.getDate()}/{orden.fecha.getMonth() + 1}/{orden.fecha.getFullYear()} </td>
                         <td>{this.state.form.inicio} - {this.state.form.termino}</td>
                         <td>
-                            <select onChange={e => this.changeOR(index, e)}>
+                            <select onChange={e => this.changeOR(index, e)}  {...disabled}>
                                 <option>Seleccione...</option>
-                                {this.optionsOrdenesAsignadas(orden.fecha)}
+                                {opciones}
                             </select>
                         </td>
                     </tr>)
@@ -259,25 +272,39 @@ export default class CrearRetiro extends Component {
                     }
                     arrayasd.push(registro);
                 }
-                console.log(arrayasd);
                 await componente.setState({ frecuenciaArray: arrayasd });
                 preDOM = await arrayasd.map((orden, index) => {
                     console.log(orden.fecha);
                     retiros.push({ fecha: moment(orden.fecha).utc().format('YYYY-MM-DD'), or: '' });
+                    let opciones = [];
+                    opciones = componente.optionsOrdenesAsignadas(orden.fecha);
+                    let disabled = true;
+                    console.log(opciones);
+                    if (opciones) {
+                        if (opciones.length > 0) {
+                            disabled = false;
+                        }
+                    }
                     return (<tr>
                         <td><input type="hidden" value={orden.fecha} />{funciones.nombreDia(orden.fecha)} {orden.fecha.getDate()}/{orden.fecha.getMonth() + 1}/{orden.fecha.getFullYear()} </td>
                         <td>{this.state.form.inicio} - {this.state.form.termino}</td>
                         <td>
-                            <select onChange={e => this.changeOR(index, e)}>
-                                <option>Seleccione...</option>
-                                {this.optionsOrdenesAsignadas(orden.fecha)}
-                            </select>
+                            {disabled === true
+                                ? <select onChange={e => this.changeOR(index, e)} disabled="true">
+                                    <option>Seleccione...</option>
+                                    {opciones}
+                                </select>
+                                : <select onChange={e => this.changeOR(index, e)} >
+                                    <option>Seleccione...</option>
+                                    {opciones}
+                                </select>
+                            }
                         </td>
                     </tr>)
                 }
                 );
                 await this.setState({ retiros: retiros });
-                console.log(this.state.retiros);
+
                 await componente.setState({ DOMretiros: preDOM });
             } else {
                 toast.warning("Debe seleccionar una fecha primero", toastoptions);
@@ -308,21 +335,36 @@ export default class CrearRetiro extends Component {
                 await componente.setState({ frecuenciaArray: arrayasd });
                 preDOM = await arrayasd.map((orden, index) => {
                     retiros.push({ fecha: moment(orden.fecha).utc().format('YYYY-MM-DD'), or: '' });
+                    let opciones = [];
+                    opciones = componente.optionsOrdenesAsignadas(orden.fecha);
+                    let disabled = true;
+                    console.log(opciones);
+                    if (opciones) {
+                        if (opciones.length > 0) {
+                            disabled = false;
+                        }
+                    }
                     return (<tr>
                         <td><input type="hidden" value={orden.fecha} />{funciones.nombreDia(orden.fecha)} {orden.fecha.getDate()}/{orden.fecha.getMonth() + 1}/{orden.fecha.getFullYear()} </td>
                         <td>{this.state.form.inicio} - {this.state.form.termino}</td>
                         <td>
-                            <select onChange={e => this.changeOR(index, e)}>
-                                <option>Seleccione...</option>
-                                {this.optionsOrdenesAsignadas(orden.fecha)}
-                            </select>
+                            {disabled === true
+                                ? <select onChange={e => this.changeOR(index, e)} disabled="true">
+                                    <option>Seleccione...</option>
+                                    {opciones}
+                                </select>
+                                : <select onChange={e => this.changeOR(index, e)} >
+                                    <option>Seleccione...</option>
+                                    {opciones}
+                                </select>
+                            }
                         </td>
                     </tr>)
                 }
                 );
                 await componente.setState({ retiros: retiros });
                 await componente.setState({ DOMretiros: preDOM });
-                console.log(nextweek);
+
             } else {
                 toast.warning("Debe seleccionar una fecha primero", toastoptions);
                 this.setState({ frecuencia: '' });
@@ -354,14 +396,29 @@ export default class CrearRetiro extends Component {
                 await componente.setState({ frecuenciaArray: arrayasd });
                 preDOM = await arrayasd.map((orden, index) => {
                     retiros.push({ fecha: moment(orden.fecha).utc().format('YYYY-MM-DD'), or: '' });
+                    let opciones = [];
+                    opciones = componente.optionsOrdenesAsignadas(orden.fecha);
+                    let disabled = true;
+                    console.log(opciones);
+                    if (opciones) {
+                        if (opciones.length > 0) {
+                            disabled = false;
+                        }
+                    }
                     return (<tr>
                         <td><input type="hidden" value={orden.fecha} />{funciones.nombreDia(orden.fecha)} {orden.fecha.getDate()}/{orden.fecha.getMonth() + 1}/{orden.fecha.getFullYear()} </td>
                         <td>{this.state.form.inicio} - {this.state.form.termino}</td>
                         <td>
-                            <select onChange={e => this.changeOR(index, e)}>
-                                <option>Seleccione...</option>
-                                {this.optionsOrdenesAsignadas(orden.fecha)}
-                            </select>
+                            {disabled === true
+                                ? <select onChange={e => this.changeOR(index, e)} disabled="true">
+                                    <option>Seleccione...</option>
+                                    {opciones}
+                                </select>
+                                : <select onChange={e => this.changeOR(index, e)} >
+                                    <option>Seleccione...</option>
+                                    {opciones}
+                                </select>
+                            }
                         </td>
                     </tr>)
                 }
@@ -383,38 +440,56 @@ export default class CrearRetiro extends Component {
         }
     }
     optionsOrdenesAsignadas = (fecha) => {
-        let ordenes;
-        console.log(fecha);
+        let ordenes = [];
+
+        let componente = this;
         var fechaRe = moment(fecha).utc().format('YYYY-MM-DD')
         if (this.state.ordenesNoAsignadas) {
-            console.log(this.state.ordenesNoAsignadas);
-            ordenes = this.state.ordenesNoAsignadas.map((orden, index) => {
-                console.log(moment(orden.retiro).utc().format('YYYY-MM-DD'));
-                console.log(fechaRe);
-                if (moment(orden.retiro).utc().format('YYYY-MM-DD') === fechaRe) {
-                    return (<option value={orden.idor} >{orden.idor}</option>)
+
+            for (let orden of this.state.ordenesNoAsignadas) {
+
+                if (moment(orden.retiro).utc().format('YYYY-MM-DD') === fechaRe &&
+                    orden.clienterut === parseInt(componente.state.form.clienterut) &&
+                    orden.centro === parseInt(componente.state.form.centro) &&
+                    orden.comuna === parseInt(componente.state.form.comuna)) {
+                    ordenes.push(<option value={orden.idor} >{orden.idor}</option>);
                 }
-                else {console.log("no");}
+                else { console.log("no"); }
             }
-            )
+
         }
         return ordenes;
     }
     frecuenciaPersonalizada = (datos) => {
+        let componente = this;
         var retiros = [];
         var preDOM = datos.map((orden, index) => {
             var fecha = moment(orden.fecha).utc().format('YYYY-MM-DD');
-            console.log(orden.fecha);
-            console.log(fecha);
+
             retiros.push({ fecha: moment(orden.fecha).utc().format('YYYY-MM-DD'), or: '' });
+            let opciones = [];
+            opciones = componente.optionsOrdenesAsignadas(orden.fecha);
+            let disabled = true;
+            console.log(opciones);
+            if (opciones) {
+                if (opciones.length > 0) {
+                    disabled = false;
+                }
+            }
             return (<tr>
                 <td><input type="hidden" value={orden.fecha} />{funciones.nombreDia(orden.fecha)} {orden.fecha.getDate()}/{orden.fecha.getMonth() + 1}/{orden.fecha.getFullYear()} </td>
                 <td>{this.state.form.inicio} - {this.state.form.termino}</td>
                 <td>
-                    <select onChange={e => this.changeOR(index, e)}>
-                        <option value="">Seleccione...</option>
-                        {this.optionsOrdenesAsignadas(orden.fecha)}
-                    </select>
+                    {disabled === true
+                        ? <select onChange={e => this.changeOR(index, e)} disabled="true">
+                            <option>Seleccione...</option>
+                            {opciones}
+                        </select>
+                        : <select onChange={e => this.changeOR(index, e)} >
+                            <option>Seleccione...</option>
+                            {opciones}
+                        </select>
+                    }
                 </td>
             </tr>)
         }
@@ -422,7 +497,7 @@ export default class CrearRetiro extends Component {
         this.setState({ retiros: retiros });
         this.setState({ DOMretiros: preDOM });
     }
-    
+
     abrirmodal = () => {
         this.setState({ showFrecuenciaRetiro: true });
     }
@@ -441,7 +516,7 @@ export default class CrearRetiro extends Component {
                             onClick={this.enviaDatos}
                         >
                             Aceptar
-                    </button>
+                        </button>
                     </div>
                 );
             }
@@ -457,8 +532,7 @@ export default class CrearRetiro extends Component {
     enviaDatos = async e => {
         e.preventDefault();
         var campoVacio = false;
-        console.log(this.state.retiros);
-        console.log(this.state.form);
+
         await Object.entries(this.state.form).map((t, k) => {
             if (t[1] === "" || t[1] === null) {
                 campoVacio = true;
@@ -547,7 +621,7 @@ export default class CrearRetiro extends Component {
                             <div>
                                 <span>Cliente</span>
                                 <span>
-                                    <select name="clienterut" onChange={this.onChangeInput} className="input-generico" value={this.state.form.clienterut} >
+                                    <select name="clienterut" onChange={this.onChangeInputEspecial} className="input-generico" value={this.state.form.clienterut} >
                                         <option>Seleccione Cliente</option>
                                         {clientes}
                                     </select>
@@ -556,7 +630,7 @@ export default class CrearRetiro extends Component {
                             <div>
                                 <span>Centro Costos</span>
                                 <span>
-                                    <select name="centro" onChange={this.onChangeInput} value={this.state.form.centro} className="input-generico">
+                                    <select name="centro" onChange={this.onChangeInputEspecial} value={this.state.form.centro} className="input-generico">
                                         <option>Seleccione Centro de Costos</option>
                                         {centrocostos}
                                     </select>
@@ -577,7 +651,7 @@ export default class CrearRetiro extends Component {
                             </div> */}
                             <div>
                                 <span>Comuna</span>
-                                <span><select name="comuna" value={this.state.form.comuna} onChange={this.onChangeInput} className="input-generico">
+                                <span><select name="comuna" value={this.state.form.comuna} onChange={this.onChangeInputEspecial} className="input-generico">
                                     <option>Seleccione Comuna</option>
                                     {comunas}
                                 </select></span>

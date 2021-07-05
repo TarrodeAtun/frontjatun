@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Axios from '../../../helpers/axiosconf';
 import { authHeader } from '../../../helpers/auth-header';
 import { handleResponse } from '../../../helpers/manejador';
+import { confirmAlert } from 'react-confirm-alert';
 
 // importaciones de estilos 
 import '../../../styles/fichaTrabajador.css';
@@ -58,32 +59,66 @@ export default class ResultadosEncuestas extends Component {
             });
     }
     eliminarEncuesta = async (e) => {
-        var componente = this;
-        var id = e.currentTarget.dataset.id;
-        await Axios.post('/api/bienestar/encuestas/delete/', {
-            id: id
-        }, { headers: authHeader() })
-            .then(respuesta => {
-                toast.success(respuesta.mensaje, toastoptions);
-                componente.obtenerEncuestas();
-                console.log(respuesta);
-            });
+        let componente = this;
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-confirm '>
+                        <p>¿Estas seguro de eliminar la encuesta, los datos no se pueden recuperar?</p>
+                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
+                        <button className="boton-generico btazul"
+                            onClick={async () => {
+                                var id = e.currentTarget.dataset.id;
+                                await Axios.post('/api/bienestar/encuestas/delete/', {
+                                    id: id
+                                }, { headers: authHeader() })
+                                    .then(respuesta => {
+                                        toast.success(respuesta.mensaje, toastoptions);
+                                        componente.obtenerEncuestas();
+                                        console.log(respuesta);
+                                    });
+                                onClose();
+                            }} >
+                            Aceptar
+                        </button>
+                    </div>
+                );
+            }
+        });
     }
 
 
     render() {
         let items;
         if (this.state.encuestas) {
-            items = this.state.encuestas.map((encuesta, index) =>
-                <tr key={index} className="elemento">
-                    <td>{encuesta.nombre}</td>
-                    <td></td>
-                    <td className="acciones ml">
-                        <Link to={`/bienestar/encuestas/ver-resultados/${encuesta._id}`}><img src={ojo} /></Link>
-                        <button onClick={this.eliminarEncuesta} data-id={encuesta._id}><img src={basurero} /></button>
-                    </td>
+            if (this.state.encuestas.length > 0) {
+                items = this.state.encuestas.map((encuesta, index) => {
+
+                    let numTrabajadores = encuesta.trabajadores.length;
+                    let respondidos = 0;
+                    for (let trabajador of encuesta.trabajadores) {
+                        if (trabajador.estado === 1) {
+                            respondidos = respondidos + 1;
+                        }
+                    }
+
+                    return (<tr key={index} className="elemento">
+                        <td>{encuesta.nombre}</td>
+                        <td>{respondidos}/{numTrabajadores}</td>
+                        <td className="acciones ml">
+                            <Link to={`/bienestar/encuestas/ver-resultados/${encuesta._id}`}><img src={ojo} /></Link>
+                            <button onClick={this.eliminarEncuesta} data-id={encuesta._id}><img src={basurero} /></button>
+                        </td>
+                    </tr>)
+                }
+
+                )
+            } else {
+                items = <tr className="elemento">
+                    <td colSpan="3">No hay encuestas creadas</td>
+
                 </tr>
-            )
+            }
         }
 
         return (
@@ -93,9 +128,9 @@ export default class ResultadosEncuestas extends Component {
                 </div>
                 <table className="listado-simple tabla">
                     <thead>
-                      <th>Nombre</th>
-                      <th>N° Contestadas</th>
-                      <th>Acciones</th>
+                        <th>Nombre</th>
+                        <th>N° Contestadas</th>
+                        <th>Acciones</th>
                     </thead>
                     <tbody>
                         {items}

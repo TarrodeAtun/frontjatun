@@ -59,21 +59,27 @@ export default class SoporteLogin extends Component {
             }
         });
         if (!campoVacio) {
-            await Axios.post('/api/mailer/soporte', {
-                nombre: this.state.form.nombre,
-                apellido: this.state.form.apellido,
-                rut: this.state.form.rut,
-                telefono: this.state.form.telefono,
-                mensaje: this.state.form.mensaje,
-            })
-                .then(res => {
-                   toast.success("Mensaje enviado satisfactoriamente", toastoptions);
-                   componente.props.closeModal();
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+            let rut = this.state.form.rut;
+            let verificacionRut = funciones.verificaRut(rut);
 
+            if (verificacionRut) {
+                await Axios.post('/api/mailer/soporte', {
+                    nombre: this.state.form.nombre,
+                    apellido: this.state.form.apellido,
+                    rut: this.state.form.rut,
+                    telefono: this.state.form.telefono,
+                    mensaje: this.state.form.mensaje,
+                })
+                    .then(res => {
+                        toast.success("Mensaje enviado satisfactoriamente", toastoptions);
+                        componente.props.closeModal();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }else{
+                toast.warning("El rut ingresado no es correcto", toastoptions);
+            }
         } else {
             toast.warning("Debe llenar todos los campos", toastoptions);
         }

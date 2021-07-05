@@ -25,6 +25,7 @@ const toastoptions = {
     draggable: true,
     progress: undefined,
 }
+const direccionImagen = funciones.obtenerRutaUsuarios();
 
 export default class EquipoTrabajador extends Component {
     constructor(props) {
@@ -48,20 +49,35 @@ export default class EquipoTrabajador extends Component {
     }
     async componentDidMount() {
         var componente = this;
-        
+
         var { id } = this.props.match.params;
-        this.setState({idUsuario:id});
+        this.setState({ idUsuario: id });
         await Axios.get('/api/users/worker/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 componente.setState({ datosUsuario: res.data });
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-               return;
+                return;
             });
+        if (this.state.datosUsuario.imagen) {
+            if (this.state.datosUsuario.imagen.length > 0) {
+                this.setState({
+                    fotoPerfil: direccionImagen + this.state.datosUsuario.imagen[0].url
+                })
+            } else {
+                this.setState({
+                    fotoPerfil: imagen
+                })
+            }
+        } else {
+            this.setState({
+                fotoPerfil: imagen
+            })
+        }
         await Axios.get('/api/users/worker/ficha/equipo/' + this.state.datosUsuario.rut, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                componente.setState({ 
-                    form:{
+                componente.setState({
+                    form: {
                         formZapato: res.data.zapato,
                         formPantalon: res.data.pantalon,
                         formPolera: res.data.polera,
@@ -136,7 +152,11 @@ export default class EquipoTrabajador extends Component {
                     <div className="fichaPerfil">
                         <div className="seccion encabezado">
                             <div className="fotoperfil">
-                                <img src={imagen} />
+                                <div className="foto-container">
+                                    {this.state.fotoPerfil &&
+                                        <img className="imgPerfil" src={this.state.fotoPerfil} />
+                                    }
+                                </div>
                             </div>
                             <div className="datosPersonales">
                                 <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>

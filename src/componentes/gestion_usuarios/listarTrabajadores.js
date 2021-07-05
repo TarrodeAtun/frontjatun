@@ -16,9 +16,12 @@ import '../../styles/listarTrabajadores.css';
 import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
 import { ReactComponent as Basurero } from "../../assets/iconos/basurero.svg";
 import { ReactComponent as Ojo } from "../../assets/iconos/ojo.svg";
+import { ReactComponent as Doc } from "../../assets/iconos/doc.svg";
 import { ReactComponent as Descarga } from "../../assets/iconos/descarga.svg";
 import { ReactComponent as Flechaam } from "../../assets/iconos/flechaam.svg";
 import { ReactComponent as Plus } from "../../assets/iconos/X.svg";
+
+import reloj from "../../assets/iconos/reloj.png";
 
 
 //importamos manejadores de modal
@@ -46,6 +49,9 @@ export default class ListarTrabajadores extends Component {
         this.state = {
             trabajadores: [],
             centrosCostos: '',
+            pagina: 1,
+            paginas: '',
+
             rut: '',
             centro: '',
             estado: ''
@@ -53,7 +59,7 @@ export default class ListarTrabajadores extends Component {
     }
 
     toogleModal = toogleModalCore; //copiamos la funcion modal a una funcion local
-
+    paginacion = funciones.paginacion;
     manejadorModals = (e, res) => { //creamos una funcion que reciba parametros para pasarlo al toogle modal (esta funcion la pasaremos al cuerpo del modal como propiedad para ejecutarse por autoreferencia)
         this.toogleModal(e, res);
     }
@@ -62,6 +68,13 @@ export default class ListarTrabajadores extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
+    }
+    onChangeRut = async e => {
+        funciones.formatearRut(e.target.value, 1).then(res => {
+            this.setState({
+                rut: res
+            })
+        });
     }
     formatearRutListado = (rutCrudo, dv) => {
         var sRut = new String(rutCrudo);
@@ -77,14 +90,18 @@ export default class ListarTrabajadores extends Component {
 
     obtenerTrabajadores = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
-        const res = Axios.post('/api/users/worker/trabajadoresPost',{rut: this.state.rut, }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/users/worker/trabajadoresPost', { rut: this.state.rut, centro: this.state.centro, pagina: this.state.pagina }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                componente.setState({ trabajadores: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
+                console.log(res.data);
+                componente.setState({ trabajadores: res.data.data, paginas: res.data.paginas });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 return;
             });
+    }
+    filtrar = () => {
+        this.obtenerTrabajadores();
     }
     darBaja = async (e) => {
         let id = e.currentTarget.dataset.id;
@@ -93,7 +110,7 @@ export default class ListarTrabajadores extends Component {
             customUI: ({ onClose }) => {
                 return (
                     <div className='custom-confirm '>
-                        <p>¿Estas seguro de eliminar este usuario?</p>
+                        <p>¿Estas seguro de dar de baja a este usuario?, no podrás recuperarlo</p>
                         <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
                         <button className="boton-generico btazul"
                             onClick={() => {
@@ -121,8 +138,18 @@ export default class ListarTrabajadores extends Component {
         });
 
     }
-    filtrar = async() =>{
-        
+    filtrar = async () => {
+        this.obtenerTrabajadores();
+    }
+    limpiar = async () => {
+        this.setState({
+            rut: '', centro: ''
+        })
+    }
+    paginar = async (e) => {
+        console.log(e.currentTarget.dataset.pag);
+        await this.setState({ pagina: e.currentTarget.dataset.pag })
+        this.obtenerTrabajadores();
     }
 
 
@@ -139,12 +166,11 @@ export default class ListarTrabajadores extends Component {
 
         let centrosCostos;
         if (this.state.centrosCostos) {
-            console.log(this.state.centrosCostos);
             centrosCostos = this.state.centrosCostos.map(centro => {
-                <option value={centro.key} >{centro.nombre}</option>
+                return (<option value={centro.key} >{centro.nombre}</option>)
             });
         }
-
+        let paginacion = funciones.paginacion(this.state.paginas, this.state.pagina, this.paginar);
         return (
             <div className="principal" id="component-listar-trabajadores">
                 <div>
@@ -163,18 +189,18 @@ export default class ListarTrabajadores extends Component {
                     <div>
                         <form>
                             <div className="form-group justify-center">
-                                <input className="input-generico" name="rut" onChange={this.onChangeInput} placeholder="Nombre o Rut" />
-                                {/* <select className="input-generico" name="centro">
-                                    <option>Centro de costos</option>
+                                <input className="input-generico" name="rut" value={this.state.rut} onChange={this.onChangeRut} placeholder="Nombre o Rut" />
+                                <select className="input-generico" name="centro" onChange={this.onChangeInput}>
+                                    <option value="">Centro de costos</option>
                                     {centrosCostos}
-                                </select> */}
+                                </select>
                                 {/* <select className="input-generico">
                                     <option>Estado de contrato</option>
                                 </select> */}
                             </div>
                             <div className="form-group buttons">
-                                <button className="boton-generico btazul"  onClick={this.filtrar}type="button">Filtrar</button>
-                                <button className="boton-generico btblanco" type="button">Limpiar</button>
+                                <button className="boton-generico btazul" onClick={this.filtrar} type="button">Filtrar</button>
+                                <button className="boton-generico btblanco" onClick={this.limpiar} type="button">Limpiar</button>
                             </div>
                         </form>
                     </div>
@@ -188,25 +214,50 @@ export default class ListarTrabajadores extends Component {
                         </thead>
                         <tbody>
                             {
-                                this.state.trabajadores.map(usuario => (
-                                    <tr key={usuario._id}>
+                                this.state.trabajadores.map(usuario => {
+                                    let centro;
+                                    if (usuario.centroCosto && this.state.centrosCostos) {
+
+                                        this.state.centrosCostos.find(function (cen) {
+                                            if (parseInt(cen.key) === parseInt(usuario.centroCosto)) {
+                                                centro = cen.nombre;
+                                            }
+                                        });
+
+
+                                    }
+
+                                    return (<tr key={usuario._id}>
                                         <td className="columna">
                                             <span>{usuario.nombre}  {usuario.apellido}</span>
                                             <span>{this.formatearRutListado(usuario.rut, usuario.dv)}</span>
                                             <span>Contrato Vigente</span>
                                         </td>
-                                        <td className="centro">Proyecto 1</td>
+                                        <td className="centro">{centro}</td>
                                         <td className="acciones">
                                             {/* <span className="incompleto">80%</span> */}
                                             <span><Link to={`/personas/perfil/${usuario._id}`}><Ojo /></Link></span>
-                                            <span><Link onClick={this.darBaja} data-id={usuario._id} ><Basurero /></Link></span>
-                                            <span><button type="button"><Descarga /></button></span>
+                                            <span><Link to={`/personas/ficha-trabajador/${usuario._id}`} title="Ficha Trabajador"><Doc /></Link></span>
+                                            <span><Link to={`/personas/turnos/trabajador/${usuario._id}`} title="Turnos Trabajador"><img className="icono" src={reloj} /></Link></span>
+                                            {usuario.rut === 18706188
+                                                ? ""
+                                                : <span><Link onClick={this.darBaja} data-id={usuario._id} ><Basurero /></Link></span>
+                                            }
+
+                                            {/* <span><button type="button"><Descarga /></button></span> */}
                                         </td>
-                                    </tr>
-                                ))
+                                    </tr>)
+                                }
+
+                                )
                             }
                         </tbody>
                     </table>
+                </div>
+                <div>
+                    <ul className="paginador">
+                        {paginacion}
+                    </ul>
                 </div>
             </div>
 
