@@ -32,11 +32,13 @@ export default class CambiarPass extends Component {
             imagen: '',
             selectTrabajador: '',
             trabajadoresSelect: [],
-            opciones: []
+            opciones: [],
+            ordenes: []
         };
     }
     componentDidMount = () => {
         this.obtenerTrabajadores();
+        this.obtenerordenesIniciadas();
     }
 
     obtenerTrabajadores = async () => { //genera una peticion get por axios a la api de usuarios
@@ -45,6 +47,18 @@ export default class CambiarPass extends Component {
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ trabajadores: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
+            })
+            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                return;
+            });
+    }
+    obtenerordenesIniciadas = async () => { //genera una peticion get por axios a la api de usuarios
+        var componente = this;
+        const res = Axios.post('/api/gestion-residuos/ordenes-retiro/ordenesIniciadas', {}, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+            .then(function (res) {   //si la peticion es satisfactoria entonces
+                console.log(res.data.data);
+                componente.setState({ ordenes: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -111,6 +125,8 @@ export default class CambiarPass extends Component {
             .then(respuesta => {
                 if (respuesta.data.estado === "success") {
                     toast.success(respuesta.data.mensaje, toastoptions);
+                    this.props.props.actualizaLista();
+                    this.props.closeModal();
                     // historial.push("/residuos/trazabilidad");
                 } else if (respuesta.data.estado === "warning") {
                     toast.warning(respuesta.data.mensaje, toastoptions);
@@ -146,6 +162,13 @@ export default class CambiarPass extends Component {
                 </div>
             )
 
+        }
+
+        let ordenes;
+        if (this.state.ordenes) {
+            ordenes = this.state.ordenes.map((orden, index) =>
+                <option value={orden.idor}>{orden.idor}</option>
+            )
         }
 
         return (
@@ -208,10 +231,8 @@ export default class CambiarPass extends Component {
                         </div>
                         <div className="elemento">
                             <select name="turno" onChange={this.onChangeInput} className="input-generico">
-                                <select>Turno</select>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
+                                <option>Turno</option>
+                                {ordenes}
                             </select>
                         </div>
                         <div className="elemento">

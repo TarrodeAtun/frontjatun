@@ -55,23 +55,11 @@ export default class CrearRetiro extends Component {
 
     }
 
-    componentDidMount = () => {
-        this.obtenerVehiculos();
+    componentDidMount =  async () => {
         this.obtenerRetiros();
-        this.obtenerServicios();
-        this.obtenerCondutores();
-    }
-
-    obtenerVehiculos = (e) => {
-        var componente = this;
-        const res = Axios.get('/api/generales/vehiculos/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                componente.setState({ listaVehiculos: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
-            })
-            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                return;
-            });
+        await this.setState({ listaServicios: await funciones.obtenerServicios() });
+        await this.setState({ listaConductores: await funciones.obtenerConductores() });
+        await this.setState({ listaVehiculos: await funciones.obtenerPatentesVehiculos() });
     }
     obtenerRetiros = (e) => {
         var fecha;
@@ -88,31 +76,6 @@ export default class CrearRetiro extends Component {
                 });
         }
     }
-    obtenerServicios = (e) => {
-        var componente = this;
-        const res = Axios.get('/api/generales/servicios/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data)
-                componente.setState({ listaServicios: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
-            })
-            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                return;
-            });
-    }
-    obtenerCondutores = (e) => {
-        var componente = this;
-        const res = Axios.get('/api/users/conductores/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data);
-                componente.setState({ listaConductores: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
-            })
-            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                return;
-            });
-    }
-
     onChangeInput = (e) => {
         this.setState({
             form: {

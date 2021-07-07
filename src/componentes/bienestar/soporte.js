@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import { funciones } from '../../servicios/funciones';
 import moment from 'moment';
 
 // importaciones de estilos 
@@ -41,11 +42,21 @@ export default class ResultadosEncuestas extends Component {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
             showAgregarMensaje: '',
-            consultas: []
+            consultas: [],
+
+            pagina: 1,
+            paginas: '',
         };
     }
 
     toogleModal = toogleModalCore; //copiamos la funcion modal a una funcion local
+
+    paginacion = funciones.paginacion;
+    paginar = async (e) => {
+        console.log(e.currentTarget.dataset.pag);
+        await this.setState({ pagina: e.currentTarget.dataset.pag })
+        this.obtenerConsultas();
+    }
 
     manejadorModals = (e, res) => {
         this.toogleModal(e, res);
@@ -68,10 +79,10 @@ export default class ResultadosEncuestas extends Component {
 
     obtenerConsultas = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
-        const res = Axios.get('/api/bienestar/soporte', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/bienestar/soporte', {pagina: this.state.pagina}, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
-                componente.setState({ consultas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
+                componente.setState({ consultas: res.data.data, paginas: res.data.paginas  });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -111,6 +122,7 @@ export default class ResultadosEncuestas extends Component {
         } else {
             items = <tr className="elemento"> <td colSpan="5">No hay consultas actualmente</td></tr>
         }
+        let paginacion = funciones.paginacion(this.state.paginas, this.state.pagina, this.paginar);
         return (
             <div className="principal menu-lista-dashboard">
                 <div>
@@ -132,6 +144,11 @@ export default class ResultadosEncuestas extends Component {
                             {items}
                         </tbody>
                     </table>
+                </div>
+                <div>
+                    <ul className="paginador">
+                        {paginacion}
+                    </ul>
                 </div>
                 <div id="modales">
                     <Modal

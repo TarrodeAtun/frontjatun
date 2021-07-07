@@ -1,21 +1,12 @@
-//importaciones de bibliotecas
-import React, { Component } from "react";
+import React, { Component, useState, Fragment } from 'react';
+
 import { autenticacion } from '../../servicios/autenticacion';
-import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
-import { historial } from '../../helpers/historial';
 import { funciones } from '../../servicios/funciones';
-import { toast } from 'react-toastify';
-import { confirmAlert } from 'react-confirm-alert';
 
-// importaciones de iconos 
-import imagen from "../../assets/persona.svg";
-import edit from "../../assets/iconos/edit.svg";
-import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
-
-import '../../styles/perfil.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 const toastoptions = {
     position: "top-right",
@@ -27,173 +18,176 @@ const toastoptions = {
     progress: undefined,
 }
 
-export default class crearEmergenciaVehiculos extends Component {
+export default class CambiarPass extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {
             currentUser: autenticacion.currentUserValue,
-            datosUsuario: "",
-            form: {
-                curso: '',
-                responsable: '',
-                duracion: '',
-                fecha: '',
-                tematica: '',
-                descripcion: '',
-            },
-            formCertificado: '',
-            certificado: {
-                name: '',
-                link: ''
-            },
-            idUsuario: ''
+            rut: '',
+            vehiculos: '',
+            conductores: '',
+
+            fecha: '',
+            hora: '',
+            patente: '',
+            conductor: '',
+            hito: '',
+            imagen: '',
+            opciones: []
         };
     }
-
-    async componentDidMount() {
-        var componente = this;
-        var { id } = this.props.match.params;
-        this.setState({ idUsuario: id });
-        await Axios.get('/api/users/worker/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                componente.setState({ datosUsuario: res.data });
-            })
-            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                return;
-            });
+    componentDidMount = async () => {
+        await this.setState({ vehiculos: await funciones.obtenerPatentesVehiculos() });
+        await this.setState({ conductores: await funciones.obtenerConductores() });
     }
+
+    // agregarPregunta = this.props.agregaPregunta;
+
     onChangeInput = (e) => {
-        console.log(e.target.value);
         this.setState({
-            form: {
-                ...this.state.form, [e.target.name]: e.target.value
-            }
+            [e.target.name]: e.target.value
         })
     }
+
     onChangeFileInput = (e) => {
         console.log(e.target.files[0]);
         this.setState({
             [e.target.name]: e.target.files[0]
         })
     }
-    retorno = (e) => {
-        historial.push('/personas/gestion');
+
+    enviarDatos = async (e) => {
+        var componente = this;
+        var formData = new FormData();
+        formData.append('fecha', this.state.fecha);
+        formData.append('hora', this.state.hora);
+        formData.append('patente', this.state.patente);
+        formData.append('conductor', this.state.conductor);
+        formData.append('hito', this.state.hito);
+        formData.append('imagen', this.state.imagen);
+        const res = await Axios.post('/api/gestion-residuos/emergencias/vehiculos/crear/', formData, { headers: authHeader() })
+            .then(respuesta => {
+                if (respuesta.data.estado === "success") {
+                    toast.success(respuesta.data.mensaje, toastoptions);
+                     this.props.closeModal();
+                     this.props.props.actualizaLista()
+                    // historial.push("/residuos/trazabilidad");
+                } else if (respuesta.data.estado === "warning") {
+                    // this.props.props.funcion();
+                    toast.warning(respuesta.data.mensaje, toastoptions);
+                }
+            })
+            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                toast.error("Ha habido un error al enviar los datos", toastoptions);
+            });
     }
 
-    enviaDatos = async e => {
-        e.preventDefault();
-        confirmAlert({
-            customUI: ({ onClose }) => {
-                return (
-                    <div className='custom-confirm '>
-                        <p>¿Quieres guardar esta capacitación?</p>
-                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
-                        <button className="boton-generico btazul"
-                            onClick={ async () => {
-                                var formData = new FormData();
-                                formData.append('certificado', this.state.formCertificado)
-
-                                var campoVacio = false;
-                                console.log(this.state.form);
-                                await Object.entries(this.state.form).map((t, k) => {
-                                    if (t[1] === "" || t[1] === null) {
-                                        campoVacio = true;
-                                    }
-                                });
-                                if (!campoVacio) {
-                                    formData.append("rut", this.state.datosUsuario.rut);
-                                    formData.append("curso", this.state.form.curso);
-                                    formData.append("responsable", this.state.form.responsable);
-                                    formData.append("duracion", this.state.form.duracion);
-                                    formData.append("fecha", this.state.form.fecha);
-                                    formData.append("tematica", this.state.form.tematica);
-                                    formData.append("descripcion", this.state.form.descripcion);
-                                    const res = await Axios.post('/api/users/worker/ficha/hojavida/crearCapacitacion', formData, { headers: authHeader() })
-                                        .then(respuesta => {
-                                            if (respuesta.data.estado === "success") {
-                                                toast.success(respuesta.data.mensaje, toastoptions);
-                                                onClose();
-                                                historial.push(`/personas/ficha-trabajador/hoja-de-vida/`+this.state.idUsuario)
-                                            } else if (respuesta.data.estado === "warning") {
-                                                toast.warning(respuesta.data.mensaje, toastoptions);
-                                                onClose();
-                                            }
-                                        })
-                                        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                                            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                                            onClose();
-                                            toast.error("Ha habido un error al enviar los datos", toastoptions);
-                                        });
-                                } else {
-                                    toast.warning("Debes llenar todos los campos", toastoptions);
-                                }
-
-                            }}
-                        >
-                            Aceptar
-                    </button>
-                    </div>
-                );
-            }
-        });
-
-
-
-    }
 
     render() {
+        const compo = this;
+
+        let vehiculos;
+        if (this.state.vehiculos) {
+            vehiculos = this.state.vehiculos.map((vehiculo, index) =>
+                <option value={vehiculo.patente} >{vehiculo.patente}</option>
+            )
+        }
+
+        let conductores;
+        if (this.state.conductores) {
+            conductores = this.state.conductores.map((conductor, index) =>
+                <option value={conductor.rut} data-dv={conductor.dv} data-nombre={conductor.nombre} data-apellido={conductor.apellido}>{conductor.nombre} {conductor.apellido}</option>
+            )
+        }
+
+
         return (
-            <div className="principal" id="component-perfil">
+            <div className="modalPreguntaEncuesta vEmergencia">
                 <div>
-                    <h2 className="amarillo"><Link to={`/personas/ficha-trabajador/hoja-de-vida/${this.state.idUsuario}`}> <Bamarillorev /> </Link><span>Trabajadores</span> / <strong>Ficha</strong></h2>
-                    <div className="fichaPerfil">
-                        <div className="seccion encabezado">
-                            <div className="fotoperfil">
-                                <img src={imagen} />
-                            </div>
-                            <div className="datosPersonales">
-                                <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>
-                            </div>
+                    <h3>Nuevo Hito Emergencia</h3>
+                    <div>
+                        <div className="elemento">
+                            <input type="date" className="input-generico w100" onChange={this.onChangeInput} name="fecha"></input>
                         </div>
-                        <div className="seccion">
-                            <h3>Capacitacion</h3>
-                            <div>
-                                <span>Nombre curso</span>
-                                <span><input className="input-generico" placeholder="Nombre de la capacitación" name="curso" value={this.state.form.curso} onChange={this.onChangeInput} /></span>
-                            </div>
-                            <div>
-                                <span>Responsable</span>
-                                <span><input className="input-generico" placeholder="Nombre persona o institución" name="responsable" value={this.state.form.responsable} onChange={this.onChangeInput} /></span>
-                            </div>
-                            <div>
-                                <span>Duración en Hrs</span>
-                                <span><input className="input-generico" name="duracion" value={this.state.form.duracion} onChange={this.onChangeInput} /></span>
-                            </div>
-                            <div>
-                                <span>Fecha</span>
-                                <span><input type="date" className="input-generico" name="fecha" value={this.state.form.fecha} onChange={this.onChangeInput} /></span>
-                            </div>
-                            <div>
-                                <span>Temática</span>
-                                <span><input className="input-generico" name="tematica" value={this.state.form.tematica} onChange={this.onChangeInput} /></span>
-                            </div>
-                            <div>
-                                <span>Descripción</span>
-                                <span><input className="input-generico" name="descripcion" value={this.state.descripcion} onChange={this.onChangeInput} /></span>
-                            </div>
-                            <div>
-                                <span>Certificado</span>
-                                <span><input className="input-generico" type="file" name="formCertificado" onChange={this.onChangeFileInput} /></span>
-                            </div>
-                            <div className="form-group buttons">
-                                <button className="boton-generico btazulalt" onClick={this.retorno}>Cancelar</button>
-                                <button className="boton-generico btazul" type="button" onClick={this.enviaDatos}>Guardar</button>
-                            </div>
+                        <div className="elemento">
+                            <select onChange={this.onChangeInput} name="hora" className="input-generico">
+                                <option value="">Hora</option>
+                                <option>00:00</option>
+                                <option>00:30</option>
+                                <option>01:00</option>
+                                <option>01:30</option>
+                                <option>02:00</option>
+                                <option>02:30</option>
+                                <option>03:00</option>
+                                <option>03:30</option>
+                                <option>04:00</option>
+                                <option>04:30</option>
+                                <option>05:00</option>
+                                <option>05:30</option>
+                                <option>06:00</option>
+                                <option>06:30</option>
+                                <option>07:00</option>
+                                <option>07:30</option>
+                                <option>08:00</option>
+                                <option>08:30</option>
+                                <option>09:00</option>
+                                <option>09:30</option>
+                                <option>10:00</option>
+                                <option>10:30</option>
+                                <option>11:00</option>
+                                <option>11:30</option>
+                                <option>12:00</option>
+                                <option>12:30</option>
+                                <option>13:00</option>
+                                <option>13:30</option>
+                                <option>14:00</option>
+                                <option>14:30</option>
+                                <option>15:00</option>
+                                <option>15:30</option>
+                                <option>16:00</option>
+                                <option>16:30</option>
+                                <option>17:00</option>
+                                <option>17:30</option>
+                                <option>18:00</option>
+                                <option>18:30</option>
+                                <option>19:00</option>
+                                <option>19:30</option>
+                                <option>20:00</option>
+                                <option>20:30</option>
+                                <option>21:00</option>
+                                <option>22:30</option>
+                                <option>23:00</option>
+                                <option>23:30</option>
+                            </select>
+                        </div>
+                        <div className="elemento">
+                            <select name="patente" onChange={this.onChangeInput} className="input-generico">
+                                <option>Patente</option>
+                                {vehiculos}
+                            </select>
+                        </div>
+                        <div className="elemento">
+                            <select name="conductor" onChange={this.onChangeInput} className="input-generico">
+                                <option>Conductor</option>
+                                {conductores}
+                            </select>
+                        </div>
+                        <div className="elemento">
+                            <textarea name="hito" onChange={this.onChangeInput} className="input-generico" placeholder="Hito emergencia"></textarea>
+                        </div>
+                        <div className="elemento">
+                            <input type="file" className="input-generico w100" onChange={this.onChangeFileInput} name="imagen"></input>
+                        </div>
+                        <div className="form-group buttons">
+                            <button className="boton-generico btazul" onClick={this.props.closeModal} type="submit">Cancelar</button>
+                            <button className="boton-generico btazul" onClick={this.enviarDatos} type="button">Aceptar</button>
                         </div>
                     </div>
                 </div>
-            </div >
-        );
+            </div>
+        )
     }
 }
-

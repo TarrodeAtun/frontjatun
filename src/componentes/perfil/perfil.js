@@ -89,7 +89,9 @@ export default class Perfil extends Component {
             formComuna: '',
             formCiudad: '',
 
-            fotoPerfil: ''
+            fotoPerfil: '',
+
+            centrosCostos: ''
         };
     }
 
@@ -98,6 +100,7 @@ export default class Perfil extends Component {
         await this.setState({
             datosUsuarios: this.state.currentUser.data.usuariobd
         });
+        console.log(this.state.currentUser.data.usuariobd);
         await this.setState({
             formEmail: this.state.datosUsuarios.email,
             formTelefono: this.state.datosUsuarios.telefono,
@@ -107,7 +110,8 @@ export default class Perfil extends Component {
             formTelefonoMovil: this.state.datosUsuarios.emergencias.telefono2,
             formDireccion: this.state.datosUsuarios.emergencias.direccion,
             formComuna: this.state.datosUsuarios.emergencias.comuna,
-            formCiudad: this.state.datosUsuarios.emergencias.ciudad
+            formCiudad: this.state.datosUsuarios.emergencias.ciudad,
+            formCentro: this.state.datosUsuarios.centroCosto
         });
         await funciones.getRutFormateado(this.state.datosUsuarios.rut, this.state.datosUsuarios.dv).then(res => { this.setState({ rutFormateado: res }) });
         if (this.state.datosUsuarios.imagen) {
@@ -125,6 +129,7 @@ export default class Perfil extends Component {
                 fotoPerfil: imagen
             })
         }
+        await this.setState({ centrosCostos: await funciones.obtenerCentrosCostos() });
     }
     async componentWillUnmount() {
 
@@ -179,6 +184,17 @@ export default class Perfil extends Component {
     }
 
     render() {
+
+        let componente = this;
+        let centro;
+        if ((this.state.formCentro !== "") && (this.state.centrosCostos.length > 0)) {
+            console.log(this.state.formCentro)
+            this.state.centrosCostos.find(function (cen) {
+                if (parseInt(cen.key) === parseInt(componente.state.formCentro)) {
+                    centro = cen.nombre;
+                }
+            });
+        }
         return (
             <div className="principal" id="component-perfil">
                 <div>
@@ -205,7 +221,7 @@ export default class Perfil extends Component {
                                 <span>Rut</span><span>{this.state.rutFormateado}</span>
                             </div>
                             <div>
-                                <span>Fecha Nacimiento</span><span>{moment(this.state.datosUsuarios.fechaNac).format('YYYY-MM-DD')}</span>
+                                <span>Fecha Nacimiento</span><span>{moment(this.state.datosUsuarios.fechaNac).utc().format('DD/MM/YYYY')}</span>
                             </div>
                             <div>
                                 <span>Email</span>
@@ -309,24 +325,47 @@ export default class Perfil extends Component {
 
 
                         <div className="seccion">
+                            <h3>Permisos en la plataforma</h3>
                             <div>
-                                <span>Tipo de Perfil</span><span>asdasdasd</span>
+                                <span>Perfil 1</span>
+
+                                <span>
+                                    {this.state.formPerfil1 === 1 && 'Administrador'}
+                                    {this.state.formPerfil1 === 2 && 'Jefe Cuadrilla'}
+                                    {this.state.formPerfil1 === 3 && 'Operador'}
+                                </span>
+
+
                             </div>
-                            {this.state.datosUsuarios.puestos
-                                ?
-                                <div>
-                                    <span>Puesto de trabajo</span>
-                                    <span>
-                                        {this.state.datosUsuarios.puestos.map(puesto => (
-                                            <label>{puesto}</label>
-                                        ))
-                                        }
-                                    </span>
-                                </div>
-                                : null
-                            }
                             <div>
-                                <span>Centro de costos</span><span>asdasdasd</span>
+                                <span>Perfil 2</span>
+
+                                <span>
+                                    {this.state.formPerfil2 === 1 && 'Administrador'}
+                                    {this.state.formPerfil2 === 2 && 'Jefe Cuadrilla'}
+                                    {this.state.formPerfil2 === 3 && 'Operador'}
+                                </span>
+
+                            </div>
+                        </div>
+                        <div className="seccion">
+                            <h3>Puesto de trabajo</h3>
+                            <div>
+                                <span>Cargo</span>
+
+                                <span>
+                                    {this.state.formCargo === 1 && 'Jefe Cuadrilla'}
+                                    {this.state.formCargo === 2 && 'Operador'}
+                                    {this.state.formCargo === 3 && 'Conductor'}
+                                </span>
+
+                            </div>
+                            <div>
+                                <span>Centro de costos</span>
+                                <span>
+                                    {centro}
+                                </span>
+
                             </div>
                         </div>
                         {this.state.datosUsuarios.bancarios

@@ -55,44 +55,39 @@ export default class VerRuta extends Component {
 
     }
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
         this.obtenerRuta();
-        this.obtenerVehiculos();
         this.obtenerRetiros();
-        this.obtenerServicios();
-        this.obtenerCondutores();
+        await this.setState({ listaServicios: await funciones.obtenerServicios() });
+        await this.setState({ listaConductores: await funciones.obtenerConductores() });
+        await this.setState({ listaVehiculos: await funciones.obtenerPatentesVehiculos() });
+      
     }
 
     obtenerRuta = (e) => {
         var componente = this;
         var { id } = this.props.match.params;
         const res = Axios.get('/api/gestion-residuos/rutas/obtener/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
+            .then(async function (res) {   //si la peticion es satisfactoria entonces
+                console.log(res.data.data);
                 componente.setState({
                     form: {
-                        patente: res.data.data.patente,
-                        servicio: res.data.data.servicio,
-                        conductor: res.data.data.conductor,
-                        fecha: moment(res.data.data.fecha).utc().format('YYYY-MM-DD'),
-                        inicio: res.data.data.inicio,
-                        termino: res.data.data.termino,
-                        enlace: res.data.data.enlace
+                        patente: res.data.data[0].patente,
+                        servicio: res.data.data[0].servicio,
+                        conductor: res.data.data[0].conductorRut,
+                        fecha: moment(res.data.data[0].fecha).utc().format('YYYY-MM-DD'),
+                        inicio: res.data.data[0].inicio,
+                        termino: res.data.data[0].termino,
+                        enlace: res.data.data[0].enlace
                     },
-                    ordenes:res.data.data.ordenes
+                    nombreConductor:res.data.data[0].datosConductor[0].nombre+" "+res.data.data[0].datosConductor[0].apellido,
+                    
+                   
                 });  //almacenamos el listado de usuarios en el estado usuarios (array)
+                await funciones.getRutFormateado(res.data.data[0].datosConductor[0].rut, res.data.data[0].datosConductor[0].dv).then(res => { componente.setState({ rutConductor: res }) });
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                return;
-            });
-    }
-    obtenerVehiculos = (e) => {
-        var componente = this;
-        const res = Axios.get('/api/generales/vehiculos/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                componente.setState({ listaVehiculos: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
-            })
-            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                console.log(err);
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 return;
             });
@@ -111,30 +106,6 @@ export default class VerRuta extends Component {
                     return;
                 });
         }
-    }
-    obtenerServicios = (e) => {
-        var componente = this;
-        const res = Axios.get('/api/generales/servicios/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data)
-                componente.setState({ listaServicios: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
-            })
-            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                return;
-            });
-    }
-    obtenerCondutores = (e) => {
-        var componente = this;
-        const res = Axios.get('/api/users/conductores/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-            .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data);
-                componente.setState({ listaConductores: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
-            })
-            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                return;
-            });
     }
 
     onChangeInput = (e) => {
@@ -175,21 +146,7 @@ export default class VerRuta extends Component {
                         <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
                         <button className="boton-generico btazul" onClick={function () { componente.pushLista(); onClose(); }}>No guardar</button>
                         <button className="boton-generico btazul"
-                            onClick={() => {
-                                Axios.post('/api/bienestar/soporte/consulta/finalizar', {
-                                },
-                                    { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
-                                    .then(function (res) {   //si la peticion es satisfactoria entonces
-                                        componente.cargarMensajes();
-                                        componente.setState({ estado: "1" });
-                                        toast.success("¡Se ha finalizado la consulta, no se pueden agregar más mensajes!")
-                                        onClose();
-                                    })
-                                    .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
-                                        handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
-                                        return;
-                                    });
-                            }}
+                            onClick={this.enviaDatos}
                         >
                             Aceptar
                     </button>
@@ -268,9 +225,9 @@ export default class VerRuta extends Component {
                 .then(respuesta => {
                     // this.setState({ idUsuario: respuesta.data.id });
                     if (respuesta.data.estado === "success") {
-                        // toast.success(respuesta.data.mensaje, toastoptions);
-                        // historial.push("/residuos/control-retiro/programacion-retiro");
-                        // this.setState({ showIngresar: true, showOptions: false });
+                        toast.success(respuesta.data.mensaje, toastoptions);
+                        historial.push("/residuos/control-retiro/programacion-retiro");
+                        this.setState({ showIngresar: true, showOptions: false });
                     } else if (respuesta.data.estado === "warning") {
                         toast.warning(respuesta.data.mensaje, toastoptions);
                     }

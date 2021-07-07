@@ -214,6 +214,7 @@
 .between{
   justify-content: space-between;
 }
+.block{display:block;}
 .w100{
   width: 100% !important;
 }
@@ -802,15 +803,15 @@ margin-left: 15px;
   .listado-simple .elemento .acciones{
     justify-content: flex-end;
     display:flex;
-    flex-wrap:wrap;
+    /* flex-wrap:wrap; */
   }
   .listado-simple .elemento .acciones a{
     display: inline-block;
     width: auto;
   }
   .listado-simple .elemento .acciones >*{
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
     background:none;
   }
   .listado-simple .elemento .respuestas{
@@ -836,6 +837,9 @@ margin-left: 15px;
   }
   .acciones span{
     width:auto !important;
+  }
+  .acciones button{
+    background: none;
   }
 
   .modalPreguntaEncuesta{
@@ -896,6 +900,40 @@ margin-left: 15px;
   .vEmergencia{
     width:480px;
   }
+  .verEmergencia{
+    max-width:480px;
+    padding:0px;
+  }
+ 
+  .verEmergencia h3{
+    text-align: left !important;
+    margin: 0px;
+    padding-top: 20px;
+    padding-left: 30px;
+    padding-bottom: 20px;
+    color:#00852A;
+  }
+  .verEmergencia .elemento{
+    display:flex;
+    flex-wrap: wrap;
+    border-top:1px solid #0000002E;
+    padding-top: 20px;
+    padding-left: 30px;
+    padding-bottom: 20px;
+    margin: 0px;
+  }
+  .verEmergencia .elemento > span:first-of-type{
+   display: block;
+   width:40%;
+   color:#707070;
+   font-family: "OSsemibold";
+  }
+  .verEmergencia .elemento > span:last-of-type{
+    display: block;
+    width:60%;
+    font-family: "OSregular";
+    color:#707070;
+   }
   .vEmergencia .buttons{
     padding-left: 20px;
     padding-right: 20px;
@@ -1220,7 +1258,7 @@ padding-bottom: 10px;
   margin-right: 10px;
 }
 .seccion .filtros .buttons-space{
-margin-left: auto;;
+/* margin-left: auto;; */
 }
 .seccion .filtros .buttons-space button{
   margin-left: 8px;
@@ -1584,4 +1622,11 @@ width:40%;
   width:24px;
   height:24px;
   margin-top: -10px;
+}
+.input-filtro{
+  width: 25% !important;
+    margin-right: 10px !important;
+}
+.span-like-input{
+
 }

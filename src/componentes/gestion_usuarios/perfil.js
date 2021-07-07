@@ -155,7 +155,9 @@ export default class Perfil extends Component {
                 formBanco: this.state.datosUsuario.bancarios.banco,
                 formTipoCuenta: this.state.datosUsuario.bancarios.tipo,
                 formNumCuenta: this.state.datosUsuario.bancarios.numero,
-                formCentro: this.state.datosUsuario.centroCosto
+                formCentro: this.state.datosUsuario.centroCosto,
+                rutOriginal: this.state.datosUsuario.rut,
+                emailOriginal: this.state.datosUsuario.email
             },
 
         });
@@ -211,6 +213,8 @@ export default class Perfil extends Component {
             numero: this.state.form.formNumCuenta
         }));
         formData.append('centroCosto', this.state.form.formCentro);
+        formData.append('rutOriginal', this.state.form.rutOriginal);
+        formData.append('emailOriginal', this.state.form.emailOriginal);
         for (var elem of formData.entries()) {
             console.log(elem);
             if (elem[1] === "" || elem[1] === null) {
@@ -306,7 +310,7 @@ export default class Perfil extends Component {
                                 <span>Fecha de Nacimiento</span>
                                 {this.state.showModificar
                                     ? <span><input className="input-generico" type="date" name="formFechanac" onChange={this.onChangeInput} value={this.state.form.formFechanac} /></span>
-                                    : <span>{this.state.form.formFechanac}</span>
+                                    : <span>{moment(this.state.form.formFechanac).add(1, "days").utc().format('DD/MM/YYYY')}</span>
                                 }
                             </div>
                             <div>
@@ -435,12 +439,14 @@ export default class Perfil extends Component {
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Jefe Cuadrilla</option>
                                             <option value="2">Operador</option>
+                                            <option value="3">Conductor</option>
                                         </select>
                                     </span>
                                     :
                                     <span>
                                         {this.state.form.formCargo === 1 && 'Jefe Cuadrilla'}
                                         {this.state.form.formCargo === 2 && 'Operador'}
+                                        {this.state.form.formCargo === 3 && 'Conductor'}
                                     </span>
                                 }
                             </div>

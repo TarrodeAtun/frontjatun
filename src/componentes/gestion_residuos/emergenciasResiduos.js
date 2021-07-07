@@ -5,12 +5,16 @@ import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import { funciones } from '../../servicios/funciones';
+import { confirmAlert } from 'react-confirm-alert';
+import { toast } from 'react-toastify';
 
 // importaciones de estilos 
 import '../../styles/fichaTrabajador.css';
 
 import AgregarEmergencia from './crearEmergenciaResiduos';
 import ModificarEmergencia from './modificarEmergenciaResiduos';
+import VerEmergencia from './verEmergenciaResiduos';
 
 import Modal from '../includes/modal';
 import { toogleModalCore } from '../includes/funciones';
@@ -23,6 +27,18 @@ import { ReactComponent as Ojo } from "../../assets/iconos/ojo.svg";
 import { ReactComponent as Basurero } from "../../assets/iconos/basurero.svg";
 import { ReactComponent as Bverderev } from "../../assets/iconos/bverderev.svg";
 import { ReactComponent as Flechaver } from "../../assets/iconos/flechaver.svg";
+import { async } from "rxjs";
+
+
+const toastoptions = {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+}
 
 export default class EmergenciasResiduos extends Component {
     constructor(props) {
@@ -33,24 +49,38 @@ export default class EmergenciasResiduos extends Component {
             users: null,
             showAgregarEmergencia: '',
             showModificarEmergencia: '',
-            idModificar:''
+            idModificar: '',
+
+            pagina: 1,
+            paginas: '',
         };
     }
 
-    toogleModal = toogleModalCore; 
+    toogleModal = toogleModalCore;
 
     manejadorModals = (e, res) => {
         this.toogleModal(e, res);
     }
 
+    paginacion = funciones.paginacion;
+
+    paginar = async (e) => {
+        console.log(e.currentTarget.dataset.pag);
+        await this.setState({ pagina: e.currentTarget.dataset.pag })
+        this.obtenerEmergencias();
+    }
+
     async componentDidMount() {
+        this.obtenerEmergencias();
+    }
+
+    obtenerEmergencias = async (e) => {
         var componente = this;
-        var { id } = this.props.match.params;
-        this.setState({ idCliente: id });
-        const res = Axios.get('/api/gestion-residuos/emergencias/residuos/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/gestion-residuos/emergencias/residuos/', { pagina: this.state.pagina }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {
                 componente.setState({
-                    emergencias: res.data.data
+                    emergencias: res.data.data,
+                    paginas: res.data.paginas
                 });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -61,7 +91,45 @@ export default class EmergenciasResiduos extends Component {
 
     modificarEmergencia = async (e) => {
         console.log(e.currentTarget.dataset.id);
-        this.setState({idModificar:e.currentTarget.dataset.id});
+        this.setState({ idModificar: e.currentTarget.dataset.id });
+        this.manejadorModals(e)
+    }
+
+    eliminarEmergencia = async (e) => {
+        let id = e.currentTarget.dataset.id;
+        var componente = this;
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-confirm '>
+                        <p>¿Estas seguro de eliminar esta emergencia?, no podrás recuperarla</p>
+                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
+                        <button className="boton-generico btazul"
+                            onClick={() => {
+                                const res = Axios.post('/api/gestion-residuos/emergencias/residuos/eliminar',
+                                    { id: id, },
+                                    { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+                                    .then(function (res) {
+                                        toast.success(res.data.mensaje, toastoptions);
+                                        componente.obtenerEmergencias();
+                                    })
+                                    .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                                        handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                                        return;
+                                    });
+                                onClose();
+                            }} >
+                            Aceptar
+                        </button>
+                    </div>
+                );
+            }
+        });
+    }
+
+    verEmergencia = async (e) => {
+        console.log(e.currentTarget.dataset.id);
+        this.setState({ idModificar: e.currentTarget.dataset.id });
         this.manejadorModals(e)
     }
 
@@ -78,9 +146,9 @@ export default class EmergenciasResiduos extends Component {
                     <td>{emergencia.turno}</td>
                     <td>{emergencia.hito}</td>
                     <td className="acciones">
-                        <span><Link to={`/residuos/emergencias/residuos/ver/${emergencia._id}`}><Ojo /></Link></span>
-                        <span><button onClick={this.modificarEmergencia} data-objetivo="ModificarEmergencia" data-id={emergencia._id}><Edit /></button></span>
-                        <span><Link ><Basurero /></Link></span>
+                        <span><button onClick={this.verEmergencia} data-objetivo="VerEmergencia" data-id={emergencia._id}><Ojo /></button></span>
+                        {/* <span><button onClick={this.modificarEmergencia} data-objetivo="ModificarEmergencia" data-id={emergencia._id}><Edit /></button></span> */}
+                        <span><button onClick={this.eliminarEmergencia} data-id={emergencia._id}><Basurero /></button></span>
                     </td>
                 </tr>
             )
@@ -91,7 +159,7 @@ export default class EmergenciasResiduos extends Component {
                 </td>
             </tr>
         }
-
+        let paginacion = funciones.paginacion(this.state.paginas, this.state.pagina, this.paginar);
 
         return (
             <Fragment>
@@ -118,6 +186,11 @@ export default class EmergenciasResiduos extends Component {
                             </tbody>
                         </table>
                     </div>
+                    <div>
+                        <ul className="paginador">
+                            {paginacion}
+                        </ul>
+                    </div>
                 </div>
                 <div id="modales">
                     <Modal
@@ -125,7 +198,7 @@ export default class EmergenciasResiduos extends Component {
                         show={this.state.showAgregarEmergencia} //indicamos la propiedad show con el estado que controlara al modal
                         contenido={<AgregarEmergencia />} //entregamos el componente que se renderizara en el modal 
                         toogleModal={this.manejadorModals} //traspasamos la funcion que permitira abrir y cerrar el modal
-                        agregaPregunta={this.agregaPregunta}
+                        actualizaLista={this.obtenerEmergencias}
                     />
                     <Modal
                         name="ModificarEmergencia"  //nombre del estado que controla el modal
@@ -134,7 +207,14 @@ export default class EmergenciasResiduos extends Component {
                         toogleModal={this.manejadorModals} //traspasamos la funcion que permitira abrir y cerrar el modal
                         id={this.state.idModificar}
                     />
-                   
+                    <Modal
+                        name="VerEmergencia"  //nombre del estado que controla el modal
+                        show={this.state.showVerEmergencia} //indicamos la propiedad show con el estado que controlara al modal
+                        contenido={<VerEmergencia />} //entregamos el componente que se renderizara en el modal 
+                        toogleModal={this.manejadorModals} //traspasamos la funcion que permitira abrir y cerrar el modal
+                        id={this.state.idModificar}
+                    />
+
                 </div>
             </Fragment>
         );

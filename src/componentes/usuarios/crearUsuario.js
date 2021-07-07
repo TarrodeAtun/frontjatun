@@ -406,12 +406,14 @@ export default class CrearUsuario extends Component {
                                     ? <span>
                                         {this.state.form.formCargo === "1" && 'Jefe Cuadrilla'}
                                         {this.state.form.formCargo === "2" && 'Operador'}
+                                        {this.state.form.formCargo === "3" && 'Conductor'}
                                     </span>
                                     : <span>
                                         <select name="formCargo" onChange={this.onChangeInput} value={this.state.form.formCargo} className="input-generico">
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Jefe Cuadrilla</option>
                                             <option value="2">Operador</option>
+                                            <option value="3">Conductor</option>
                                         </select>
                                     </span>
                                 }

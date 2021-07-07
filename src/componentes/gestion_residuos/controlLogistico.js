@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import { funciones } from '../../servicios/funciones';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 
@@ -35,9 +36,21 @@ export default class ControlLogistico extends Component {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
             users: null,
-            horas: ''
+            horas: '',
+
+            patentes:'',
+            conductores:'',
+
+            fecha: '',
+            conductor: '',
+            patente: '',
+            orden: '',
+
         };
     }
+
+    // paginacion = funciones.paginacion;
+
     pad = (num, size) => {
         var s = "00000000" + num;
         s = s.substr(s.length - size);
@@ -46,10 +59,15 @@ export default class ControlLogistico extends Component {
 
         return f + " " + l;
     }
-    componentDidMount = () => {
+    componentDidMount = async () => {
         var componente = this;
         var fecha = new Date();
-        const res = Axios.get('/api/gestion-residuos/rutas/ordenes/' + moment(fecha).format('YYYY-MM-DD'), { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/gestion-residuos/rutas/ordenes/', {
+            fecha: fecha,
+            conductor: this.state.conductor,
+            patente: this.state.patente,
+            or: this.state.or
+        }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -60,12 +78,17 @@ export default class ControlLogistico extends Component {
             });
         var node = this.myRef.current;
         this.recalculaEspacios(node);
+        await this.setState({ patentes: await funciones.obtenerPatentesVehiculos() });
+        await this.setState({ conductores: await funciones.obtenerConductores() });
     }
     obtenerRutas = (e) => {
         var componente = this;
-        var fecha = e.target.value;
-        console.log(fecha);
-        const res = Axios.get('/api/gestion-residuos/rutas/ordenes/' + fecha, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/gestion-residuos/rutas/ordenes/', {
+            fecha: this.state.fecha,
+            conductor: this.state.conductor,
+            patente: this.state.patente,
+            or: this.state.orden
+        }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -126,6 +149,28 @@ export default class ControlLogistico extends Component {
         var node = this.myRef.current;
         this.recalculaEspacios(node);
         return { top: posinic, height: height, zIndex: index };
+    }
+    onChangeInput = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+    onChangeFecha = async (e) => {
+        console.log(e.target.value);
+        await this.setState({
+            fecha: e.target.value
+        })
+        this.obtenerRutas();
+    }
+    filtrar = () => {
+        this.obtenerRutas();
+    }
+    limpiar = async () => {
+        this.setState({
+            conductor: '',
+            patente: '',
+            orden: '',
+        })
     }
     render() {
         var componente = this;
@@ -219,8 +264,8 @@ export default class ControlLogistico extends Component {
             items = this.state.horas.map((hora, index) => (
                 <tr className="elemento ">
                     <td className="columna">
-                        <span>{hora.datosRuta[0].patente}</span>
-                        <span>{hora.datosServicio[0].nombre}</span>
+                        <span>{hora.datosRuta.patente}</span>
+                        <span>{hora.datosServicio.nombre}</span>
                     </td>
                     <td className="columna">
                         <span>{hora.datosConductor[0].rut}</span>
@@ -232,16 +277,25 @@ export default class ControlLogistico extends Component {
                         <span> {hora.datosRetiro[0].inicio} - {hora.datosRetiro[0].termino} </span>
                     </td>
                     <td className="acciones">
-                        <span><Link to={`/residuos/control-logistico/ver-ruta/${hora.datosRuta[0]._id}`}><Ojo /></Link></span>
+                        <span><Link to={`/residuos/control-logistico/ver-ruta/${hora.datosRuta._id}`}><Ojo /></Link></span>
                     </td>
                 </tr>
-            ))
-
-
+            ));
         }
 
+        let patentes;
+        if (this.state.patentes) {
+            patentes = this.state.patentes.map(vehiculo => {
+                return (<option value={vehiculo.patente}>{vehiculo.patente}</option>)
+            });
+        }
 
-
+        let conductores;
+        if (this.state.conductores) {
+            conductores = this.state.conductores.map(conductor => {
+                return (<option value={conductor.rut} data-dv={conductor.dv} data-nombre={`${conductor.nombre}  ${conductor.apellido}`}>{conductor.nombre} {conductor.apellido}</option>)
+            });
+        }
 
         return (
             <div className="principal gestion-residuos menu-lista-dashboard" >
@@ -251,7 +305,7 @@ export default class ControlLogistico extends Component {
                         <div className="seccion calendario">
                             <div className="encabezado flex">
                                 <h3 className="verde inline-block">Calendario Retiros Programados</h3>
-                                <input className="fechaProgra" onChange={this.obtenerRutas} type="date"></input>
+                                <input className="fechaProgra" onChange={this.onChangeFecha} type="date"></input>
                             </div>
                             <div className="grilla">
                                 <table className="fondo encabezado" >
@@ -327,12 +381,21 @@ export default class ControlLogistico extends Component {
                                 <div>
                                     <form>
                                         <div className="form-group justify-center">
-                                            <select className="input-generico">
-                                                <option>Todos los estados</option>
+                                            <select className="input-generico" name="patente" onChange={this.onChangeInput} value={this.state.patente}>
+                                                <option value="">Patente</option>
+                                                {patentes}
                                             </select>
+                                            <select className="input-generico" name="conductor"  onChange={this.onChangeInput} value={this.state.conductor}>
+                                                <option value="" >Conductor</option>
+                                                {conductores}
+                                            </select>
+                                            <input type="number" className="input-generico input-filtro" name="orden" placeholder="OR"   onChange={this.onChangeInput} value={this.state.orden}/>
+
+                                        </div>
+                                        <div className="form-group justify-center">
                                             <div className="buttons-space">
-                                                <button className="boton-generico btazul" type="button">Filtrar</button>
-                                                <button className="boton-generico btblanco" type="button">Limpiar</button>
+                                                <button className="boton-generico btazul" onClick={this.filtrar} type="button">Filtrar</button>
+                                                <button className="boton-generico btblanco" onClick={this.limpiar} type="button">Limpiar</button>
                                             </div>
                                         </div>
                                     </form>

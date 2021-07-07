@@ -29,7 +29,9 @@ export default class GestionResiduos extends Component {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
             users: null,
-            horas: ''
+            horas: '',
+            estado: '',
+            fecha: ''
         };
     }
     pad = (num, size) => {
@@ -44,7 +46,7 @@ export default class GestionResiduos extends Component {
         var componente = this;
         var fecha = new Date();
         console.log(fecha);
-        const res = Axios.get('/api/gestion-residuos/retiros/'+ moment(fecha).format('YYYY-MM-DD'), { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/gestion-residuos/retiros/', { fecha: fecha, estado: this.state.estado }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -56,12 +58,9 @@ export default class GestionResiduos extends Component {
         var node = this.myRef.current;
         this.recalculaEspacios(node);
     }
-    obtenerRetiros = (e) =>{
-        
+    obtenerRetiros = (e) => {
         var componente = this;
-        var fecha = e.target.value;
-        console.log(fecha);
-        const res = Axios.get('/api/gestion-residuos/retiros/'+ fecha, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/gestion-residuos/retiros/', { fecha: this.state.fecha, estado: this.state.estado }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -73,6 +72,7 @@ export default class GestionResiduos extends Component {
         var node = this.myRef.current;
         this.recalculaEspacios(node);
     }
+
     recalculaEspacios = async (nodo) => {
         var columnas;
         var subespacio;
@@ -103,9 +103,38 @@ export default class GestionResiduos extends Component {
                 elemento.style.width = anchos[elemento.style.top] + "px";
             }
         }
-
     }
-    pushDetalle = (e) =>{
+
+    onChangeInput = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+    onChangeFecha = async (e) => {
+        console.log(e.target.value);
+        await this.setState({
+            fecha: e.target.value
+        })
+        this.obtenerRetiros();
+    }
+
+
+
+
+    filtrar = async () => {
+        this.obtenerRetiros();
+    }
+
+    limpiar = async () => {
+        this.setState({
+            tarjeta: '',
+            fecha: '',
+            centro: '',
+            estado: ''
+        })
+    }
+
+    pushDetalle = (e) => {
         var id = e.currentTarget.dataset.id;
         historial.push(`/residuos/control-retiro/ver-retiro/${id}`);
     }
@@ -222,14 +251,58 @@ export default class GestionResiduos extends Component {
                     </td>
                     <td>{hora.inicio} - {hora.termino}</td>
                     <td>{this.pad(hora.or, 8)}</td>
-                    <td className="asignado">Asignado</td>
+                    <td className="asignado">
+                        {hora.datosOR.estado === 0 &&
+                            <td className="amarillo">
+                                <div>
+                                    Pendiente
+                                </div>
+                            </td>
+                        }
+                        {hora.datosOR.estado === 1 &&
+                            <td className="verde">  <div>
+                                Asignado
+                            </div></td>
+
+                        }
+                        {hora.datosOR.estado === 2 &&
+                            <td className="azul"> <div>
+                                Ruta Asignada
+                            </div></td>
+
+                        }
+                        {hora.datosOR.estado === 3 &&
+                            <td className="azul"> <div>
+                                Trazabilidad 1ra Clas
+                            </div></td>
+
+                        }
+                        {hora.datosOR.estado === 4 &&
+                            <td className="azul"> <div>
+                                Trazabilidad 2da Clas
+                            </div></td>
+
+                        }
+                        {hora.datosOR.estado === 5 &&
+                            <td className="azul"> <div>
+                                Finalizado
+                            </div></td>
+
+                        }
+                        {hora.datosOR.estado === 6 &&
+                            <td className=""> <div>
+                                Anulado
+                            </div></td>
+
+                        }
+                    </td>
                     <td className="acciones">
                         <span><Link to={`/residuos/control-retiro/ver-retiro/${hora._id}`}><Ojo /></Link></span>
                     </td>
                 </tr>
             ))
 
-            
+
         }
 
 
@@ -243,7 +316,7 @@ export default class GestionResiduos extends Component {
                         <div className="seccion calendario">
                             <div className="encabezado flex">
                                 <h3 className="verde inline-block">Calendario retiros programados</h3>
-                                <input className="fechaProgra" onChange={this.obtenerRetiros} type="date"></input>
+                                <input className="fechaProgra" onChange={this.onChangeFecha} type="date"></input>
                             </div>
                             <div className="grilla">
                                 <table className="fondo encabezado" >
@@ -319,12 +392,19 @@ export default class GestionResiduos extends Component {
                                 <div>
                                     <form>
                                         <div className="form-group justify-center">
-                                            <select className="input-generico">
+                                            <select className="input-generico" value={this.state.estado} name="estado" onChange={this.onChangeInput}>
                                                 <option>Todos los estados</option>
+                                                <option value="0">Pendiente</option>
+                                                <option value="1">Asignado</option>
+                                                <option value="2">Ruta Asignada</option>
+                                                <option value="3">Trazabilidad 1ra Clas</option>
+                                                <option value="4">Trazabilidad 2da Clas</option>
+                                                <option value="5">Finalizado</option>
+                                                <option value="6">Anulado</option>
                                             </select>
                                             <div className="buttons-space">
-                                                <button className="boton-generico btazul" type="button">Filtrar</button>
-                                                <button className="boton-generico btblanco" type="button">Limpiar</button>
+                                                <button className="boton-generico btazul" onClick={this.filtrar} type="button">Filtrar</button>
+                                                <button className="boton-generico btblanco" onClick={this.limpiar} type="button">Limpiar</button>
                                             </div>
                                         </div>
                                     </form>

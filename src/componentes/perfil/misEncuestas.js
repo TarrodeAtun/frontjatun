@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import { funciones } from '../../servicios/funciones';
 
 // importaciones de estilos 
 import '../../styles/fichaTrabajador.css';
@@ -36,7 +37,10 @@ export default class MisEncuestas extends Component {
         this.state = {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
-            encuestas: []
+            encuestas: [],
+
+            pagina: 1,
+            paginas: '',
         };
     }
 
@@ -45,12 +49,19 @@ export default class MisEncuestas extends Component {
         console.log(this.state.encuestas);
     }
 
+    paginacion = funciones.paginacion;
+    paginar = async (e) => {
+        console.log(e.currentTarget.dataset.pag);
+        await this.setState({ pagina: e.currentTarget.dataset.pag })
+        this.obtenerEncuestas();
+    }
+
     obtenerEncuestas = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
-        const res = Axios.post('/api/bienestar/mis-encuestas', { rut: autenticacion.currentUserValue.data.usuariobd.rut }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/bienestar/mis-encuestas', { rut: autenticacion.currentUserValue.data.usuariobd.rut , pagina: this.state.pagina}, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
-                componente.setState({ encuestas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
+                componente.setState({ encuestas: res.data.data, paginas: res.data.paginas });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
@@ -92,7 +103,7 @@ export default class MisEncuestas extends Component {
                 </div>
             }
         }
-
+        let paginacion = funciones.paginacion(this.state.paginas, this.state.pagina, this.paginar);
         return (
             <div className="principal menu-lista-dashboard">
                 <div>
@@ -105,6 +116,11 @@ export default class MisEncuestas extends Component {
                     <div className="elementos">
                         {items}
                     </div>
+                </div>
+                <div>
+                    <ul className="paginador">
+                        {paginacion}
+                    </ul>
                 </div>
             </div>
         );

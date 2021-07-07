@@ -180,7 +180,7 @@ export default class EquipoTrabajador extends Component {
                                 </div>
                             </div>
                             <div className="datosPersonales">
-                                <h3><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>
+                                <h3 className="w100"><span>{this.state.datosUsuario.nombre} {this.state.datosUsuario.apellido}</span><span>{this.state.datosUsuario.rut}-{this.state.datosUsuario.dv}</span></h3>
                             </div>
                         </div>
                         <div className="seccion">
@@ -201,7 +201,7 @@ export default class EquipoTrabajador extends Component {
                         </div>
 
                         <div className="seccion flex">
-                            <h3 className="amarillo">N° asistencia / Turnos planificados</h3>
+                            <h3 className="amarillo w100">N° asistencia / Turnos planificados</h3>
                             <div className="indicadores">
                                 <div>
                                     <Doughnut ref={this.chart1} data={data1} width={200}

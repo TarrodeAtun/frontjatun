@@ -5,6 +5,10 @@ import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import { confirmAlert } from 'react-confirm-alert';
+import { funciones } from '../../servicios/funciones';
+import { toast } from 'react-toastify';
+
 import moment from 'moment';
 
 // importaciones de estilos 
@@ -20,6 +24,16 @@ import { ReactComponent as Ojo } from "../../assets/iconos/ojo.svg";
 import { ReactComponent as Edit } from "../../assets/iconos/edit.svg";
 import { ReactComponent as Plus } from "../../assets/iconos/X.svg";
 
+const toastoptions = {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+}
+
 export default class OrdenesRetiro extends Component {
     constructor(props) {
         super(props);
@@ -27,7 +41,18 @@ export default class OrdenesRetiro extends Component {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
             users: null,
-            ordenes: ''
+            ordenes: [],
+            centrosCostos: '',
+
+            pagina: 1,
+            paginas: '',
+
+
+            tarjeta: '',
+            fecha: '',
+            centro: '',
+            estado: ''
+
         };
     }
     pad = (num, size) => {
@@ -38,22 +63,94 @@ export default class OrdenesRetiro extends Component {
 
         return f + " " + l;
     }
-    componentDidMount = (e) => {
+    paginacion = funciones.paginacion;
+
+    paginar = async (e) => {
+        console.log(e.currentTarget.dataset.pag);
+        await this.setState({ pagina: e.currentTarget.dataset.pag })
+        this.obtenerOrdenes();
+    }
+
+    componentDidMount = async (e) => {
+        this.obtenerOrdenes();
+        this.setState({ centrosCostos: await funciones.obtenerCentrosCostos() });
+    }
+    filtrar = async () => {
+        this.obtenerOrdenes();
+    }
+    obtenerOrdenes = async () => {
         var componente = this;
-        const res = Axios.get('/api/gestion-residuos/ordenes-retiro/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/gestion-residuos/ordenes-retiro/', {
+            tarjeta: this.state.tarjeta,
+            fecha: this.state.fecha,
+            centro: this.state.centro,
+            estado: this.state.estado,
+            pagina: this.state.pagina
+        }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data);
-                componente.setState({ ordenes: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
+                console.log(res.data);
+                componente.setState({ ordenes: res.data.data, paginas: res.data.paginas });  //almacenamos el listado de usuarios en el estado usuarios (array)
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 return;
             });
+
     }
+
+    limpiar = async () => {
+        this.setState({
+            tarjeta: '',
+            fecha: '',
+            centro: '',
+            estado: ''
+        })
+    }
+
+    anularOrden = async (e) => {
+        let id = e.currentTarget.dataset.id;
+        var componente = this;
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-confirm '>
+                        <p>¿Estas seguro de eliminar esta orden?, no podrás recuperarla</p>
+                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
+                        <button className="boton-generico btazul"
+                            onClick={() => {
+                                const res = Axios.post('/api/gestion-residuos/ordenes-retiro/anular',
+                                    { id: id, },
+                                    { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+                                    .then(function (res) {
+                                        toast.success(res.data.mensaje, toastoptions);
+                                        componente.obtenerOrdenes();
+                                    })
+                                    .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                                        handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                                        return;
+                                    });
+                                onClose();
+                            }} >
+                            Aceptar
+                        </button>
+                    </div>
+                );
+            }
+        });
+
+    }
+
+    onChangeInput = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+
+
     render() {
 
         let items;
-        if (this.state.ordenes) {
+        if (this.state.ordenes.length > 0) {
             console.log(this.state.ordenes);
             items = this.state.ordenes.map((orden, index) =>
                 <tr className="">
@@ -73,37 +170,37 @@ export default class OrdenesRetiro extends Component {
                     {orden.estado === 1 &&
                         <td className="verde">  <div>
                             Asignado
-                      </div></td>
+                        </div></td>
 
                     }
                     {orden.estado === 2 &&
                         <td className="azul"> <div>
                             Ruta Asignada
-                      </div></td>
+                        </div></td>
 
                     }
-                     {orden.estado === 3 &&
+                    {orden.estado === 3 &&
                         <td className="azul"> <div>
                             Trazabilidad 1ra Clas
-                      </div></td>
+                        </div></td>
 
                     }
-                     {orden.estado === 4 &&
+                    {orden.estado === 4 &&
                         <td className="azul"> <div>
                             Trazabilidad 2da Clas
-                      </div></td>
+                        </div></td>
 
                     }
-                     {orden.estado === 5 &&
+                    {orden.estado === 5 &&
                         <td className="azul"> <div>
                             Finalizado
-                      </div></td>
+                        </div></td>
 
                     }
                     {orden.estado === 6 &&
                         <td className=""> <div>
                             Anulado
-                     </div></td>
+                        </div></td>
 
                     }
 
@@ -111,22 +208,31 @@ export default class OrdenesRetiro extends Component {
                     <td>{orden.tarjeta}</td>
 
                     <td className="acciones">
-                    <span><Link to={`/residuos/control-retiro/orden-retiro/ver-orden/${orden._id}`}><Ojo /></Link></span>
+                        <span><Link to={`/residuos/control-retiro/orden-retiro/ver-orden/${orden._id}`}><Ojo /></Link></span>
                         {orden.estado === 0 &&
                             <Fragment>
-                                
                                 <span><Link to={`/residuos/control-retiro/orden-retiro/modificar-orden/${orden._id}`}><Edit /></Link></span>
                             </Fragment>
                         }
-
-                        <span><Link ><Basurero /></Link></span>
+                        {orden.estado < 3 &&
+                            <span><Link onClick={this.anularOrden} data-id={orden._id}><Basurero /></Link></span>
+                        }
                         {/* <span><button type="button"><Descarga /></button></span> */}
                     </td>
                 </tr>
             )
+        } else {
+            items = <tr><td colSpan="6">No se han encontrado ordenes</td></tr>
         }
 
+        let centrosCostos;
+        if (this.state.centrosCostos) {
+            centrosCostos = this.state.centrosCostos.map(centro => {
+                return (<option value={centro.key} >{centro.nombre}</option>)
+            });
+        }
 
+        let paginacion = funciones.paginacion(this.state.paginas, this.state.pagina, this.paginar);
 
         return (
             <div className="principal gestion-personas" id="component-listar-trabajadores">
@@ -141,18 +247,26 @@ export default class OrdenesRetiro extends Component {
                     <div>
                         <form>
                             <div className="form-group justify-center filtros-or">
-                                <input className="input-generico" placeholder="Nº Tarjeta cliente asignado…" />
-                                <input type="date" className="input-generico" placeholder="" />
-                                <select className="input-generico">
-                                    <option>Centro de costos</option>
+                                <input className="input-generico" value={this.state.tarjeta} name="tarjeta" onChange={this.onChangeInput} placeholder="Nº Tarjeta cliente asignado…" />
+                                <input type="date" name="fecha" value={this.state.fecha} onChange={this.onChangeInput} className="input-generico" placeholder="" />
+                                <select className="input-generico" value={this.state.centro} name="centro" onChange={this.onChangeInput}>
+                                    <option value="">Centro de costos</option>
+                                    {centrosCostos}
                                 </select>
-                                <select className="input-generico">
-                                    <option>Estado</option>
+                                <select className="input-generico" value={this.state.estado} name="estado" onChange={this.onChangeInput}>
+                                    <option value="">Estado</option>
+                                    <option value="0">Pendiente</option>
+                                    <option value="1">Asignado</option>
+                                    <option value="2">Ruta Asignada</option>
+                                    <option value="3">Trazabilidad 1ra Clas</option>
+                                    <option value="4">Trazabilidad 2da Clas</option>
+                                    <option value="5">Finalizado</option>
+                                    <option value="6">Anulado</option>
                                 </select>
                             </div>
                             <div className="form-group buttons">
-                                <button className="boton-generico btazul" type="button">Filtrar</button>
-                                <button className="boton-generico btblanco" type="button">Limpiar</button>
+                                <button className="boton-generico btazul" onClick={this.filtrar} type="button">Filtrar</button>
+                                <button className="boton-generico btblanco" onClick={this.limpiar} type="button">Limpiar</button>
                             </div>
                         </form>
                     </div>
@@ -171,6 +285,11 @@ export default class OrdenesRetiro extends Component {
                             {items}
                         </tbody>
                     </table>
+                </div>
+                <div>
+                    <ul className="paginador">
+                        {paginacion}
+                    </ul>
                 </div>
             </div>
         );

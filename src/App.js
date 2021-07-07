@@ -44,9 +44,10 @@ import VerTrazabilidad from './componentes/gestion_residuos/vertrazabilidad';
 import Emergencias from './componentes/gestion_residuos/emergencias';
 import EmergenciasResiduos from './componentes/gestion_residuos/emergenciasResiduos';
 import EmergenciasResiduosCrear from './componentes/gestion_residuos/crearEmergenciaResiduos';
-import EmergenciasResiduosVer from './componentes/gestion_residuos/crearEmergenciaResiduos';
+import EmergenciasResiduosVer from './componentes/gestion_residuos/verEmergenciaResiduos';
 import EmergenciasVehiculos from './componentes/gestion_residuos/emergenciasVehiculos';
 import EmergenciasVehiculosCrear from './componentes/gestion_residuos/crearEmergenciaVehiculos';
+import EmergenciasVehiculosVer from './componentes/gestion_residuos/verEmergenciaVehiculos';
 
 //Gestion usuarios
 import GestionUsuarios from './componentes/gestion_usuarios/gestion';
@@ -273,6 +274,7 @@ class App extends React.Component {
                   <RutaPrivada exact path="/residuos/emergencias/residuos/ver/:id" component={EmergenciasResiduosVer} />
                   <RutaPrivada exact path="/residuos/emergencias/vehiculos/" component={EmergenciasVehiculos} />
                   <RutaPrivada exact path="/residuos/emergencias/vehiculos/crear" component={EmergenciasVehiculosCrear} />
+                  <RutaPrivada exact path="/residuos/emergencias/vehiculos/ver" component={EmergenciasVehiculosVer} />
 
                   {/*Bienestar*/}
                   <RutaPrivada exact path="/bienestar" component={Bienestar} />

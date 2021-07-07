@@ -100,9 +100,7 @@ export default class ListarTrabajadores extends Component {
                 return;
             });
     }
-    filtrar = () => {
-        this.obtenerTrabajadores();
-    }
+  
     darBaja = async (e) => {
         let id = e.currentTarget.dataset.id;
         var componente = this;

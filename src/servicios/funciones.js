@@ -11,6 +11,7 @@ export var funciones = {
     getDV,
     validarEmail,
     nombreDia,
+    nombreMes,
     paginacion,
     obtenerRutaServidor,
     obtenerRutaMedios,
@@ -23,6 +24,9 @@ export var funciones = {
     obtenerTodosTrabajadores,
     obtenerTrabajadores,
     obtenerJefesCuadrilla,
+    obtenerConductores,
+    obtenerPatentesVehiculos,
+    obtenerOrdenesRetiroAsignado,
     obtenerCentrosCostos
 
 };
@@ -68,7 +72,7 @@ function verificaRut(rutCompleto) {
     var digv = tmp[1];
     var rut = quitarFormato(tmp[0]);
     console.log(tmp);
-    console.log(rut); 
+    console.log(rut);
     console.log(digv);
     console.log(getDV(rut));
     if (digv == 'K') digv = 'k';
@@ -127,6 +131,13 @@ function validarEmail(valor) {
 }
 
 function nombreDia(fecha) {
+    var arrayOfWeekdays = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado"]
+    var weekdayNumber = fecha.getDay();
+    var weekdayName = arrayOfWeekdays[weekdayNumber]
+    return weekdayName;
+}
+
+function nombreMes(fecha) {
     var arrayOfWeekdays = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado"]
     var weekdayNumber = fecha.getDay();
     var weekdayName = arrayOfWeekdays[weekdayNumber]
@@ -267,18 +278,64 @@ async function obtenerCentrosCostos() { //genera una peticion get por axios a la
         });
     return registro;
 }
+async function obtenerConductores() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    await Axios.get('/api/users/worker/conductores', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            if (res.data.data.length > 0) {
+                registro = res.data.data
+            }
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+async function obtenerPatentesVehiculos() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    await Axios.get('/api/generales/vehiculos/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            if (res.data.data.length > 0) {
+                registro = res.data.data
+            }
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+async function obtenerOrdenesRetiroAsignado() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    await Axios.get('/api/gestion-residuos/retiros/asignados', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {
+            if (res.data.data.length > 0) {
+                registro = res.data.data
+            }
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+
 
 //   await this.setState({ clientes: await funciones.obtenerClientes() }); se usa de esta manera
 
 function obtenerRutaServidor() {
-    return("http://localhost:4000/");
+    return ("http://localhost:4000/");
 }
 function obtenerRutaMedios() {
-    return("http://localhost:4000/media");
+    return ("http://localhost:4000/media");
 }
 function obtenerRutaUsuarios() {
-    return("http://localhost:4000/media/users/");
+    return ("http://localhost:4000/media/users/");
 }
 function obtenerRutaPlanes() {
-    return("http://localhost:4000/media/planes");
+    return ("http://localhost:4000/media/planes");
+}
+function obtenerRutaEmergencias() {
+    return ("http://localhost:4000/media/emergencias");
 }
