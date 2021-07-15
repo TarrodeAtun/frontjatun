@@ -121,6 +121,8 @@ import VerMiMensajeSoporte from './componentes/perfil/verMensaje';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import './styles/responsive.css';
+
 
 
 //404
@@ -137,21 +139,22 @@ class App extends React.Component {
   referencia = React.createRef();
 
   mostrarNavegador = (e) => {
+    console.log("ñee");
     this.setState({ mostrarMenu: true });
   }
   cerrarSesion = (e) => {
     autenticacion.cerrarSesion();
     this.setState({ mostrarMenu: false });
-    historial.push('/login');
+    window.location.reload();
+    // historial.push('/login');
   }
 
   async componentDidMount() {
     /* aqui debe ir funcion que compruebe validez del token*/
     await autenticacion.currentUser.subscribe(x => this.setState({ currentUser: x }));
+    console.log(this.state.currentUser);
     if (this.state.currentUser !== null) {
-      if (this.state.currentUser.data.perfilSesion !== null) {
-        this.mostrarNavegador();
-      }
+      this.mostrarNavegador();
     }
     // console.log(this.state.currentUser.data);
   }
@@ -219,13 +222,13 @@ class App extends React.Component {
                   <RutaPrivada exact path="/personas/turnos/crear-turno" component={CrearTurno} />
                   <RutaPrivada exact path="/personas/turnos/solicitudes" component={Solicitudes} />
                   <RutaPrivada exact path="/personas/turnos/trabajador/solicitudes/:rut" component={SolicitudesTrabajador} />
-                  
+
 
 
                   {/*Perfil */}
-                  <RutaPrivada exact path="/perfil" component={Perfil} />
+                  <RutaPrivada exact path="/perfil" component={Perfil} funcion={this.mostrarNavegador} />
                   <RutaPrivada exact path="/selecciona-perfil" component={Selectperfil} funcion={this.mostrarNavegador} />
-                  <RutaPrivada exact path="/perfil/ficha-personal/" component={FichaPersonal} />
+                  <RutaPrivada exact path="/perfil/ficha-personal/" component={FichaPersonal} funcion={this.mostrarNavegador} />
                   <RutaPrivada exact path="/perfil/turnos" component={TurnosPersonal} />
                   <RutaPrivada exact path="/perfil/turnos/historial" component={TurnosHistorialPersonal} />
                   <RutaPrivada exact path="/perfil/ficha-personal/equipo" component={EquipoPersonal} />
@@ -242,7 +245,7 @@ class App extends React.Component {
                   <RutaPrivada exact path="/perfil/bienestar/soporte/ver-mensaje/:id" component={VerMiMensajeSoporte} />
 
 
-                  
+
 
 
 
@@ -309,13 +312,17 @@ class App extends React.Component {
                 />
                 <Switch>
                   <RutaPrivada exact path="/" component={Inicio} />
-                  <Route path="/login" component={Login} />
+                  <Route exact path="/login" component={Login} funcion={this.mostrarNavegador} />
                   <Route exact path="/recuperarPass/:token" component={RecuperarPass} />
                   <Route component={NotFound} />
                 </Switch>
               </div>
             </div>
           }
+
+        </div>
+        <div className="copyright">
+          <h4>Copyright ©2021 Jatún Newén</h4>
         </div>
       </Router>
     );

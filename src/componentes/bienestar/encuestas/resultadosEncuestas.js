@@ -114,8 +114,11 @@ export default class ResultadosEncuestas extends Component {
                     }
 
                     return (<tr key={index} className="elemento">
+                         <td className="onlymovil">Nombre:</td>
                         <td>{encuesta.nombre}</td>
+                        <td className="onlymovil">N° Contestados:</td>
                         <td>{respondidos}/{numTrabajadores}</td>
+                        <td className="onlymovil">Acciones:</td>
                         <td className="acciones ml">
                             <Link to={`/bienestar/encuestas/ver-resultados/${encuesta._id}`}><img src={ojo} /></Link>
                             <button onClick={this.eliminarEncuesta} data-id={encuesta._id}><img src={basurero} /></button>
@@ -139,7 +142,7 @@ export default class ResultadosEncuestas extends Component {
                     <h2 className="naranjo"><Link to="/bienestar/encuestas"> <Bamarillorev /></Link> Encuestas / <strong>Resultados Encuestas</strong></h2>
                 </div>
                 <table className="listado-simple tabla">
-                    <thead>
+                    <thead className="onlyMovil">
                         <th>Nombre</th>
                         <th>N° Contestadas</th>
                         <th>Acciones</th>

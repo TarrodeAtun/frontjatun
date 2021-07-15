@@ -6,6 +6,7 @@ import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
 import moment from 'moment';
+import { confirmAlert } from 'react-confirm-alert';
 import { toast } from 'react-toastify';
 
 // importaciones de estilos 
@@ -20,6 +21,16 @@ import { ReactComponent as Ojo } from "../../assets/iconos/ojo.svg";
 import { ReactComponent as Bverderev } from "../../assets/iconos/bverderev.svg";
 import { ReactComponent as Flechaver } from "../../assets/iconos/flechaver.svg";
 import { historial } from "../../helpers/historial";
+
+const toastoptions = {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+}
 
 export default class GestionResiduos extends Component {
     constructor(props) {
@@ -116,6 +127,39 @@ export default class GestionResiduos extends Component {
             fecha: e.target.value
         })
         this.obtenerRetiros();
+    }
+
+    anularOrden = async (e) => {
+        let id = e.currentTarget.dataset.id;
+        var componente = this;
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-confirm '>
+                        <p>¿Estas seguro de eliminar esta orden?, no podrás recuperarla</p>
+                        <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
+                        <button className="boton-generico btazul"
+                            onClick={() => {
+                                const res = Axios.post('/api/gestion-residuos/retiros/anular',
+                                    { id: id, },
+                                    { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+                                    .then(function (res) {
+                                        toast.success(res.data.mensaje, toastoptions);
+                                        componente.obtenerOrdenes();
+                                    })
+                                    .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                                        handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                                        return;
+                                    });
+                                onClose();
+                            }} >
+                            Aceptar
+                        </button>
+                    </div>
+                );
+            }
+        });
+
     }
 
 
@@ -239,68 +283,79 @@ export default class GestionResiduos extends Component {
                     </div>)
                 }
             });
-            items = this.state.horas.map((hora, index) => (
-                <tr className="elemento ">
-                    <td>{hora.datosCliente[0].nombre}</td>
-                    <td>{hora.datosCentro[0].nombre}</td>
-                    <td className="columna">
-                        <span>{moment(hora.fecha).format('DD-MM-YYYY')}</span>
-                        {/* <span><strong>Personalizado</strong></span>
+            if (this.state.horas) {
+                items = this.state.horas.map((hora, index) => (
+                    <tr className="elemento ">
+                        <td>{hora.datosCliente[0].nombre}</td>
+                        <td>{hora.datosCentro[0].nombre}</td>
+                        <td className="columna">
+                            <span>{moment(hora.fecha).format('DD-MM-YYYY')}</span>
+                            {/* <span><strong>Personalizado</strong></span>
                         <span>desde 03/03/2021</span>
                         <span>hasta 31/03/2021</span> */}
-                    </td>
-                    <td>{hora.inicio} - {hora.termino}</td>
-                    <td>{this.pad(hora.or, 8)}</td>
-                    <td className="asignado">
-                        {hora.datosOR.estado === 0 &&
-                            <td className="amarillo">
-                                <div>
-                                    Pendiente
-                                </div>
-                            </td>
-                        }
-                        {hora.datosOR.estado === 1 &&
-                            <td className="verde">  <div>
-                                Asignado
-                            </div></td>
+                        </td>
+                        <td>{hora.inicio} - {hora.termino}</td>
+                        <td>{this.pad(hora.or, 8)}</td>
+                        <td className="asignado">
+                            {hora.datosOR.estado === 0 &&
+                                <td className="amarillo">
+                                    <div>
+                                        Pendiente
+                                    </div>
+                                </td>
+                            }
+                            {hora.datosOR.estado === 1 &&
+                                <td className="verde">  <div>
+                                    Asignado
+                                </div></td>
 
-                        }
-                        {hora.datosOR.estado === 2 &&
-                            <td className="azul"> <div>
-                                Ruta Asignada
-                            </div></td>
+                            }
+                            {hora.datosOR.estado === 2 &&
+                                <td className="azul"> <div>
+                                    Ruta Asignada
+                                </div></td>
 
-                        }
-                        {hora.datosOR.estado === 3 &&
-                            <td className="azul"> <div>
-                                Trazabilidad 1ra Clas
-                            </div></td>
+                            }
+                            {hora.datosOR.estado === 3 &&
+                                <td className="azul"> <div>
+                                    Trazabilidad 1ra Clas
+                                </div></td>
 
-                        }
-                        {hora.datosOR.estado === 4 &&
-                            <td className="azul"> <div>
-                                Trazabilidad 2da Clas
-                            </div></td>
+                            }
+                            {hora.datosOR.estado === 4 &&
+                                <td className="azul"> <div>
+                                    Trazabilidad 2da Clas
+                                </div></td>
 
-                        }
-                        {hora.datosOR.estado === 5 &&
-                            <td className="azul"> <div>
-                                Finalizado
-                            </div></td>
+                            }
+                            {hora.datosOR.estado === 5 &&
+                                <td className="azul"> <div>
+                                    Finalizado
+                                </div></td>
 
-                        }
-                        {hora.datosOR.estado === 6 &&
-                            <td className=""> <div>
-                                Anulado
-                            </div></td>
+                            }
+                            {hora.datosOR.estado === 6 &&
+                                <td className=""> <div>
+                                    Anulado
+                                </div></td>
 
-                        }
-                    </td>
-                    <td className="acciones">
-                        <span><Link to={`/residuos/control-retiro/ver-retiro/${hora._id}`}><Ojo /></Link></span>
+                            }
+                        </td>
+                        <td className="acciones">
+                            <span><Link to={`/residuos/control-retiro/ver-retiro/${hora._id}`}><Ojo /></Link></span>
+                            {hora.datosOR.estado < 3 &&
+                                <span><Link onClick={this.anularOrden} data-id={hora.or} data-id-retiro={hora._id}><Basurero /></Link></span>
+                            }
+                        </td>
+                    </tr>
+                ))
+            } else {
+                items = <tr>
+                    <td colSpan="7">
+                        No se encontraron retiros programados
                     </td>
                 </tr>
-            ))
+            }
 
 
         }

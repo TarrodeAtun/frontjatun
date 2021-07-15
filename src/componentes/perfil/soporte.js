@@ -62,6 +62,7 @@ export default class ResultadosEncuestas extends Component {
             asunto, primerMensaje
         }, { headers: authHeader() }).then(resp => {
             console.log(resp);
+            this.obtenerConsultas();
         }).catch(err => {
             console.log(err);
         })
@@ -98,8 +99,11 @@ export default class ResultadosEncuestas extends Component {
         if (this.state.consultas.length !== 0) {
             items = this.state.consultas.map((encuesta, index) =>
                 <tr className="elemento">
+                    <td className="onlymovil">Asunto:</td>
                     <td><Link to={`/perfil/bienestar/soporte/ver-mensaje/${encuesta._id}`}><span>{encuesta.asunto}</span><span>{encuesta.datosAutor[0].nombre} {encuesta.datosAutor[0].apellido}</span></Link></td>
+                    <td className="onlymovil">Ultima Respuesta:</td>
                     <td><span>{moment(encuesta.fechaRespuesta).format('DD-MM-YYYY HH:mm')}</span><span>{encuesta.datosUltimaRespuesta[0].nombre} {encuesta.datosUltimaRespuesta[0].apellido}</span></td>
+                    <td className="onlymovil">Estado:</td>
                     {encuesta.estado === 0
                         ? <td>Pendiente</td>
                         : <td>Finalizado</td>
@@ -123,7 +127,7 @@ export default class ResultadosEncuestas extends Component {
                         <button className="ml" onClick={this.manejadorModals} data-objetivo="AgregarMensaje">+ Nuevo Mensaje</button>
                     </div>
                     <table className="listado-simple tabla">
-                        <thead>
+                        <thead className="onlyMovil">
                             <th>Asunto</th>
                             <th>Última respuesta</th>
                             <th>Estado</th>

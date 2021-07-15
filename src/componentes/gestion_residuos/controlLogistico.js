@@ -38,8 +38,8 @@ export default class ControlLogistico extends Component {
             users: null,
             horas: '',
 
-            patentes:'',
-            conductores:'',
+            patentes: '',
+            conductores: '',
 
             fecha: '',
             conductor: '',
@@ -261,26 +261,36 @@ export default class ControlLogistico extends Component {
                     </div>)
                 }
             });
-            items = this.state.horas.map((hora, index) => (
-                <tr className="elemento ">
-                    <td className="columna">
-                        <span>{hora.datosRuta.patente}</span>
-                        <span>{hora.datosServicio.nombre}</span>
-                    </td>
-                    <td className="columna">
-                        <span>{hora.datosConductor[0].rut}</span>
-                        <span>{hora.datosConductor[0].nombre} {hora.datosConductor[0].apellido}</span>
-                    </td>
-                    <td>{this.pad(hora.idor, 8)}</td>
-                    <td className="columna">
-                        <span>{moment(hora.retiro).format('DD-MM-YYYY')}</span>
-                        <span> {hora.datosRetiro[0].inicio} - {hora.datosRetiro[0].termino} </span>
-                    </td>
-                    <td className="acciones">
-                        <span><Link to={`/residuos/control-logistico/ver-ruta/${hora.datosRuta._id}`}><Ojo /></Link></span>
-                    </td>
+            if (this.state.horas) {
+                items = this.state.horas.map((hora, index) => (
+                    <tr className="elemento ">
+                        <td className="columna">
+                            <span>{hora.datosRuta.patente}</span>
+                            <span>{hora.datosServicio.nombre}</span>
+                        </td>
+                        <td className="columna">
+                            <span>{hora.datosConductor[0].rut}</span>
+                            <span>{hora.datosConductor[0].nombre} {hora.datosConductor[0].apellido}</span>
+                        </td>
+                        <td>{this.pad(hora.idor, 8)}</td>
+                        <td className="columna">
+                            <span>{moment(hora.retiro).format('DD-MM-YYYY')}</span>
+                            <span> {hora.datosRetiro[0].inicio} - {hora.datosRetiro[0].termino} </span>
+                        </td>
+                        <td className="acciones">
+                            <span><Link to={`/residuos/control-logistico/ver-ruta/${hora.datosRuta._id}`}><Ojo /></Link></span>
+                        </td>
+                    </tr>
+                ));
+            } else {
+                items = <tr className="elemento ">
+                    <td colSpan="5">No se han encontrado registros</td>
                 </tr>
-            ));
+            }
+        }else {
+            items = <tr className="elemento ">
+                <td colSpan="5">No se han encontrado registros</td>
+            </tr>
         }
 
         let patentes;
@@ -385,11 +395,11 @@ export default class ControlLogistico extends Component {
                                                 <option value="">Patente</option>
                                                 {patentes}
                                             </select>
-                                            <select className="input-generico" name="conductor"  onChange={this.onChangeInput} value={this.state.conductor}>
+                                            <select className="input-generico" name="conductor" onChange={this.onChangeInput} value={this.state.conductor}>
                                                 <option value="" >Conductor</option>
                                                 {conductores}
                                             </select>
-                                            <input type="number" className="input-generico input-filtro" name="orden" placeholder="OR"   onChange={this.onChangeInput} value={this.state.orden}/>
+                                            <input type="number" className="input-generico input-filtro" name="orden" placeholder="OR" onChange={this.onChangeInput} value={this.state.orden} />
 
                                         </div>
                                         <div className="form-group justify-center">

@@ -1,0 +1,136 @@
+@media(min-width:1025px){
+    .onlymovil{
+        display:none !important;
+    }
+   
+}
+@media(max-width:1024px){
+    *.onlydesktop{
+        display:none !important;
+        visibility: hidden;
+    }
+    #principal{
+        padding-bottom: 70px;
+    }
+    #component-fichaTrabajador > div{
+        width:80% !important;
+    }
+    #component-perfil{
+        margin: auto;
+        width:80% !important;
+    }
+    .tabselectcontainer label{
+        padding: 3px 10px;
+        font-size: 16px;
+    }
+    .barraSupLogin{  
+        position: fixed;
+        top: 0;
+    }
+    .menu-lista-dashboard.principal{
+        width:90%;
+        margin: auto;
+    }
+    .listado-simple.tabla{
+        width:auto;
+    }
+   .listado-simple.tabla thead{
+        display:none;
+    }
+    .listado-simple.tabla tr{
+        display:flex !important;
+    }
+    .listado-simple.tabla tr.elemento td{
+        padding: 5px 25px !important;
+        display: block;
+        width: 100%;
+    }
+    .prehead{width:auto;}
+    td.onlymovil{
+        color:#1880C3 !important;
+    }
+    label.onlymovil{
+        color:#1880C3 !important;
+        padding-right:10px;
+    }
+    #modales .modal > div{
+        width:90%;
+    }
+    .modalPreguntaEncuesta{
+        width:auto;
+    }
+    .form-group.buttons > button{
+        margin-bottom: 10px;
+    }
+    .logo img{
+        width:120px;
+    }
+    #component-listar-trabajadores>div{
+        width:85%;
+    }
+
+    input, select{
+        width:100% !important;
+    }
+    .input-generico{
+        margin-bottom: 15px;;
+        margin-right: 0px;;
+    }
+
+    .listado tr{
+        display:flex !important;
+        flex-direction: column;
+    }
+    .listado tr td{
+        display: block !important;
+        width: 100% !important;
+        padding: 0px 20px !important;
+
+    }
+    .listado tr td span{
+        margin-top: 0px !important;
+        padding: 10px 0px !important;
+
+    }
+    .listado tr td span.pdtpbt, .listado tr td.pdtpbt{
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    .listado tr td.acciones{
+        display: flex !important;
+        justify-content: space-evenly;
+        width: 100% !important;
+        padding: 0px 20px !important;
+        padding-top: 10px !important;
+
+    }
+
+    .menu-lista-dashboard > div{
+        width:100%;
+    }
+
+    .buttons-space button{
+        width:100%;
+        margin-left: auto !important;
+        margin-right: auto  !important;
+        margin-bottom: 10px;
+    }
+    .tabla thead{
+        display:none;
+    }
+    .tabla tr{
+        display:flex !important;
+        flex-direction: column;
+    }
+    .tabla tr td{
+        display: block !important;
+        width: 100% !important;
+        padding: 0px 20px !important;
+    }
+    .tabla tr td span{
+        margin-top: 0px !important;
+        padding: 10px 0px !important;
+    }
+
+}

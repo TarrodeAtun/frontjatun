@@ -91,7 +91,7 @@ export default class MisEncuestas extends Component {
                         <span className="encuestas-nombre">{encuesta.nombre}</span>
                         <div className="acciones ml">
 
-                            <Link to={`/perfil/ficha-personal/encuestas/contestar-encuesta/${encuesta._id}`}><img src={ojo} /></Link>
+                            <Link className="regular link" to={`/perfil/ficha-personal/encuestas/contestar-encuesta/${encuesta._id}`}>Responder</Link>
                             {/* <Link to={`/bienestar/encuestas/editar-encuesta/${encuesta._id}`}><img src={edit} /></Link> */}
                             {/* <button onClick={this.eliminarEncuesta} data-id={encuesta._id}><img src={basurero} /></button> */}
                         </div>

@@ -479,153 +479,158 @@ export default class VerTrazabilidad extends Component {
                             </div> */}
                         </div>
 
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5 ||
+                            this.state.currentUser.data.usuariobd.perfil === 7) &&
+                            <div className="seccion">
+                                <h3 className="verde">Etapa 1 - Conductor</h3>
+                                <hr></hr>
+                                <h3 className="amarillo">1ra Clasificacion</h3>
+                                <div>
+                                    <span>Nombre Conductor</span>
+                                    {this.state.datosConductor &&
+                                        <span>{this.state.datosConductor[0].nombre} {this.state.datosConductor[0].apellido}</span>
+                                    }
+                                </div>
+                                <div>
+                                    <span>Vehiculo</span>
+                                    {this.state.datosRuta &&
+                                        <span>{this.state.datosRuta[0].patente}</span>
+                                    }
+                                </div>
+                                <div>
+                                    <span>Ruta OR</span>
+                                    {this.state.datosRuta &&
+                                        <span><Link to={this.state.datosRuta[0].enlace}>{this.state.datosRuta[0].enlace}</Link></span>
+                                    }
+                                </div>
+                                <div>
+                                    <span>Tipo de Residuo</span>
+                                    {this.state.datosRetiro &&
+                                        <span>{this.state.datosRetiro[0].codigoler} {this.state.datosRetiro[0].categoria}</span>
+                                    }
+                                </div>
+                                <div>
+                                    <span>Peso</span>
+                                    <span><input type="number" onChange={this.onChangeInput} className="input-generico" placeholder="kilos" value={this.state.pesoPrimer} name="pesoPrimer" /></span>
+                                </div>
+                                <div>
+                                    <span>Nombre quién entrega</span>
+                                    <span><input className="input-generico" onChange={this.onChangeInput} value={this.state.nombreEntrega} name="nombreEntrega" /></span>
+                                </div>
+                                <div>
+                                    <span>Rut quién entrega</span>
+                                    <span><input className="input-generico" onChange={this.onChangeInput} value={this.state.rutEntrega} name="rutEntrega" /></span>
+                                </div>
+                                <div>
+                                    <span>Fecha</span>
+                                    <span>{moment(this.state.retiro).utc().format('DD/MM/YYYY')}</span>
+                                </div>
+                                <div>
+                                    <span>Adjuntar imagen</span>
+                                    <span><input className="input-generico" onChange={this.onChangeFileInput} type="file" name="imagen" placeholder="Subir archivo" /></span>
+                                </div>
+                                <div>
+                                    <span>Tipo de Tarjeta</span>
+                                    <span><input className="input-generico" onChange={this.onChangeInput} type="number" value={this.state.tipoTarjeta} name="tipoTarjeta" /></span>
+                                </div>
+                                <div>
+                                    <span>Guia despacho</span>
+                                    <span><input className="input-generico" onChange={this.onChangeFileInput} type="file" name="guiadespacho" placeholder="Subir archivo" /></span>
+                                </div>
+                                <div>
+                                    <span>Comentarios</span>
+                                    <span><textarea className="input-generico" onChange={this.onChangeInput} value={this.state.comentarios} name="comentarios" ></textarea></span>
+                                </div>
+                                <div className="form-group buttons">
+                                    <button className="boton-generico btazul" onClick={this.enviaDatosUno}>Guardar</button>
+                                    <button className="boton-generico btgris" type="button" >Cancelar</button>
+                                </div>
+                            </div>
+                        }
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5 ||
+                            this.state.currentUser.data.usuariobd.perfil === 6) &&
+                            <div className="seccion">
+                                <h3 className="verde">Etapa 2 - Jefe Taller</h3>
+                                <hr></hr>
+                                <h3 className="amarillo">2da Clasificacion</h3>
+                                <div>
+                                    <span>Fecha</span>
+                                    <span>{moment(this.state.retiro).utc().format('DD/MM/YYYY')}</span>
+                                </div>
+                                <div>
+                                    <span>Nombre Jefe Taller</span>
+                                    {this.state.datosConductor &&
+                                        <span>{this.state.datosConductor[0].nombre} {this.state.datosConductor[0].apellido}</span>
+                                    }
+                                </div>
+                                <div>
+                                    <span>Peso</span>
+                                    <span><input type="number" onChange={this.onChangeInput} className="input-generico" placeholder="kilos" value={this.state.pesoSegundo} name="pesoSegundo" /></span>
+                                </div>
+                                <div>
+                                    <span>N° sacas</span>
+                                    <span><input type="number" onChange={this.onChangeInput} className="input-generico" value={this.state.sacas} name="sacas" /></span>
+                                </div>
+                                <h3 className="amarillo">
+                                    {this.state.datosRetiro &&
+                                        <Fragment>{this.state.datosRetiro[0].codigoler} -  {this.state.datosLer[0].categoria}</Fragment>
+                                    }
+                                </h3>
+                                <div>
+                                    <span>Planificación tratamiento</span>
+                                    <span>
+                                        <select className="input-generico" onChange={this.onChangeInput} value={this.state.planificacion} name="planificacion">
+                                            <option value="1">Separar</option>
+                                            <option value="2">Eliminar</option>
+                                        </select>
+                                    </span>
+                                </div>
+                                <div>
+                                    <span>Código tratamiento</span>
+                                    <span>
+                                        <select className="input-generico" onChange={this.onChangeInput} value={this.state.codigo} name="codigo">
+                                            <option value="11">11 - Relleno Sanitario</option>
+                                            <option value="12">12 - Vertedero</option>
+                                            <option value="13">13 - Monorelleno</option>
+                                            <option value="30">30 - Basural</option>
+                                        </select>
+                                    </span>
+                                </div>
+                                <div className="form-group buttons">
+                                    <button className="boton-generico btazul" onClick={this.enviaDatosDos}>Guardar</button>
+                                    <button className="boton-generico btgris" type="button" >Cancelar</button>
+                                </div>
+                            </div>
+                        }
 
-                        <div className="seccion">
-                            <h3 className="verde">Etapa 1 - Conductor</h3>
-                            <hr></hr>
-                            <h3 className="amarillo">1ra Clasificacion</h3>
-                            <div>
-                                <span>Nombre Conductor</span>
-                                {this.state.datosConductor &&
-                                    <span>{this.state.datosConductor[0].nombre} {this.state.datosConductor[0].apellido}</span>
-                                }
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5 ||
+                            this.state.currentUser.data.usuariobd.perfil === 7) &&
+                            <div className="seccion">
+                                <h3 className="verde">Etapa 3 - 3ra Clasificación</h3>
+                                <hr></hr>
+                                <h3 className="amarillo"> 3ra Clasificación</h3>
+                                <div>
+                                    <span>Fecha</span>
+                                    <span>{moment(this.state.retiro).utc().format('DD/MM/YYYY')}</span>
+                                </div>
+                                <div>
+                                    <span>Nombre Operador</span>
+                                    {this.state.datosConductor &&
+                                        <span>{this.state.datosConductor[0].nombre} {this.state.datosConductor[0].apellido}</span>
+                                    }
+                                </div>
+                                <hr></hr>
+                                <div className="prehead wauto">
+                                    <h3 className="verde">Residuos</h3>
+                                    <button className="ml verde" onClick={this.manejadorModals} data-objetivo="AgregarResiduoTrazabilidad">+ Nuevo residuo</button>
+                                </div>
+                                {items}
+                                <div className="form-group buttons">
+                                    <button className="boton-generico btazul" onClick={this.enviaDatosTres}>Guardar</button>
+                                    <button className="boton-generico btgris" type="button" >Cancelar</button>
+                                </div>
                             </div>
-                            <div>
-                                <span>Vehiculo</span>
-                                {this.state.datosRuta &&
-                                    <span>{this.state.datosRuta[0].patente}</span>
-                                }
-                            </div>
-                            <div>
-                                <span>Ruta OR</span>
-                                {this.state.datosRuta &&
-                                    <span><Link to={this.state.datosRuta[0].enlace}>{this.state.datosRuta[0].enlace}</Link></span>
-                                }
-                            </div>
-                            <div>
-                                <span>Tipo de Residuo</span>
-                                {this.state.datosRetiro &&
-                                    <span>{this.state.datosRetiro[0].codigoler} {this.state.datosRetiro[0].categoria}</span>
-                                }
-                            </div>
-                            <div>
-                                <span>Peso</span>
-                                <span><input type="number" onChange={this.onChangeInput} className="input-generico" placeholder="kilos" value={this.state.pesoPrimer} name="pesoPrimer" /></span>
-                            </div>
-                            <div>
-                                <span>Nombre quién entrega</span>
-                                <span><input className="input-generico" onChange={this.onChangeInput} value={this.state.nombreEntrega} name="nombreEntrega" /></span>
-                            </div>
-                            <div>
-                                <span>Rut quién entrega</span>
-                                <span><input className="input-generico" onChange={this.onChangeInput} value={this.state.rutEntrega} name="rutEntrega" /></span>
-                            </div>
-                            <div>
-                                <span>Fecha</span>
-                                <span>{moment(this.state.retiro).utc().format('DD/MM/YYYY')}</span>
-                            </div>
-                            <div>
-                                <span>Adjuntar imagen</span>
-                                <span><input className="input-generico" onChange={this.onChangeFileInput} type="file" name="imagen" placeholder="Subir archivo" /></span>
-                            </div>
-                            <div>
-                                <span>Tipo de Tarjeta</span>
-                                <span><input className="input-generico" onChange={this.onChangeInput} type="number" value={this.state.tipoTarjeta} name="tipoTarjeta" /></span>
-                            </div>
-                            <div>
-                                <span>Guia despacho</span>
-                                <span><input className="input-generico" onChange={this.onChangeFileInput} type="file" name="guiadespacho" placeholder="Subir archivo" /></span>
-                            </div>
-                            <div>
-                                <span>Comentarios</span>
-                                <span><textarea className="input-generico" onChange={this.onChangeInput} value={this.state.comentarios} name="comentarios" ></textarea></span>
-                            </div>
-                            <div className="form-group buttons">
-                                <button className="boton-generico btazul" onClick={this.enviaDatosUno}>Guardar</button>
-                                <button className="boton-generico btgris" type="button" >Cancelar</button>
-                            </div>
-                        </div>
-
-                        <div className="seccion">
-                            <h3 className="verde">Etapa 2 - Jefe Taller</h3>
-                            <hr></hr>
-                            <h3 className="amarillo">2da Clasificacion</h3>
-                            <div>
-                                <span>Fecha</span>
-                                <span>{moment(this.state.retiro).utc().format('DD/MM/YYYY')}</span>
-                            </div>
-                            <div>
-                                <span>Nombre Jefe Taller</span>
-                                {this.state.datosConductor &&
-                                    <span>{this.state.datosConductor[0].nombre} {this.state.datosConductor[0].apellido}</span>
-                                }
-                            </div>
-                            <div>
-                                <span>Peso</span>
-                                <span><input type="number" onChange={this.onChangeInput} className="input-generico" placeholder="kilos" value={this.state.pesoSegundo} name="pesoSegundo" /></span>
-                            </div>
-                            <div>
-                                <span>N° sacas</span>
-                                <span><input type="number" onChange={this.onChangeInput} className="input-generico" value={this.state.sacas} name="sacas" /></span>
-                            </div>
-                            <h3 className="amarillo">
-                                {this.state.datosRetiro &&
-                                    <Fragment>{this.state.datosRetiro[0].codigoler} -  {this.state.datosLer[0].categoria}</Fragment>
-                                }
-                            </h3>
-                            <div>
-                                <span>Planificación tratamiento</span>
-                                <span>
-                                    <select className="input-generico" onChange={this.onChangeInput} value={this.state.planificacion} name="planificacion">
-                                        <option value="1">Separar</option>
-                                        <option value="2">Eliminar</option>
-                                    </select>
-                                </span>
-                            </div>
-                            <div>
-                                <span>Código tratamiento</span>
-                                <span>
-                                    <select className="input-generico" onChange={this.onChangeInput} value={this.state.codigo} name="codigo">
-                                        <option value="11">11 - Relleno Sanitario</option>
-                                        <option value="12">12 - Vertedero</option>
-                                        <option value="13">13 - Monorelleno</option>
-                                        <option value="30">30 - Basural</option>
-                                    </select>
-                                </span>
-                            </div>
-                            <div className="form-group buttons">
-                                <button className="boton-generico btazul" onClick={this.enviaDatosDos}>Guardar</button>
-                                <button className="boton-generico btgris" type="button" >Cancelar</button>
-                            </div>
-                        </div>
-
-
-                        <div className="seccion">
-                            <h3 className="verde">Etapa 3 - 3ra Clasificación</h3>
-                            <hr></hr>
-                            <h3 className="amarillo"> 3ra Clasificación</h3>
-                            <div>
-                                <span>Fecha</span>
-                                <span>{moment(this.state.retiro).utc().format('DD/MM/YYYY')}</span>
-                            </div>
-                            <div>
-                                <span>Nombre Operador</span>
-                                {this.state.datosConductor &&
-                                    <span>{this.state.datosConductor[0].nombre} {this.state.datosConductor[0].apellido}</span>
-                                }
-                            </div>
-                            <hr></hr>
-                            <div className="prehead wauto">
-                                <h3 className="verde">Residuos</h3>
-                                <button className="ml verde" onClick={this.manejadorModals} data-objetivo="AgregarResiduoTrazabilidad">+ Nuevo residuo</button>
-                            </div>
-                            {items}
-                            <div className="form-group buttons">
-                                <button className="boton-generico btazul" onClick={this.enviaDatosTres}>Guardar</button>
-                                <button className="boton-generico btgris" type="button" >Cancelar</button>
-                            </div>
-                        </div>
-
+                        }
                     </div>
                 </div>
                 <div id="modales">

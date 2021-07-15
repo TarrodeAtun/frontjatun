@@ -1630,3 +1630,22 @@ width:40%;
 .span-like-input{
 
 }
+.puro{
+  display: initial !important;
+  width: auto !important;
+}
+#root{position: relative;}
+.copyright{
+  display: block;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translatex(-50%);
+    color: white;
+}
+.regular{
+  font-family: "OSregular";
+}
+.link{
+  color:#1880C3;
+}

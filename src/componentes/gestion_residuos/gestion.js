@@ -28,21 +28,32 @@ export default class GestionResiduos extends Component {
                 <div>
                     <h2 className="verde"><Link to="/"> <Bverderev /></Link> Gestión de residuos</h2>
                     <div className="fichaPerfil">
-                        <div className="seccion">
-                            <h3><Link to="/residuos/control-retiro"><span>Control Retiro</span><button><Flechaver /></button></Link></h3>
-                        </div>
-                        <div className="seccion">
-                            <h3><Link to="/residuos/trazabilidad"><span>Trazabilidad de residuos</span><button><Flechaver /></button></Link></h3>
-                        </div>
-                        <div className="seccion">
-                            <h3><Link to="/residuos/plan-manejo"><span>Plan manejo de resudios</span><button><Flechaver /></button></Link></h3>
-                        </div>
-                        <div className="seccion">
-                            <h3><Link to="/residuos/control-logistico"><span>Control Logistico</span><button><Flechaver /></button></Link></h3>
-                        </div>
-                        <div className="seccion">
-                            <h3><Link to="/residuos/emergencias"><span>Emergencias</span><button><Flechaver /></button></Link></h3>
-                        </div>
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5) &&
+                            <div className="seccion">
+                                <h3><Link to="/residuos/control-retiro"><span>Control Retiro</span><button><Flechaver /></button></Link></h3>
+                            </div>
+                        }
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5 || this.state.currentUser.data.usuariobd.perfil === 6 ||
+                         this.state.currentUser.data.usuariobd.perfil === 7) &&
+                            <div className="seccion">
+                                <h3><Link to="/residuos/trazabilidad"><span>Trazabilidad de residuos</span><button><Flechaver /></button></Link></h3>
+                            </div>
+                        }
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5) &&
+                            <div className="seccion">
+                                <h3><Link to="/residuos/plan-manejo"><span>Plan manejo de resudios</span><button><Flechaver /></button></Link></h3>
+                            </div>
+                        }
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5) &&
+                            <div className="seccion">
+                                <h3><Link to="/residuos/control-logistico"><span>Control Logistico</span><button><Flechaver /></button></Link></h3>
+                            </div>
+                        }
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 6 || this.state.currentUser.data.usuariobd.perfil === 7) &&
+                            <div className="seccion">
+                                <h3><Link to="/residuos/emergencias"><span>Emergencias</span><button><Flechaver /></button></Link></h3>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

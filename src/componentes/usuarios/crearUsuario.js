@@ -158,9 +158,7 @@ export default class CrearUsuario extends Component {
             comuna: this.state.form.formComuna,
             ciudad: this.state.form.formCiudad
         }));
-        formData.append('perfil', this.state.form.formPerfil1);
-        formData.append('perfilSec', this.state.form.formPerfil2);
-        formData.append('cargo', this.state.form.formCargo);
+        formData.append('perfil', this.state.form.perfil);
         formData.append('bancarios', JSON.stringify({
             banco: this.state.form.formBanco,
             tipo: this.state.form.formTipoCuenta,
@@ -358,26 +356,34 @@ export default class CrearUsuario extends Component {
                         <div className="seccion">
                             <h3>Permisos en la plataforma</h3>
                             <div>
-                                <span>Perfil 1</span>
+                                <span>Perfil </span>
                                 {this.state.showIngresar
                                     ?
                                     <span>
-                                        {this.state.form.formPerfil1 === "1" && 'Administrador'}
-                                        {this.state.form.formPerfil1 === "2" && 'Jefe Cuadrilla'}
-                                        {this.state.form.formPerfil1 === "3" && 'Operador'}
+                                        {this.state.form.perfil === "1" && 'Administrador'}
+                                        {this.state.form.perfil === "2" && 'Jefe Cuadrilla'}
+                                        {this.state.form.perfil === "3" && 'Operador'}
+                                        {this.state.form.perfil === "4" && 'RRHH'}
+                                        {this.state.form.perfil === "5" && 'Jefe Servicio'}
+                                        {this.state.form.perfil === "6" && 'Jefe Taller'}
+                                        {this.state.form.perfil === "7" && 'Conductor'}
                                     </span>
                                     :
                                     <span>
-                                        <select name="formPerfil1" onChange={this.onChangeInput} value={this.state.form.formPerfil1} className="input-generico" >
+                                        <select name="formPerfil1" onChange={this.onChangeInput} value={this.state.form.perfil} className="input-generico" >
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Administrador</option>
                                             <option value="2">Jefe Cuadrilla</option>
                                             <option value="3">Operador</option>
+                                            <option value="4">RRHH</option>
+                                            <option value="5">Jefe Servicio</option>
+                                            <option value="6">Jefe Taller</option>
+                                            <option value="7">Conductor</option>
                                         </select>
                                     </span>
                                 }
                             </div>
-                            <div>
+                            {/* <div>
                                 <span>Perfil 2</span>
                                 {this.state.showIngresar
                                     ?
@@ -396,11 +402,11 @@ export default class CrearUsuario extends Component {
                                         </select>
                                     </span>
                                 }
-                            </div>
+                            </div> */}
                         </div>
                         <div className="seccion">
                             <h3>Puesto de trabajo</h3>
-                            <div>
+                            {/* <div>
                                 <span>Cargo</span>
                                 {this.state.showIngresar
                                     ? <span>
@@ -417,7 +423,7 @@ export default class CrearUsuario extends Component {
                                         </select>
                                     </span>
                                 }
-                            </div>
+                            </div> */}
                             <div>
                                 <span>Centro de costos</span>
                                 <span>

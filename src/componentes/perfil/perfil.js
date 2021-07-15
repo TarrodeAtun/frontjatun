@@ -47,6 +47,9 @@ export default class Perfil extends Component {
     manejadorModals = (e, res) => { //creamos una funcion que reciba parametros para pasarlo al toogle modal (esta funcion la pasaremos al cuerpo del modal como propiedad para ejecutarse por autoreferencia)
         this.toogleModal(e, res);
     }
+    componentDidMount = () =>{
+        this.props.impFuncion();
+    }
 
     onChangeInput = (e) => {
         this.setState({
@@ -327,39 +330,20 @@ export default class Perfil extends Component {
                         <div className="seccion">
                             <h3>Permisos en la plataforma</h3>
                             <div>
-                                <span>Perfil 1</span>
-
+                                <span>Perfil</span>
                                 <span>
                                     {this.state.formPerfil1 === 1 && 'Administrador'}
                                     {this.state.formPerfil1 === 2 && 'Jefe Cuadrilla'}
                                     {this.state.formPerfil1 === 3 && 'Operador'}
+                                    {this.state.formPerfil1 === 4 && 'RRHH'}
+                                    {this.state.formPerfil1 === 5 && 'Jefe Servicio'}
+                                    {this.state.formPerfil1 === 6 && 'Jefe Taller'}
+                                    {this.state.formPerfil1 === 7 && 'Conductor'}
                                 </span>
-
-
-                            </div>
-                            <div>
-                                <span>Perfil 2</span>
-
-                                <span>
-                                    {this.state.formPerfil2 === 1 && 'Administrador'}
-                                    {this.state.formPerfil2 === 2 && 'Jefe Cuadrilla'}
-                                    {this.state.formPerfil2 === 3 && 'Operador'}
-                                </span>
-
                             </div>
                         </div>
                         <div className="seccion">
                             <h3>Puesto de trabajo</h3>
-                            <div>
-                                <span>Cargo</span>
-
-                                <span>
-                                    {this.state.formCargo === 1 && 'Jefe Cuadrilla'}
-                                    {this.state.formCargo === 2 && 'Operador'}
-                                    {this.state.formCargo === 3 && 'Conductor'}
-                                </span>
-
-                            </div>
                             <div>
                                 <span>Centro de costos</span>
                                 <span>

@@ -100,7 +100,7 @@ export default class ListarTrabajadores extends Component {
                 return;
             });
     }
-  
+
     darBaja = async (e) => {
         let id = e.currentTarget.dataset.id;
         var componente = this;
@@ -206,9 +206,10 @@ export default class ListarTrabajadores extends Component {
                 <div className="listado">
                     <table>
                         <thead>
-                            <th>Trabajador</th>
-                            <th>Centro Costos</th>
-                            <th>Acciones Ficha</th>
+                            <th className="onlymovil" colSpan="3">Trabajador</th>
+                            <th className="onlydesktop">Trabajador</th>
+                            <th className="onlydesktop">Centro Costos</th>
+                            <th className="onlydesktop"> Acciones Ficha</th>
                         </thead>
                         <tbody>
                             {
@@ -227,12 +228,13 @@ export default class ListarTrabajadores extends Component {
 
                                     return (<tr key={usuario._id}>
                                         <td className="columna">
-                                            <span>{usuario.nombre}  {usuario.apellido}</span>
-                                            <span>{this.formatearRutListado(usuario.rut, usuario.dv)}</span>
-                                            <span>Contrato Vigente</span>
+                                            <span className="pdtpbt">{usuario.nombre}  {usuario.apellido}</span>
+                                            <span className="pdtpbt"><label className="onlymovil">Rut:</label>{this.formatearRutListado(usuario.rut, usuario.dv)}</span>
+                                            <span className="pdtpbt"><label className="onlymovil">Estado Contrato:</label>Vigente</span>
                                         </td>
-                                        <td className="centro">{centro}</td>
-                                        <td className="acciones">
+                                        <td className="centro pdtpbt"><label className="onlymovil">Centro Costos:</label>{centro}</td>
+                                        <td className="columna onlymovil"><label>Acciones:</label></td>
+                                        <td className="acciones pdtpbt">
                                             {/* <span className="incompleto">80%</span> */}
                                             <span><Link to={`/personas/perfil/${usuario._id}`}><Ojo /></Link></span>
                                             <span><Link to={`/personas/ficha-trabajador/${usuario._id}`} title="Ficha Trabajador"><Doc /></Link></span>

@@ -99,6 +99,9 @@ export default class ListarTrabajadores extends Component {
                 if (hora.estado === 3) curestado = "turnoFinalizado"
                 if (hora.estado === 1 || hora.estado === 2) curestado = "turnoEncurso"
                 return (<tr className={curestado}>
+                     <td className="columna onlymovil">
+                        <span>fecha Jornada</span>
+                     </td>
                     <td className="columna">
                         <span>
                             {moment(hora.fecha).utc().format("DD-MM-YYYY")}
@@ -107,6 +110,9 @@ export default class ListarTrabajadores extends Component {
                             {hora.inicio} - {hora.termino}
                         </span>
                     </td>
+                    <td className="columna onlymovil">
+                        <span>Servicio/Sector</span>
+                     </td>
                     <td className="columna">
                         <span>
                             {hora.datosServicio.nombre}
@@ -115,12 +121,18 @@ export default class ListarTrabajadores extends Component {
                             {hora.datosSectores.nombre}
                         </span>
                     </td>
+                    <td className="columna onlymovil">
+                        <span>Cliente</span>
+                     </td>
                     <td className="columna">
                         <span>
                             {hora.datosCliente.nombre}
                         </span>
                     </td>
-                    <td className="columna">
+                    <td className="columna onlymovil">
+                        <span>Ir al turno  <Link to={`/personas/asistencias/control-asistencia/turno/${hora._id}`}><Ojo /></Link></span>
+                     </td>
+                    <td className="columna onlydesktop">
                         <Link to={`/personas/asistencias/control-asistencia/turno/${hora._id}`}><Ojo /></Link>
                     </td>
                 </tr>)
@@ -167,8 +179,8 @@ export default class ListarTrabajadores extends Component {
                     <div className="encabezado">
                         <h3 className="amarillo">Turnos</h3>
                     </div>
-                    <table>
-                        <thead>
+                    <table className="tabla">
+                        <thead >
                             <th>Fecha/jornada</th>
                             <th>Servicio / sector</th>
                             <th>Cliente</th>

@@ -109,7 +109,7 @@ export default class CrearAmonestacion extends Component {
                                 }}
                             >
                                 Guardar
-                    </button>
+                            </button>
                         </div>
                     );
                 }
@@ -140,6 +140,7 @@ export default class CrearAmonestacion extends Component {
                                 <span>Tipo</span>
                                 <span>
                                     <select className="input-generico" placeholder="Nombre de la capacitación" name="tipo" value={this.state.form.tipo} onChange={this.onChangeInput} >
+                                        <option value="">Seleccione</option>
                                         <option value="1">Tipo 1</option>
                                         <option value="2">Tipo 2</option>
                                         <option value="3">Tipo 3</option>

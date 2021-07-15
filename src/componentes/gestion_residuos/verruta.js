@@ -78,8 +78,9 @@ export default class VerRuta extends Component {
                         fecha: moment(res.data.data[0].fecha).utc().format('YYYY-MM-DD'),
                         inicio: res.data.data[0].inicio,
                         termino: res.data.data[0].termino,
-                        enlace: res.data.data[0].enlace
+                        enlace: res.data.data[0].enlace,
                     },
+                    ordenes: res.data.data[0].ordenes,
                     nombreConductor:res.data.data[0].datosConductor[0].nombre+" "+res.data.data[0].datosConductor[0].apellido,
                     
                    
@@ -99,6 +100,7 @@ export default class VerRuta extends Component {
             var componente = this;
             const res = Axios.get('/api/gestion-residuos/retirosnoasignados/' + fecha, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
                 .then(function (res) {   //si la peticion es satisfactoria entonces
+                    console.log(res.data.data);
                     componente.setState({ listaRetiros: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
                 })
                 .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -196,7 +198,7 @@ export default class VerRuta extends Component {
         })
     }
     pushLista = () => {
-        historial.push("/residuos/control-retiro/programacion-retiro");
+        historial.push("/residuos/control-logistico/");
     }
 
     enviaDatos = async e => {

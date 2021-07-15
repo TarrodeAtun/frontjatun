@@ -28,7 +28,7 @@ export default class selectperfil extends Component {
         console.log(usuario);
         await localStorage.setItem('usuarioActual', JSON.stringify(usuario));
         await autenticacion.actualizar();
-        this.props.impFuncion();
+        await this.props.impFuncion();
         historial.push('/');
     }
 

@@ -47,6 +47,7 @@ export default class inicio extends Component {
             this.consultarTurno();
         }
         console.log(this.state.currentUser.data);
+        console.log(this.state.datosUsuarios);
 
         // this.props.impFuncion();
     }
@@ -86,24 +87,25 @@ export default class inicio extends Component {
                     <div className="opPerfil">
                         <img src={persona} alt="perfil" />
                         <h3><strong>Mi Perfil</strong><span> de usuario</span></h3>
-                        <Link to="/perfil"> <span><Bceleste /></span> </Link>
+                        <Link to="/perfil/ficha-personal"> <span><Bceleste /></span> </Link>
                     </div>
-                    {this.state.currentUser.data.perfilSesion !== 3 &&
-                        <Fragment>
-                            <div className="opPer">
-                                <img src={gestion} alt="Gestion personas" />
-                                <h3><strong>Gestión</strong><span> de personas</span></h3>
-                                <Link to="/personas/gestion"> <Amarillo /> </Link>
-                            </div>
-                            <div className="opRed">
-                                <img src={residuo} alt="Gestion residuos" />
-                                <h3><strong>Gestión</strong><span> de residuos</span></h3>
-                                <Link to="/residuos/gestion"> <Verde /> </Link>
-                            </div>
-                        </Fragment>
+                    {(this.state.datosUsuarios.perfil === 1 || this.state.datosUsuarios.perfil === 2 || this.state.datosUsuarios.perfil === 4) &&
+                        <div className="opPer">
+                            <img src={gestion} alt="Gestion personas" />
+                            <h3><strong>Gestión</strong><span> de personas</span></h3>
+                            <Link to="/personas/gestion"> <Amarillo /> </Link>
+                        </div>
                     }
-
+                    {(this.state.datosUsuarios.perfil === 1 || this.state.datosUsuarios.perfil === 5 ||this.state.datosUsuarios.perfil === 6 || 
+                    this.state.datosUsuarios.perfil === 7) &&
+                        <div className="opRed">
+                            <img src={residuo} alt="Gestion residuos" />
+                            <h3><strong>Gestión</strong><span> de residuos</span></h3>
+                            <Link to="/residuos/gestion"> <Verde /> </Link>
+                        </div>
+                    }
                 </div>
+
                 <div id="modales">
                     <Modal
                         name="GeneradorQR"  //nombre del estado que controla el modal

@@ -26,7 +26,12 @@ const toastoptions = {
     draggable: true,
     progress: undefined,
 }
-
+const openInNewTab = (url) => {
+    let direccion = "http://localhost:4000/media/users";
+    direccion = direccion + url;
+    const newWindow = window.open(direccion, '_blank', 'noopener,noreferrer')
+    if (newWindow) newWindow.opener = null
+}
 export default class ModificarCapacitacion extends Component {
     constructor(props) {
         super(props);
@@ -211,7 +216,7 @@ export default class ModificarCapacitacion extends Component {
                                 <span>Certificado</span>
                                 {this.state.modCertificado
                                 ? <span><input className="input-generico" type="file" name="formCertificado" onChange={this.onChangeFileInput} /></span>
-                                : <span>{this.state.certificado.name} <button onClick={this.changeModCert}>X</button></span>
+                                : <span><label className="puro">{this.state.certificado.name}</label> <button onClick={this.changeModCert}>X</button></span>
 
                                 }
 

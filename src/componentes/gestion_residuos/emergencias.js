@@ -28,12 +28,16 @@ export default class Emergencias extends Component {
                 <div>
                     <h2 className="verde"><Link to="/"> <Bverderev /></Link> Gestión de residuos / <strong>Emergencias</strong></h2>
                     <div className="fichaPerfil">
-                        <div className="seccion">
-                            <h3><Link to="/residuos/emergencias/residuos"><span>Emergencias Residuos</span><button><Flechaver /></button></Link></h3>
-                        </div>
-                        <div className="seccion">
-                            <h3><Link to="/residuos/emergencias/vehiculos/"><span>Emergencias Vehiculos</span><button><Flechaver /></button></Link></h3>
-                        </div>
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5 || this.state.currentUser.data.usuariobd.perfil === 6) &&
+                            <div className="seccion">
+                                <h3><Link to="/residuos/emergencias/residuos"><span>Emergencias Residuos</span><button><Flechaver /></button></Link></h3>
+                            </div>
+                        }
+                        {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5 || this.state.currentUser.data.usuariobd.perfil === 7) &&
+                            <div className="seccion">
+                                <h3><Link to="/residuos/emergencias/vehiculos/"><span>Emergencias Vehiculos</span><button><Flechaver /></button></Link></h3>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

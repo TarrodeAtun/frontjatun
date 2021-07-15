@@ -22,6 +22,10 @@ export default class fichaTrabajador extends Component {
         };
     }
 
+    componentDidMount = () =>{
+        this.props.impFuncion();
+    }
+
     render() {
         return (
             <div className="principal menu-lista-dashboard" id="component-fichaTrabajador">

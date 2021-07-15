@@ -139,7 +139,7 @@ export default class Perfil extends Component {
                 formNombre: this.state.datosUsuario.nombre,
                 formApellido: this.state.datosUsuario.apellido,
                 formEmail: this.state.datosUsuario.email,
-                formFechanac: moment(this.state.datosUsuario.fechaNac).format('YYYY-MM-DD'),
+                formFechanac: moment(this.state.datosUsuario.fechaNac).utc().format('YYYY-MM-DD'),
                 formHijos: this.state.datosUsuario.hijos,
                 formTelefono: this.state.datosUsuario.telefono,
                 formContacto: this.state.datosUsuario.emergencias.contacto,
@@ -149,9 +149,7 @@ export default class Perfil extends Component {
                 formDireccion: this.state.datosUsuario.emergencias.direccion,
                 formComuna: this.state.datosUsuario.emergencias.comuna,
                 formCiudad: this.state.datosUsuario.emergencias.ciudad,
-                formPerfil1: this.state.datosUsuario.perfil,
-                formPerfil2: this.state.datosUsuario.perfilSec,
-                formCargo: this.state.datosUsuario.cargo,
+                formPerfil: this.state.datosUsuario.perfil,
                 formBanco: this.state.datosUsuario.bancarios.banco,
                 formTipoCuenta: this.state.datosUsuario.bancarios.tipo,
                 formNumCuenta: this.state.datosUsuario.bancarios.numero,
@@ -204,9 +202,7 @@ export default class Perfil extends Component {
             comuna: this.state.form.formComuna,
             ciudad: this.state.form.formCiudad
         }));
-        formData.append('perfil', this.state.form.formPerfil1);
-        formData.append('perfilSec', this.state.form.formPerfil2);
-        formData.append('cargo', this.state.form.formCargo);
+        formData.append('perfil', this.state.form.formperfil);
         formData.append('bancarios', JSON.stringify({
             banco: this.state.form.formBanco,
             tipo: this.state.form.formTipoCuenta,
@@ -256,10 +252,10 @@ export default class Perfil extends Component {
             });
         }
         let centro;
-        if((this.state.form.formCentro !== "") && (this.state.centrosCostos.length > 0)){
+        if ((this.state.form.formCentro !== "") && (this.state.centrosCostos.length > 0)) {
             console.log(this.state.form.formCentro)
-            this.state.centrosCostos.find(function(cen){
-                if(parseInt(cen.key) === parseInt(componente.state.form.formCentro)){
+            this.state.centrosCostos.find(function (cen) {
+                if (parseInt(cen.key) === parseInt(componente.state.form.formCentro)) {
                     centro = cen.nombre;
                 }
             });
@@ -302,7 +298,7 @@ export default class Perfil extends Component {
                             <div>
                                 <span>Rut</span>
                                 {this.state.showModificar
-                                    ? <span><input className="input-generico" name="formRut" onChange={this.onChangeRut} value={this.state.form.formRut} placeholder="RUN" maxLength="12" /></span>
+                                    ? <span>{this.state.form.formRut}</span>
                                     : <span>{this.state.form.formRut}</span>
                                 }
                             </div>
@@ -310,7 +306,7 @@ export default class Perfil extends Component {
                                 <span>Fecha de Nacimiento</span>
                                 {this.state.showModificar
                                     ? <span><input className="input-generico" type="date" name="formFechanac" onChange={this.onChangeInput} value={this.state.form.formFechanac} /></span>
-                                    : <span>{moment(this.state.form.formFechanac).add(1, "days").utc().format('DD/MM/YYYY')}</span>
+                                    : <span>{moment(this.state.form.formFechanac).utc().format('DD/MM/YYYY')}</span>
                                 }
                             </div>
                             <div>
@@ -391,65 +387,36 @@ export default class Perfil extends Component {
                         <div className="seccion">
                             <h3>Permisos en la plataforma</h3>
                             <div>
-                                <span>Perfil 1</span>
+                                <span>Perfil</span>
                                 {this.state.showModificar
                                     ? <span>
-                                        <select name="formPerfil1" onChange={this.onChangeInput} value={this.state.form.formPerfil1} className="input-generico" >
+                                        <select name="formPerfil" onChange={this.onChangeInput} value={this.state.form.formPerfil} className="input-generico" >
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Administrador</option>
                                             <option value="2">Jefe Cuadrilla</option>
-                                            <option value="3">operador</option>
+                                            <option value="3">Operador</option>
+                                            <option value="4">RRHH</option>
+                                            <option value="5">Jefe Servicio</option>
+                                            <option value="6">Jefe Taller</option>
+                                            <option value="7">Jefe Taller</option>
                                         </select>
                                     </span>
                                     :
                                     <span>
-                                        {this.state.form.formPerfil1 === 1 && 'Administrador'}
-                                        {this.state.form.formPerfil1 === 2 && 'Jefe Cuadrilla'}
-                                        {this.state.form.formPerfil1 === 3 && 'Operador'}
+                                        {this.state.form.formPerfil === 1 && 'Administrador'}
+                                        {this.state.form.formPerfil === 2 && 'Jefe Cuadrilla'}
+                                        {this.state.form.formPerfil === 3 && 'Operador'}
+                                        {this.state.form.formPerfil === 4 && 'RRHH'}
+                                        {this.state.form.formPerfil === 5 && 'Jefe Servicio'}
+                                        {this.state.form.formPerfil === 6 && 'Jefe Taller'}
+                                        {this.state.form.formPerfil === 7 && 'Conductor'}
                                     </span>
 
-                                }
-                            </div>
-                            <div>
-                                <span>Perfil 2</span>
-                                {this.state.showModificar
-                                    ? <span>
-                                        <select name="formCargo" onChange={this.onChangeInput} value={this.state.form.formCargo} className="input-generico">
-                                            <option>Seleccione un perfil</option>
-                                            <option value="1">Jefe Cuadrilla</option>
-                                            <option value="2">Operador</option>
-                                        </select>
-                                    </span>
-                                    :
-                                    <span>
-                                        {this.state.form.formPerfil2 === 1 && 'Administrador'}
-                                        {this.state.form.formPerfil2 === 2 && 'Jefe Cuadrilla'}
-                                        {this.state.form.formPerfil2 === 3 && 'Operador'}
-                                    </span>
                                 }
                             </div>
                         </div>
                         <div className="seccion">
                             <h3>Puesto de trabajo</h3>
-                            <div>
-                                <span>Cargo</span>
-                                {this.state.showModificar
-                                    ? <span>
-                                        <select name="formCargo" onChange={this.onChangeInput} value={this.state.form.formCargo} className="input-generico">
-                                            <option>Seleccione un perfil</option>
-                                            <option value="1">Jefe Cuadrilla</option>
-                                            <option value="2">Operador</option>
-                                            <option value="3">Conductor</option>
-                                        </select>
-                                    </span>
-                                    :
-                                    <span>
-                                        {this.state.form.formCargo === 1 && 'Jefe Cuadrilla'}
-                                        {this.state.form.formCargo === 2 && 'Operador'}
-                                        {this.state.form.formCargo === 3 && 'Conductor'}
-                                    </span>
-                                }
-                            </div>
                             <div>
                                 <span>Centro de costos</span>
                                 {this.state.showModificar
