@@ -206,6 +206,7 @@
     background-size: 100%;
     background-position: 100% bottom;
     background-repeat: no-repeat;
+    padding-bottom: 70px;
   }
 #appContainer > .fila-contenedor{
     height:100%;

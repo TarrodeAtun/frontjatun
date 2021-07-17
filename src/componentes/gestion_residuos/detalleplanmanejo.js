@@ -218,7 +218,7 @@ export default class CrearPlanManejo extends Component {
     }
 
     pushLista = () => {
-        historial.push(`/residuos/plan-manejo-cliente/${this.props.match.params}`);
+        historial.push(`/residuos/plan-manejo-cliente/${this.state.datosCliente._id}`);
     }
 
     enviaDatos = async e => {
@@ -324,7 +324,7 @@ export default class CrearPlanManejo extends Component {
                 <div>
                     <span>Pretratamiento</span>
                     <span className="introspan">
-                        {residuo.pretratamiento === "1"
+                        {parseInt(residuo.pretratamiento) === 1
                             ? <Fragment>
                                 <span> <input type="radio" disabled onChange={this.onChangeResiduo} value="1" checked name={`pretratamiento${index}`} data-key={index} /> <label>Si</label> </span>
                                 <span> <input type="radio" disabled onChange={this.onChangeResiduo} value="0" name={`pretratamiento${index}`} data-key={index} /> <label>No</label> </span>
@@ -350,7 +350,7 @@ export default class CrearPlanManejo extends Component {
                     <h2 className="verde"><button className="boton-vacio" onClick={this.volver}> <Bverderev /> </button><span>{this.state.datosCliente.nombre}</span> / <strong>{this.state.nombre}</strong></h2>
                     <div className="fichaPerfil">
                         <div className="seccion">
-                            <h3 className="verde">Editar Plan</h3>
+                            <h3 className="verde">Detalle Plan</h3>
                             <div>
                                 <span>Nombre plan</span>
                                 <span>{this.state.nombre}</span>

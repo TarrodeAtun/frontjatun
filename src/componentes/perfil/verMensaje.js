@@ -165,7 +165,7 @@ export default class VerMensajeSoporte extends Component {
         return (
             <div className="principal menu-lista-dashboard listaPreguntas">
                 <div>
-                    <h2 className="naranjo"><Link to="/bienestar/soporte"> <Bamarillorev /></Link> Soporte Técnico / <strong>Mensaje</strong></h2>
+                    <h2 className="naranjo"><Link to="/perfil/bienestar/soporte"> <Bamarillorev /></Link> Soporte Técnico / <strong>Mensaje</strong></h2>
                 </div>
                 <div className="listado-simple chat">
                     <div className="encabezado">

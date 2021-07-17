@@ -119,7 +119,7 @@ export default class ResultadosEncuestas extends Component {
         return (
             <div className="principal menu-lista-dashboard">
                 <div>
-                    <h2 className="naranjo"><Link to="/bienestar"> <Bamarillorev /></Link>  <strong>Soporte Técnico</strong></h2>
+                    <h2 className="naranjo"><Link to="/perfil/ficha-personal"> <Bamarillorev /></Link>  <strong>Soporte Técnico</strong></h2>
                 </div>
                 <div>
                     <div className="prehead">

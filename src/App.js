@@ -114,6 +114,7 @@ import Missolicitudes from './componentes/perfil/missolicitudes';
 import CrearSolicitud from './componentes/perfil/crearSolicitud';
 import MisEncuestasPerfil from './componentes/perfil/misEncuestas';
 import ContestarEncuestaPerfil from './componentes/perfil/contestarEncuesta';
+import VerEncuestaPerfil from './componentes/perfil/verEncuesta';
 import MiSoporte from './componentes/perfil/soporte';
 import VerMiMensajeSoporte from './componentes/perfil/verMensaje';
 
@@ -241,6 +242,7 @@ class App extends React.Component {
                   <RutaPrivada exact path="/perfil/turnos/mis-solicitudes/solicitar" component={CrearSolicitud} />
                   <RutaPrivada exact path="/perfil/ficha-personal/encuestas/mis-encuestas" component={MisEncuestasPerfil} />
                   <RutaPrivada exact path="/perfil/ficha-personal/encuestas/contestar-encuesta/:id" component={ContestarEncuestaPerfil} />
+                  <RutaPrivada exact path="/perfil/ficha-personal/encuestas/ver-encuesta/:id" component={VerEncuestaPerfil} />
                   <RutaPrivada exact path="/perfil/bienestar/soporte" component={MiSoporte} />
                   <RutaPrivada exact path="/perfil/bienestar/soporte/ver-mensaje/:id" component={VerMiMensajeSoporte} />
 

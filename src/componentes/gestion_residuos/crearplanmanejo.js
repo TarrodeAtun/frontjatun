@@ -258,7 +258,7 @@ export default class CrearPlanManejo extends Component {
                 .then(respuesta => {
                     if (respuesta.data.estado === "success") {
                         toast.success(respuesta.data.mensaje, toastoptions);
-                        historial.push("/residuos/plan-manejo-cliente/"+this.state.datosCliente._id);
+                        historial.push(`/residuos/plan-manejo-cliente/${this.state.datosCliente._id}`);
                     } else if (respuesta.data.estado === "warning") {
                         toast.warning(respuesta.data.mensaje, toastoptions);
                     }
@@ -326,7 +326,7 @@ export default class CrearPlanManejo extends Component {
                         <span> <input type="radio" onChange={this.onChangePretratamiento} value="0" name={`pretratamiento${index}`} data-key={index} /> <label>No</label> </span>
                         <span>
                             {this.state.residuosagregado[index].pretratamiento === "1" &&
-                                <input name="pretratamientoValor" onChange={this.onChangeResiduo} data-key={index} />
+                                <input name={`pretratamientoValor`} onChange={this.onChangeResiduo} data-key={index} />
                             }
                         </span>
 

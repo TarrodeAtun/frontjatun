@@ -95,7 +95,7 @@ export default class CrearPlanManejo extends Component {
         this.setState({ idCliente: id });
         const res = Axios.get('/api/gestion-residuos/plan-manejo/ver-plan/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.data);
+
                 console.log(res.data.data[0]);
                 componente.setState({
                     clienteRut: res.data.data[0].clienteRut,
@@ -157,7 +157,7 @@ export default class CrearPlanManejo extends Component {
             });
     }
 
-    
+
 
     formatearRutListado = (rutCrudo, dv) => {
         var sRut = new String(rutCrudo);
@@ -190,6 +190,12 @@ export default class CrearPlanManejo extends Component {
         residuosagregado[llave][e.target.name] = e.target.value;
         this.setState({ residuosagregado: residuosagregado });
     }
+    onChangePretratamiento = (e) => {
+        const llave = e.target.dataset.key;
+        let residuosagregado = this.state.residuosagregado;
+        residuosagregado[llave]["pretratamiento"] = e.target.value;
+        this.setState({ residuosagregado: residuosagregado });
+    }
 
     agregarResiduo = (datos) => {
         const residuo = {
@@ -213,7 +219,7 @@ export default class CrearPlanManejo extends Component {
     }
 
     pushLista = () => {
-        historial.push(`/residuos/plan-manejo-cliente/${this.props.match.params}`);
+        historial.push(`/residuos/plan-manejo-cliente/${this.state.datosCliente._id}`);
     }
 
 
@@ -221,7 +227,7 @@ export default class CrearPlanManejo extends Component {
         console.log(this.state);
         var componente = this;
         var { id } = this.props.match.params;
-        console.log(id);
+        console.log(this.state.residuosagregado);
         e.preventDefault();
         var campoVacio = false;
         var formData = new FormData();
@@ -244,18 +250,18 @@ export default class CrearPlanManejo extends Component {
         formData.append('comentarios', this.state.comentarios);
         formData.append('contenedores', this.state.contenedores);
         formData.append('residuosegregado', this.state.residuosegregado);
-     
-        for(var elem of formData.entries()) {
+
+        for (var elem of formData.entries()) {
             if (elem[1] === "" || elem[1] === null) {
                 campoVacio = true;
             }
-         }
+        }
         if (!campoVacio) {
             const res = await Axios.post('/api/gestion-residuos/plan-manejo/modificar/', formData, { headers: authHeader() })
                 .then(respuesta => {
                     if (respuesta.data.estado === "success") {
                         toast.success(respuesta.data.mensaje, toastoptions);
-                        historial.push("/residuos/plan-manejo-cliente/"+this.state.datosCliente._id);
+                        // historial.push("/residuos/plan-manejo-cliente/" + this.state.datosCliente._id);
                     } else if (respuesta.data.estado === "warning") {
                         toast.warning(respuesta.data.mensaje, toastoptions);
                     }
@@ -319,16 +325,16 @@ export default class CrearPlanManejo extends Component {
                 <div>
                     <span>Pretratamiento</span>
                     <span className="introspan">
-                        {residuo.pretratamiento === "1"
+                        {parseInt(residuo.pretratamiento) === 1
                             ? <Fragment>
-                                <span> <input type="radio" onChange={this.onChangeResiduo} value="1" checked name="pretratamiento" data-key={index} /> <label>Si</label> </span>
-                                <span> <input type="radio" onChange={this.onChangeResiduo} value="0"  name="pretratamiento" data-key={index} /> <label>No</label> </span>
-                                <span> <input name="pretratamientoValor" value={residuo.pretratamientoValor} onChange={this.onChangeResiduo} data-key={index} /> </span>
+                                <span> <input type="radio" onChange={this.onChangePretratamiento} value="1" checked name={`pretratamiento${index}`} data-key={index} /> <label>Si</label> </span>
+                                <span> <input type="radio" onChange={this.onChangePretratamiento} value="0" name={`pretratamiento${index}`} data-key={index} /> <label>No</label> </span>
+                                <span> <input name={`pretratamientoValor`} value={residuo.pretratamientoValor} onChange={this.onChangeResiduo} data-key={index} /> </span>
                             </Fragment>
                             : <Fragment>
-                                <span> <input type="radio" onChange={this.onChangeResiduo} value="1"  name="pretratamiento" data-key={index} /> <label>Si</label> </span>
-                                <span> <input type="radio" onChange={this.onChangeResiduo} value="0"  checked name="pretratamiento" data-key={index} /> <label>No</label> </span>
-                                
+                                <span> <input type="radio" onChange={this.onChangePretratamiento} value="1" name={`pretratamiento${index}`} data-key={index} /> <label>Si</label> </span>
+                                <span> <input type="radio" onChange={this.onChangePretratamiento} value="0" checked name={`pretratamiento${index}`} data-key={index} /> <label>No</label> </span>
+
                             </Fragment>
 
                         }

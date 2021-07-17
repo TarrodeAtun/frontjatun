@@ -58,7 +58,7 @@ export default class MisEncuestas extends Component {
 
     obtenerEncuestas = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
-        const res = Axios.post('/api/bienestar/mis-encuestas', { rut: autenticacion.currentUserValue.data.usuariobd.rut , pagina: this.state.pagina}, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/bienestar/mis-encuestas', { rut: autenticacion.currentUserValue.data.usuariobd.rut, pagina: this.state.pagina }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ encuestas: res.data.data, paginas: res.data.paginas });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -68,35 +68,38 @@ export default class MisEncuestas extends Component {
                 return;
             });
     }
-    eliminarEncuesta = async (e) => {
-        var componente = this;
-        var id = e.currentTarget.dataset.id;
-        await Axios.post('/api/bienestar/encuestas/delete/', {
-            id: id
-        }, { headers: authHeader() })
-            .then(respuesta => {
-                toast.success(respuesta.mensaje, toastoptions);
-                componente.obtenerEncuestas();
-                console.log(respuesta);
-            });
-    }
 
 
     render() {
+        let componente = this;
         let items;
         if (this.state.encuestas) {
             if (this.state.encuestas.length > 0) {
-                items = this.state.encuestas.map((encuesta, index) =>
-                    <div key={index} className="elemento elemento-encuestas">
+                items = this.state.encuestas.map((encuesta, index) => {
+                    var respondido = false;
+                    encuesta.trabajadores.find(function (value, index) {
+                        if (value.rut === componente.state.currentUser.data.usuariobd.rut) {
+                            console.log("iguales");
+                            if (value.estado === 1) {
+                                respondido = true;
+                            }
+                        }
+                    });
+                    return (<div key={index} className="elemento elemento-encuestas">
                         <span className="encuestas-nombre">{encuesta.nombre}</span>
                         <div className="acciones ml">
+                            {respondido === true &&
+                                <Link className="regular link" to={`/perfil/ficha-personal/encuestas/ver-encuesta/${encuesta._id}`}>Ver</Link>
+                            }
+                            {respondido === false &&
+                                <Link className="regular link" to={`/perfil/ficha-personal/encuestas/contestar-encuesta/${encuesta._id}`}>Responder</Link>
+                            }
 
-                            <Link className="regular link" to={`/perfil/ficha-personal/encuestas/contestar-encuesta/${encuesta._id}`}>Responder</Link>
                             {/* <Link to={`/bienestar/encuestas/editar-encuesta/${encuesta._id}`}><img src={edit} /></Link> */}
                             {/* <button onClick={this.eliminarEncuesta} data-id={encuesta._id}><img src={basurero} /></button> */}
                         </div>
-                    </div>
-                )
+                    </div>)
+                })
             } else {
                 items = <div className="elemento">
                     <span>No hay encuestas disponibles para responder</span>
