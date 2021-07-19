@@ -6,6 +6,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import Axios from '../../helpers/axiosconf';
 import { authHeader } from '../../helpers/auth-header';
 import { handleResponse } from '../../helpers/manejador';
+import { funciones } from '../../servicios/funciones';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import Modal from '../includes/modal';
@@ -42,6 +43,7 @@ export default class VerTrazabilidad extends Component {
         this.state = {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
+            comunas:[],
             idor: '',
             retiro: '',
             tarjeta: '',
@@ -68,7 +70,6 @@ export default class VerTrazabilidad extends Component {
             pesoPrimer: '',
             nombreEntrega: '',
             rutEntrega: '',
-            tipoTarjeta: '',
             comentarios: '',
             pesoSegundo: '',
             sacas: '',
@@ -95,9 +96,12 @@ export default class VerTrazabilidad extends Component {
         this.toogleModal(e, res);
     }
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
         this.obtenerOrden();
+        await this.setState({ comunas: await funciones.obtenerComunas() });
+        console.log(this.state.comunas)
     }
+    
 
     pad = (num, size) => {
         var s = "00000000" + num;
@@ -128,7 +132,7 @@ export default class VerTrazabilidad extends Component {
         this.setState({ idOrden: id });
         const res = Axios.get('/api/gestion-residuos/trazabilidad/orden/' + id, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
-                console.log(res.data.datosTrazabilidad);
+                console.log(res.data.data);
                 componente.setState({
                     idor: res.data.data.idor,
                     retiro: res.data.data.retiro,
@@ -159,12 +163,12 @@ export default class VerTrazabilidad extends Component {
                     if (componente.state.datosTrazabilidad[0].pesoPrimer) { componente.setState({ pesoPrimer: componente.state.datosTrazabilidad[0].pesoPrimer }) }
                     if (componente.state.datosTrazabilidad[0].nombreEntrega) { componente.setState({ nombreEntrega: componente.state.datosTrazabilidad[0].nombreEntrega }) }
                     if (componente.state.datosTrazabilidad[0].rutEntrega) { componente.setState({ rutEntrega: componente.state.datosTrazabilidad[0].rutEntrega }) }
-                    if (componente.state.datosTrazabilidad[0].tipoTarjeta) { componente.setState({ tipoTarjeta: componente.state.datosTrazabilidad[0].tipoTarjeta }) }
                     if (componente.state.datosTrazabilidad[0].comentarios) { componente.setState({ comentarios: componente.state.datosTrazabilidad[0].comentarios }) }
                     if (componente.state.datosTrazabilidad[0].pesoSegundo) { componente.setState({ pesoSegundo: componente.state.datosTrazabilidad[0].pesoSegundo }) }
                     if (componente.state.datosTrazabilidad[0].sacas) { componente.setState({ sacas: componente.state.datosTrazabilidad[0].sacas }) }
                     if (componente.state.datosTrazabilidad[0].planificacion) { componente.setState({ planificacion: componente.state.datosTrazabilidad[0].planificacion }) }
                     if (componente.state.datosTrazabilidad[0].codigo) { componente.setState({ codigo: componente.state.datosTrazabilidad[0].codigo }) }
+                    if (componente.state.datosTrazabilidad[0].residuos) { componente.setState({ residuosagregado: componente.state.datosTrazabilidad[0].residuos }) }
                 }
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
@@ -446,7 +450,7 @@ export default class VerTrazabilidad extends Component {
                             <div>
                                 <span>Establecimiento</span>
                                 <span className="spanConductor">
-                                    <span>Direccion, Comuna</span>
+                                    <span>{this.state.direccion}, {this.state.comunas[this.state.comuna]}</span>
                                     <span>ID {this.state.establecimientoID}</span>
                                     <span>VU-RETC {this.state.vuretc}</span>
                                 </span>
@@ -510,16 +514,25 @@ export default class VerTrazabilidad extends Component {
                                     }
                                 </div>
                                 <div>
-                                    <span>Peso</span>
-                                    <span><input type="number" onChange={this.onChangeInput} className="input-generico" placeholder="kilos" value={this.state.pesoPrimer} name="pesoPrimer" /></span>
+                                    <span>N° Sacas</span>
+                                    {this.state.pesoPrimer
+                                        ? <span><input type="number" disabled onChange={this.onChangeInput} className="input-generico" placeholder="Sacas" value={this.state.pesoPrimer} name="pesoPrimer" /></span>
+                                        : <span><input type="number" onChange={this.onChangeInput} className="input-generico" placeholder="Sacas" value={this.state.pesoPrimer} name="pesoPrimer" /></span>
+                                    }
                                 </div>
                                 <div>
                                     <span>Nombre quién entrega</span>
-                                    <span><input className="input-generico" onChange={this.onChangeInput} value={this.state.nombreEntrega} name="nombreEntrega" /></span>
+                                    {this.state.nombreEntrega
+                                        ? <span><input className="input-generico" disabled onChange={this.onChangeInput} value={this.state.nombreEntrega} name="nombreEntrega" /></span>
+                                        : <span><input className="input-generico" onChange={this.onChangeInput} value={this.state.nombreEntrega} name="nombreEntrega" /></span>
+                                    }
                                 </div>
                                 <div>
                                     <span>Rut quién entrega</span>
-                                    <span><input className="input-generico" onChange={this.onChangeInput} value={this.state.rutEntrega} name="rutEntrega" /></span>
+                                    {this.state.rutEntrega
+                                        ? <span><input className="input-generico" disabled onChange={this.onChangeInput} value={this.state.rutEntrega} name="rutEntrega" /></span>
+                                        : <span><input className="input-generico" onChange={this.onChangeInput} value={this.state.rutEntrega} name="rutEntrega" /></span>
+                                    }
                                 </div>
                                 <div>
                                     <span>Fecha</span>
@@ -527,24 +540,33 @@ export default class VerTrazabilidad extends Component {
                                 </div>
                                 <div>
                                     <span>Adjuntar imagen</span>
+
                                     <span><input className="input-generico" onChange={this.onChangeFileInput} type="file" name="imagen" placeholder="Subir archivo" /></span>
                                 </div>
-                                <div>
+                                {/* <div>
                                     <span>Tipo de Tarjeta</span>
-                                    <span><input className="input-generico" onChange={this.onChangeInput} type="number" value={this.state.tipoTarjeta} name="tipoTarjeta" /></span>
-                                </div>
+                                    {this.state.tipoTarjeta
+                                        ? <span><input className="input-generico" disabled onChange={this.onChangeInput} type="number" value={this.state.tipoTarjeta} name="tipoTarjeta" /></span>
+                                        : <span><input className="input-generico" onChange={this.onChangeInput} type="number" value={this.state.tipoTarjeta} name="tipoTarjeta" /></span>
+                                    }
+                                </div> */}
                                 <div>
                                     <span>Guia despacho</span>
                                     <span><input className="input-generico" onChange={this.onChangeFileInput} type="file" name="guiadespacho" placeholder="Subir archivo" /></span>
                                 </div>
                                 <div>
                                     <span>Comentarios</span>
-                                    <span><textarea className="input-generico" onChange={this.onChangeInput} value={this.state.comentarios} name="comentarios" ></textarea></span>
+                                    {this.state.comentarios
+                                        ? <span><textarea className="input-generico" readOnly disabled onChange={this.onChangeInput} value={this.state.comentarios} name="comentarios" ></textarea></span>
+                                        : <span><textarea className="input-generico" onChange={this.onChangeInput} value={this.state.comentarios} name="comentarios" ></textarea></span>
+                                    }
                                 </div>
-                                <div className="form-group buttons">
-                                    <button className="boton-generico btazul" onClick={this.enviaDatosUno}>Guardar</button>
-                                    <button className="boton-generico btgris" type="button" >Cancelar</button>
-                                </div>
+                                {(this.state.currentUser.data.usuariobd.perfil === 7 && !this.state.rutEntrega && !this.state.pesoPrimer && !this.state.nombreEntrega) &&
+                                    <div className="form-group buttons">
+                                        <button className="boton-generico btazul" onClick={this.enviaDatosUno}>Guardar</button>
+                                        <button className="boton-generico btgris" type="button" >Cancelar</button>
+                                    </div>
+                                }
                             </div>
                         }
                         {(this.state.currentUser.data.usuariobd.perfil === 1 || this.state.currentUser.data.usuariobd.perfil === 5 ||
@@ -557,19 +579,25 @@ export default class VerTrazabilidad extends Component {
                                     <span>Fecha</span>
                                     <span>{moment(this.state.retiro).utc().format('DD/MM/YYYY')}</span>
                                 </div>
-                                <div>
+                                {/* <div>
                                     <span>Nombre Jefe Taller</span>
                                     {this.state.datosConductor &&
                                         <span>{this.state.datosConductor[0].nombre} {this.state.datosConductor[0].apellido}</span>
                                     }
-                                </div>
+                                </div> */}
                                 <div>
                                     <span>Peso</span>
-                                    <span><input type="number" onChange={this.onChangeInput} className="input-generico" placeholder="kilos" value={this.state.pesoSegundo} name="pesoSegundo" /></span>
+                                    {this.state.pesoSegundo
+                                        ? <span><input type="number" disabled onChange={this.onChangeInput} disabled className="input-generico" placeholder="kilos" value={this.state.pesoSegundo} name="pesoSegundo" /></span>
+                                        : <span><input type="number" onChange={this.onChangeInput} className="input-generico" placeholder="kilos" value={this.state.pesoSegundo} name="pesoSegundo" /></span>
+                                    }
                                 </div>
                                 <div>
-                                    <span>N° sacas</span>
-                                    <span><input type="number" onChange={this.onChangeInput} className="input-generico" value={this.state.sacas} name="sacas" /></span>
+                                    <span>N° Sacas</span>
+                                    {this.state.sacas
+                                        ? <span><input type="number" disabled onChange={this.onChangeInput} className="input-generico" value={this.state.sacas} name="sacas" /></span>
+                                        : <span><input type="number" onChange={this.onChangeInput} className="input-generico" value={this.state.sacas} name="sacas" /></span>
+                                    }
                                 </div>
                                 <h3 className="amarillo">
                                     {this.state.datosRetiro &&
@@ -596,10 +624,12 @@ export default class VerTrazabilidad extends Component {
                                         </select>
                                     </span>
                                 </div>
-                                <div className="form-group buttons">
-                                    <button className="boton-generico btazul" onClick={this.enviaDatosDos}>Guardar</button>
-                                    <button className="boton-generico btgris" type="button" >Cancelar</button>
-                                </div>
+                                {(this.state.currentUser.data.usuariobd.perfil === 6 && !this.state.pesoSegundo && !this.state.sacas) &&
+                                    <div className="form-group buttons">
+                                        <button className="boton-generico btazul" onClick={this.enviaDatosDos}>Guardar</button>
+                                        <button className="boton-generico btgris" type="button" >Cancelar</button>
+                                    </div>
+                                }
                             </div>
                         }
 
@@ -644,7 +674,7 @@ export default class VerTrazabilidad extends Component {
                         agregarResiduo={this.agregarResiduo}//traspasamos la funcion que permitira abrir y cerrar el modal
                     />
                 </div>
-            </div>
+            </div >
         );
     }
 }

@@ -5,16 +5,26 @@ import { historial } from '../helpers/historial';
 
 const currentUser = autenticacion.currentUserValue;
 if (!currentUser) {
-historial.push('/login');
+  if (window.location.pathname.indexOf("recuperarPass") > -1) {
+
+  } else {
+    historial.push('/login');
+  }
 }
 
 const NotFound = () => (
-    <div>
-      <h1>404 - Not Found!</h1>
-      <Link to="/">
+  <div>
+    <h1>404 - Not Found!</h1>
+    {currentUser
+      ? <Link to="/">
         Go Home
       </Link>
-    </div>
-  );
+      : <Link to="/login">
+        Go Login
+      </Link>
+    }
+
+  </div>
+);
 
 export default NotFound;

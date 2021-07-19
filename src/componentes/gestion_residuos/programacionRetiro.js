@@ -40,7 +40,7 @@ export default class GestionResiduos extends Component {
             currentUser: autenticacion.currentUserValue,
             datosUsuarios: "",
             users: null,
-            horas: '',
+            horas: [],
             estado: '',
             fecha: ''
         };
@@ -129,25 +129,28 @@ export default class GestionResiduos extends Component {
         this.obtenerRetiros();
     }
 
-    anularOrden = async (e) => {
+    anularRetiro = async (e) => {
         let id = e.currentTarget.dataset.id;
+        let retiro = e.currentTarget.dataset.retiro;
+        console.log(id, retiro);
         var componente = this;
         confirmAlert({
             customUI: ({ onClose }) => {
                 return (
                     <div className='custom-confirm '>
-                        <p>¿Estas seguro de eliminar esta orden?, no podrás recuperarla</p>
+                        <p>¿Estas seguro de eliminar esta asignacion?, los datos de OR se mantendrán y se establecerá en pendiente</p>
                         <button className="boton-generico btazulalt" onClick={onClose}>Cancelar</button>
                         <button className="boton-generico btazul"
                             onClick={() => {
                                 const res = Axios.post('/api/gestion-residuos/retiros/anular',
-                                    { id: id, },
+                                    { or: id, retiro: retiro },
                                     { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
                                     .then(function (res) {
                                         toast.success(res.data.mensaje, toastoptions);
-                                        componente.obtenerOrdenes();
+                                        componente.obtenerRetiros();
                                     })
                                     .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                                        console.log(err);
                                         handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                                         return;
                                     });
@@ -196,7 +199,7 @@ export default class GestionResiduos extends Component {
     }
     render() {
         var componente = this;
-        var items = [];
+        var items;
         var lunes = [];
         var martes = [];
         var miercoles = [];
@@ -204,7 +207,9 @@ export default class GestionResiduos extends Component {
         var viernes = [];
         var sabado = [];
         var domingo = [];
+        console.log("asdzxc");
         if (this.state.horas.length !== 0) {
+            console.log("adz");
             this.state.horas.map((hora, index) => {
                 var fech = new Date(hora.fecha);
                 console.log(fech.getDay());
@@ -283,7 +288,8 @@ export default class GestionResiduos extends Component {
                     </div>)
                 }
             });
-            if (this.state.horas) {
+            console.log(this.state.horas);
+            if (this.state.horas.length > 0) {
                 items = this.state.horas.map((hora, index) => (
                     <tr className="elemento ">
                         <td>{hora.datosCliente[0].nombre}</td>
@@ -344,12 +350,13 @@ export default class GestionResiduos extends Component {
                         <td className="acciones">
                             <span><Link to={`/residuos/control-retiro/ver-retiro/${hora._id}`}><Ojo /></Link></span>
                             {hora.datosOR.estado < 3 &&
-                                <span><Link onClick={this.anularOrden} data-id={hora.or} data-id-retiro={hora._id}><Basurero /></Link></span>
+                                <span><Link onClick={this.anularRetiro} data-id={hora.or} data-retiro={hora._id}><Basurero /></Link></span>
                             }
                         </td>
                     </tr>
                 ))
             } else {
+                console.log("ad");
                 items = <tr>
                     <td colSpan="7">
                         No se encontraron retiros programados
@@ -358,6 +365,13 @@ export default class GestionResiduos extends Component {
             }
 
 
+        } else {
+            console.log("ad");
+            items = <tr className="elemento">
+                <td colSpan="7" >
+                    No se encontraron retiros programados
+                </td>
+            </tr>
         }
 
 

@@ -27,7 +27,8 @@ export var funciones = {
     obtenerConductores,
     obtenerPatentesVehiculos,
     obtenerOrdenesRetiroAsignado,
-    obtenerCentrosCostos
+    obtenerCentrosCostos,
+    obtenerComunas
 
 };
 
@@ -170,6 +171,20 @@ async function obtenerClientes() { //genera una peticion get por axios a la api 
         .then(function (res) {
             if (res.data.data.length > 0) {
                 registro = res.data.data
+            }
+        })
+        .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+            handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+            return;
+        });
+    return registro;
+}
+async function obtenerComunas() { //genera una peticion get por axios a la api de usuarios
+    let registro;
+    await Axios.get('/api/generales/comunas/', { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        .then(function (res) {   //si la peticion es satisfactoria entonces
+            if (res.data.data.length > 0) {
+                registro = res.data.data[0].comunas
             }
         })
         .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa

@@ -36,7 +36,7 @@ export default class RecuperarPass extends Component {
         let email = this.state.email;
         let componente = this;
         if (email !== '') {
-            funciones.validarEmail(email).then(async res => {
+            let res = funciones.validarEmail(email);
                 console.log(res);
                 if (res) {
                     console.log("dsa");
@@ -58,7 +58,7 @@ export default class RecuperarPass extends Component {
                     this.setState({ incorrecto: 'incorrecto', email: '' });
                     this.resetMensaje();
                 }
-            });
+           
         } else {
             this.setState({ incorrecto: 'incorrecto' });
             this.resetMensaje();

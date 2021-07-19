@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, Switch } from "react-router-dom";
+import { Router, Route, Switch, withRouter } from "react-router-dom";
 
 //hojas de estilo generales
 import './styles/generales.css';
@@ -140,7 +140,7 @@ class App extends React.Component {
   referencia = React.createRef();
 
   mostrarNavegador = (e) => {
-    console.log("ñee");
+    // console.log("ñee");
     this.setState({ mostrarMenu: true });
   }
   cerrarSesion = (e) => {
@@ -153,7 +153,7 @@ class App extends React.Component {
   async componentDidMount() {
     /* aqui debe ir funcion que compruebe validez del token*/
     await autenticacion.currentUser.subscribe(x => this.setState({ currentUser: x }));
-    console.log(this.state.currentUser);
+    // console.log(this.state.currentUser);
     if (this.state.currentUser !== null) {
       this.mostrarNavegador();
     }
@@ -183,7 +183,7 @@ class App extends React.Component {
               />
               <div id="principal">
                 <Switch>
-                  <RutaPrivada exact path="/" component={Inicio} />
+                  <Route exact path="/" component={Inicio} />
 
 
                   {/* trabajadores */}
@@ -313,7 +313,7 @@ class App extends React.Component {
                   pauseOnHover
                 />
                 <Switch>
-                  <RutaPrivada exact path="/" component={Inicio} />
+                  <Route exact path="/" component={Inicio} />
                   <Route exact path="/login" component={Login} funcion={this.mostrarNavegador} />
                   <Route exact path="/recuperarPass/:token" component={RecuperarPass} />
                   <Route component={NotFound} />

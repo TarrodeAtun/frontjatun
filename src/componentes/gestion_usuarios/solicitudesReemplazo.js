@@ -142,7 +142,7 @@ export default class ListarTrabajadores extends Component {
         return (
             <div className="principal" id="component-listar-trabajadores">
                 <div>
-                    <h2 className="amarillo"><Link to="/perfil/turnos"> <Bamarillorev /> </Link> Turnos <strong>/ Solicitudes de reemplazo</strong></h2>
+                    <h2 className="amarillo"><Link to="/personas/turnos"> <Bamarillorev /> </Link> Turnos <strong>/ Solicitudes de reemplazo</strong></h2>
                 </div>
                 <div className="listado listado-simple">
                     <div className="encabezado">

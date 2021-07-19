@@ -55,8 +55,9 @@ export default class Trazabilidad extends Component {
         let items;
         if (this.state.ordenes.length > 0) {
             console.log(this.state.ordenes);
-            items = this.state.ordenes.map((orden, index) =>
-                <tr className="">
+            items = this.state.ordenes.map((orden, index) =>{
+
+                if(orden.estado !== 6)return(<tr className="">
                     <td>
                         {orden.datosRetiro[0].codigoler} - {orden.datosRetiro[0].categoria}
 
@@ -114,10 +115,14 @@ export default class Trazabilidad extends Component {
                     <td>{orden.datosCentro[0].nombre}</td>
 
                     <td className="acciones">
-                        <span><Link to={`/residuos/trazabilidad/ver/${orden._id}`}><Ojo /></Link></span>
+                        {orden.estado >= 2 &&
+                            <span><Link to={`/residuos/trazabilidad/ver/${orden._id}`}><Ojo /></Link></span>
+                        }
                         {/* <span><button type="button"><Descarga /></button></span> */}
                     </td>
                 </tr>
+                )
+            }
             )
         }else{
             items = <tr><td colSpan="7">No hay registros actualmente</td></tr>

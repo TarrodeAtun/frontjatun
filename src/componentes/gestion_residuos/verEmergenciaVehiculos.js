@@ -53,7 +53,7 @@ export default class CambiarPass extends Component {
                 componente.setState({
                     fecha: moment(res.data.data[0].fecha).utc().format('DD-MM-YYYY'),
                     hora: res.data.data[0].hora,
-                    patente: res.data.data[0].turno,
+                    patente: res.data.data[0].patente,
                     conductor: res.data.data[0].turno,
                     hito: res.data.data[0].hito,
                     datosConductor: res.data.data[0].datosConductor,

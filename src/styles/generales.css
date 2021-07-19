@@ -1648,5 +1648,10 @@ width:40%;
   font-family: "OSregular";
 }
 .link{
-  color:#1880C3;
+  color:#1880C3 !important;
+  cursor: pointer;
+}
+.separacion{
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

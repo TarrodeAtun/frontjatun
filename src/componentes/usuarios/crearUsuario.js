@@ -361,7 +361,7 @@ export default class CrearUsuario extends Component {
                                     ?
                                     <span>
                                         {this.state.form.perfil === "1" && 'Administrador'}
-                                        {this.state.form.perfil === "2" && 'Jefe Cuadrilla'}
+                                        {this.state.form.perfil === "2" && 'Líder de Cuadrilla'}
                                         {this.state.form.perfil === "3" && 'Operador'}
                                         {this.state.form.perfil === "4" && 'RRHH'}
                                         {this.state.form.perfil === "5" && 'Jefe Servicio'}

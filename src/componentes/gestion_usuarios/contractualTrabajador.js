@@ -1,5 +1,5 @@
 //importaciones de bibliotecas
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { autenticacion } from '../../servicios/autenticacion';
 import { Link } from 'react-router-dom';
 import Axios from '../../helpers/axiosconf';
@@ -356,14 +356,25 @@ export default class EquipoTrabajador extends Component {
                                 <span>Cedula de identidad</span>
                                 {this.state.showModificar
                                     ? <span><input type="file" onChange={this.onChangeFileInput} className="input-generico" name="formCedula" /></span>
-                                    : <span className="spanlink" onClick={() => openInNewTab(this.state.cedula.link)}>{this.state.cedula.name}</span>
+                                    : <Fragment>
+                                        {this.state.cedula.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.cedula.link)}>{this.state.cedula.name}</span>
+                                            : <span >No se ha ingresad aún</span>
+                                        }
+                                    </Fragment>
                                 }
                             </div>
                             <div>
                                 <span>Certificado de antecedentes</span>
                                 {this.state.showModificar
                                     ? <span><input type="file" onChange={this.onChangeFileInput} className="input-generico" name="formAntecedentes" /></span>
-                                    : <span className="spanlink" onClick={() => openInNewTab(this.state.antecedentes.link)}>{this.state.antecedentes.name}</span>
+                                    : <Fragment>
+                                        {this.state.antecedentes.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.antecedentes.link)}>{this.state.antecedentes.name}</span>
+                                            : <span>No se ha ingresado aún</span>
+                                        }
+
+                                    </Fragment>
                                 }
                             </div>
                             <h3>Condiciones del contrato</h3>
@@ -406,8 +417,15 @@ export default class EquipoTrabajador extends Component {
                             <div>
                                 <span>Contrato</span>
                                 {this.state.showModificar
+
                                     ? <span><input type="file" onChange={this.onChangeFileInput} className="input-generico" name="formContrato" /></span>
-                                    : <span className="spanlink" onClick={() => openInNewTab(this.state.contrato.link)}>{this.state.contrato.name}</span>
+                                    : <Fragment>
+                                        {this.state.contrato.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.contrato.link)}>{this.state.contrato.name}</span>
+                                            : <span>No se ha ingresado aún</span>
+                                        }
+
+                                    </Fragment>
                                 }
                             </div>
                             <h3>Desvinculación</h3>
@@ -415,14 +433,24 @@ export default class EquipoTrabajador extends Component {
                                 <span>Finiquito</span>
                                 {this.state.showModificar
                                     ? <span><input type="file" onChange={this.onChangeFileInput} className="input-generico" name="formFiniquito" /></span>
-                                    : <span className="spanlink" onClick={() => openInNewTab(this.state.finiquito.link)}>{this.state.finiquito.name}</span>
+                                    : <Fragment>
+                                        {this.state.finiquito.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.finiquito.link)}>{this.state.finiquito.name}</span>
+                                            : <span>No se ha ingresado aún</span>
+                                        }
+                                    </Fragment>
                                 }
                             </div>
                             <div>
                                 <span>Carta Aviso/Renuncia</span>
                                 {this.state.showModificar
                                     ? <span><input type="file" onChange={this.onChangeFileInput} className="input-generico" name="formRenuncia" /></span>
-                                    : <span className="spanlink" onClick={() => openInNewTab(this.state.renuncia.link)}>{this.state.renuncia.name}</span>
+                                    : <Fragment>
+                                        {this.state.renuncia.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.renuncia.link)}>{this.state.renuncia.name}</span>
+                                            : <span>No se ha ingresado aún</span>
+                                        }
+                                    </Fragment>
                                 }
                             </div>
                             {this.state.showModificar &&

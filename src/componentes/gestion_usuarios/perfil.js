@@ -393,7 +393,7 @@ export default class Perfil extends Component {
                                         <select name="formPerfil" onChange={this.onChangeInput} value={this.state.form.formPerfil} className="input-generico" >
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Administrador</option>
-                                            <option value="2">Jefe Cuadrilla</option>
+                                            <option value="2">Líder de Cuadrilla</option>
                                             <option value="3">Operador</option>
                                             <option value="4">RRHH</option>
                                             <option value="5">Jefe Servicio</option>
@@ -404,7 +404,7 @@ export default class Perfil extends Component {
                                     :
                                     <span>
                                         {this.state.form.formPerfil === 1 && 'Administrador'}
-                                        {this.state.form.formPerfil === 2 && 'Jefe Cuadrilla'}
+                                        {this.state.form.formPerfil === 2 && 'Líder de Cuadrilla'}
                                         {this.state.form.formPerfil === 3 && 'Operador'}
                                         {this.state.form.formPerfil === 4 && 'RRHH'}
                                         {this.state.form.formPerfil === 5 && 'Jefe Servicio'}

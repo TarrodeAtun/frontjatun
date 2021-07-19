@@ -651,7 +651,7 @@ export default class CrearRetiro extends Component {
                             </div>
                             <h3 className="verde">Trabajadores*</h3>
                             <div>
-                                <span>Jefe de Cuadrilla</span>
+                                <span>Líder de Cuadrilla</span>
                                 <span>
                                     <select name="jefe" onChange={this.onChangeInput} disabled={this.state.showModificar} value={this.state.form.jefe} className={`input-generico ${selectread}`}>
                                         <option>Seleccionar</option>

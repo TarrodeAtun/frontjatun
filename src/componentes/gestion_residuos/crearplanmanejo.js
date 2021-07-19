@@ -46,7 +46,7 @@ export default class CrearPlanManejo extends Component {
 
             showAgregarResiduoPlan: false,
 
-            datosCliente:'',
+            datosCliente: '',
             nombreCliente: '',
             rut: '',
 
@@ -68,6 +68,7 @@ export default class CrearPlanManejo extends Component {
             imagen: '',
             comentarios: '',
             contenedores: '',
+            pContenedores:'',
 
             residuosagregado: [],
 
@@ -94,7 +95,7 @@ export default class CrearPlanManejo extends Component {
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data)
                 componente.setState({
-                    datosCliente:res.data.data,
+                    datosCliente: res.data.data,
                     nombreCliente: res.data.data.nombre,
                     rut: res.data.data.rut,
                 });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -142,7 +143,7 @@ export default class CrearPlanManejo extends Component {
                             onClick={this.enviaDatos}
                         >
                             Aceptar
-                    </button>
+                        </button>
                     </div>
                 );
             }
@@ -244,14 +245,15 @@ export default class CrearPlanManejo extends Component {
         formData.append('superficie', this.state.superficie);
         formData.append('imagen', this.state.imagen);
         formData.append('comentarios', this.state.comentarios);
+        formData.append('pContenedores', this.state.pContenedores);
         formData.append('contenedores', this.state.contenedores);
         formData.append('residuosegregado', this.state.residuosegregado);
         formData.entries();
-        for(var elem of formData.entries()) {
+        for (var elem of formData.entries()) {
             if (elem[1] === "" || elem[1] === null) {
                 campoVacio = true;
             }
-         }
+        }
         if (!campoVacio) {
             console.log(this.state.datosCliente);
             const res = await Axios.post('/api/gestion-residuos/plan-manejo/crear/', formData, { headers: authHeader() })
@@ -326,7 +328,7 @@ export default class CrearPlanManejo extends Component {
                         <span> <input type="radio" onChange={this.onChangePretratamiento} value="0" name={`pretratamiento${index}`} data-key={index} /> <label>No</label> </span>
                         <span>
                             {this.state.residuosagregado[index].pretratamiento === "1" &&
-                                <input name={`pretratamientoValor`} onChange={this.onChangeResiduo} data-key={index} />
+                                <input name={`pretratamientoValors`} className="input-generico separacion" onChange={this.onChangeResiduo} data-key={index} />
                             }
                         </span>
 
@@ -445,17 +447,18 @@ export default class CrearPlanManejo extends Component {
                             <h3 className="gris">¿Posee algún tipo de contenedores segregadores en la faena?</h3>
                             <div className="introspan spanseparado">
                                 <span>
-                                    <input className="input-generico" type="radio" name="nombre" value="1" placeholder="Superficie"></input><label>Si</label>
+                                    <input className="input-generico" type="radio" onChange={this.onChangeInput} name="pContenedores" value="1" ></input><label>Si</label>
                                 </span>
                                 <span>
-                                    <input className="input-generico" type="radio" name="nombre" value="0" placeholder="Superficie"></input><label>No</label>
+                                    <input className="input-generico" type="radio" onChange={this.onChangeInput} name="pContenedores" value="0" ></input><label>No</label>
                                 </span>
                             </div>
-
-                            <div>
-                                <span>¿Cuantos?</span>
-                                <span> <input className="input-generico" onChange={this.onChangeInput} name="contenedores"></input></span>
-                            </div>
+                            {parseInt(this.state.pContenedores) === 1 &&
+                                <div>
+                                    <span>¿Cuantos?</span>
+                                    <span> <input className="input-generico" onChange={this.onChangeInput} name="contenedores"></input></span>
+                                </div>
+                            }
                             <div>
                                 <span>¿Que tipo de residuos segrega actualmente?</span>
                                 <span> <textarea className="input-generico" onChange={this.onChangeInput} name="residuosegregado"></textarea></span>

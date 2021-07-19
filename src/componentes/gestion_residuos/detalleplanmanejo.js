@@ -71,6 +71,7 @@ export default class CrearPlanManejo extends Component {
             imagen: '',
             comentarios: '',
             contenedores: '',
+            pContenedores: '',
 
             residuosagregado: [],
             subcategorias: ''
@@ -117,6 +118,7 @@ export default class CrearPlanManejo extends Component {
                     imagen: res.data.data[0].imagen,
                     comentarios: res.data.data[0].comentarios,
                     contenedores: res.data.data[0].contenedores,
+                    pContenedores: res.data.data[0].pContenedores,
                     residuosegregado: res.data.data[0].residuosegregado,
                     datosCliente: res.data.data[0].datosCliente[0],
                 });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -301,34 +303,34 @@ export default class CrearPlanManejo extends Component {
             )
             return (<Fragment key={index}>
                 <div className="prehead wauto">
-                    <h3 className="amarillo">{residuo.codigo} - {residuo.label}</h3>
+                    <h3 className="amarillo">{residuo.codigo[index]} - {residuo.label}</h3>
 
                 </div>
                 <div>
                     <span>Proceso del cual proviene</span>
-                    <span>{residuo.proceso}</span>
+                    <span>{residuo.proceso[index]}</span>
                 </div>
                 <div>
                     <span>Cantidad</span>
-                    <span>{residuo.cantidad} </span>
+                    <span>{residuo.cantidad[index]} </span>
                 </div>
                 <div>
                     <span>Clasificacion</span>
                     <span>
-                        <select className="input-generico" disabled readOnly onChange={this.onChangeResiduo} value={residuo.clasificacion} data-key={index} name="clasificacion">
+                        <select className="input-generico" disabled readOnly onChange={this.onChangeResiduo} value={residuo.clasificacion[index]} data-key={index} name="clasificacion">
                             <option >Seleccionar</option>
-                            {subcategorias}
+                            {subcategorias[index]}
                         </select>
                     </span>
                 </div>
                 <div>
                     <span>Pretratamiento</span>
                     <span className="introspan">
-                        {parseInt(residuo.pretratamiento) === 1
+                        {parseInt(residuo.pretratamiento[index]) === 1
                             ? <Fragment>
                                 <span> <input type="radio" disabled onChange={this.onChangeResiduo} value="1" checked name={`pretratamiento${index}`} data-key={index} /> <label>Si</label> </span>
                                 <span> <input type="radio" disabled onChange={this.onChangeResiduo} value="0" name={`pretratamiento${index}`} data-key={index} /> <label>No</label> </span>
-                                <span> <input name="pretatamientoValor" value={residuo.pretratamientoValor} onChange={this.onChangeResiduo} data-key={index} /> </span>
+                                <span> <input name="pretatamientoValor"  className="input-generico separacion" value={residuo.pretratamientoValor[index]} onChange={this.onChangeResiduo} data-key={index} /> </span>
                             </Fragment>
                             : <Fragment>
                                 <span> <input type="radio" disabled onChange={this.onChangeResiduo} value="1" name={`pretratamiento${index}`} data-key={index} /> <label>Si</label> </span>
@@ -428,7 +430,7 @@ export default class CrearPlanManejo extends Component {
                             <div>
                                 <span>Techado</span>
                                 <span> {this.state.techadoAltura} Mts Alto -  {this.state.techadoSuperficie} Mts Superficie</span>
-                                
+
                             </div>
                             <div>
                                 <span>Cielo Abierto</span>
@@ -437,10 +439,10 @@ export default class CrearPlanManejo extends Component {
                             <div>
                                 <span>Adjuntar Fotografía</span>
                                 {
-                                 this.state.imagen[0]   && 
-                                 <span onClick onClick={() => openInNewTab(direccionImagen+this.state.imagen[0].url )}>{ this.state.imagen[0].input}</span>
+                                    this.state.imagen[0] &&
+                                    <span className="link" onClick={() => openInNewTab(direccionImagen + this.state.imagen[0].url)}>{this.state.imagen[0].input}</span>
                                 }
-                                
+
                             </div>
                             <div>
                                 <span>Comentarios</span>
@@ -448,17 +450,31 @@ export default class CrearPlanManejo extends Component {
                             </div>
                             <h3 className="gris">¿Posee algún tipo de contenedores segregadores en la faena?</h3>
                             <div className="introspan spanseparado">
-                                <span>
-                                    <input className="input-generico" type="radio" name="nombre" value="1" placeholder="Superficie"></input><label>Si</label>
-                                </span>
-                                <span>
-                                    <input className="input-generico" type="radio" name="nombre" value="0" placeholder="Superficie"></input><label>No</label>
-                                </span>
+                                {parseInt(this.state.pContenedores) === 1
+                                    ? <Fragment>
+                                        <span>
+                                            <input className="input-generico" readOnly disabled type="radio" onChange={this.onChangeInput} name="pContenedores" checked value="1" ></input><label>Si</label>
+                                        </span>
+                                        <span>
+                                            <input className="input-generico" readOnly disabled type="radio" onChange={this.onChangeInput} name="pContenedores" value="0" ></input><label>No</label>
+                                        </span>
+                                    </Fragment>
+                                    : <Fragment>
+                                        <span>
+                                            <input className="input-generico" readOnly disabled type="radio" onChange={this.onChangeInput} name="pContenedores" value="1" ></input><label>Si</label>
+                                        </span>
+                                        <span>
+                                            <input className="input-generico" readOnly disabled type="radio" onChange={this.onChangeInput} name="pContenedores" checked value="0" ></input><label>No</label>
+                                        </span>
+                                    </Fragment>
+                                }
                             </div>
-                            <div>
-                                <span>¿Cuantos?</span>
-                                <span>{this.state.contenedores}</span>
-                            </div>
+                            {parseInt(this.state.pContenedores) === 1 &&
+                                <div>
+                                    <span>¿Cuantos?</span>
+                                    <span>{this.state.contenedores}</span>
+                                </div>
+                            }
                             <div>
                                 <span>¿Que tipo de residuos segrega actualmente?</span>
                                 <span> <textarea disabled readonly className="input-generico" onChange={this.onChangeInput} value={this.state.residuosegregado} name="residuosegregado"></textarea></span>
