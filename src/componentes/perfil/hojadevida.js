@@ -11,6 +11,10 @@ import { funciones } from '../../servicios/funciones';
 import moment from 'moment';
 import { confirmAlert } from 'react-confirm-alert';
 
+import Modal from '../includes/modal';
+import { toogleModalCore } from '../includes/funciones';
+import ModalFoto from '../modalFoto';
+
 // importaciones de iconos 
 import imagen from "../../assets/persona.svg";
 import { ReactComponent as Basurero } from "../../assets/iconos/basurero.svg";
@@ -38,6 +42,8 @@ const openInNewTab = (url) => {
 }
 const direccionImagen = funciones.obtenerRutaUsuarios();
 
+
+
 export default class HojaDeVida extends Component {
     constructor(props) {
         super(props);
@@ -49,9 +55,20 @@ export default class HojaDeVida extends Component {
             amonestaciones: '',
             capacitaciones: '',
             amonestacionesActivo: '',
-            capacitacionesActivo: 'activo'
+            capacitacionesActivo: 'activo',
+            imgload:'',
+            showModalFoto:false
         };
     }
+
+
+    toogleModal = toogleModalCore; //copiamos la funcion modal a una funcion local
+
+    manejadorModals = (e, res) => {
+        this.toogleModal(e, res);
+    }
+
+
     async componentDidMount() {
         var componente = this;
         var { id } = this.props.match.params;
@@ -100,6 +117,12 @@ export default class HojaDeVida extends Component {
     retorno = (e) => {
         historial.push('/personas/gestion');
     }
+
+    abreImagen = async (e) =>{
+        console.log(e.currentTarget.dataset.url);
+        await this.setState({imgload:e.currentTarget.dataset.url, showModalFoto:true});
+    }
+
     changeTab = (e) => {
         var valor = e.currentTarget.dataset.opcion;
         if (valor === "0") {
@@ -123,7 +146,7 @@ export default class HojaDeVida extends Component {
                         <p>{capacitacion.descripcion}</p>
                     </div>
                     <div className="acciones">
-                        <span title="Ver Certificado" className="spanlink" data-url={capacitacion.certificado[0].url} onClick={() => openInNewTab(capacitacion.certificado[0].url)}><Doc /></span>
+                        <span title="Ver Certificado" className="spanlink"  onClick={this.abreImagen} data-url={"users/"+capacitacion.certificado[0].url}><Doc /></span>
                     </div>
                 </div>
             )
@@ -193,6 +216,15 @@ export default class HojaDeVida extends Component {
                             </div>
                         }
                     </div>
+                </div>
+                <div id="modales">
+                    <Modal
+                        name="ModalFoto"  //nombre del estado que controla el modal
+                        show={this.state.showModalFoto} //indicamos la propiedad show con el estado que controlara al modal
+                        contenido={<ModalFoto />} //entregamos el componente que se renderizara en el modal 
+                        toogleModal={this.manejadorModals}
+                        img={this.state.imgload}
+                    />
                 </div>
             </div >
         );

@@ -44,7 +44,7 @@ export default class navegador extends Component {
                         <li ><Link to="/">Dashboard / Inicio</Link></li>
                         <li><Link to="/perfil">Mi perfil</Link></li>
                         {(this.state.datosUsuarios.perfil === 1 || this.state.datosUsuarios.perfil === 2 || this.state.datosUsuarios.perfil === 4) &&
-                            <li><Link to="/personas/gestion">Gestión de Usuarios</Link></li>
+                            <li><Link to="/personas/gestion">Gestión de Personas</Link></li>
                         }
                         {(this.state.datosUsuarios.perfil === 1 || this.state.datosUsuarios.perfil === 5 || this.state.datosUsuarios.perfil === 6 ||
                             this.state.datosUsuarios.perfil === 7) &&

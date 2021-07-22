@@ -12,7 +12,7 @@ import '../../styles/listarTrabajadores.css';
 
 
 // importaciones de iconos 
-import { ReactComponent as Bcelesterev } from "../../assets/iconos/bcelesterev.svg";
+import { ReactComponent as Bamarillorev } from "../../assets/iconos/bamarillorev.svg";
 import { ReactComponent as Basurero } from "../../assets/iconos/basurero.svg";
 import { ReactComponent as Ojo } from "../../assets/iconos/ojo.svg";
 import { ReactComponent as Descarga } from "../../assets/iconos/descarga.svg";
@@ -36,6 +36,7 @@ export default class ListarTrabajadores extends Component {
         this.state = {
             currentUser: autenticacion.currentUserValue,
             datosUsuario: "",
+            idUsuario: '',
             registros: [],
             pagina: 1,
             paginas: '',
@@ -91,6 +92,18 @@ export default class ListarTrabajadores extends Component {
     }
 
     async componentDidMount() {
+        let componente = this;
+        const { rut } = this.props.match.params;
+        await Axios.get('/api/users/worker/rut/' + rut, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+            .then(function (res) {   //si la peticion es satisfactoria entonces
+                console.log(res.data);
+                componente.setState({ datosUsuario: res.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
+            })
+            .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                // handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
+                return;
+            });
+        // this.setState({idUsuario:id});
         await this.numPaginasTurnos();
         this.listadoSolicitudesReemplazo();
     }
@@ -105,32 +118,32 @@ export default class ListarTrabajadores extends Component {
                 registro.reemplazos.map((elem, ind) => {
                     console.log(elem);
                     // elem.find(function () {
-                        if (parseInt(elem.rut) === parseInt(rut)) {
-                            if (elem.estado === 0) estado = <span className="solicitudesopciones"><button data-rut={registro.datosTrabajador[ind].rut} data-turno={registro._id} onClick={componente.responderSolicitud} data-respuesta="1" title="Aprobar"><Check /></button><button data-rut={registro.datosTrabajador[ind].rut} data-turno={registro._id} title="Rechazar" onClick={componente.responderSolicitud} data-respuesta="2"><Rech /></button></span>;
-                            if (elem.estado === 1) estado = <Check />
-                            if (elem.estado === 2) estado = <Rech />
+                    if (parseInt(elem.rut) === parseInt(rut)) {
+                        if (elem.estado === 0) estado = <span className="solicitudesopciones"><button data-rut={registro.datosTrabajador[ind].rut} data-turno={registro._id} onClick={componente.responderSolicitud} data-respuesta="1" title="Aprobar"><Check /></button><button data-rut={registro.datosTrabajador[ind].rut} data-turno={registro._id} title="Rechazar" onClick={componente.responderSolicitud} data-respuesta="2"><Rech /></button></span>;
+                        if (elem.estado === 1) estado = <Check />
+                        if (elem.estado === 2) estado = <Rech />
 
-                            registros.push(<tr>
-                                <td>{moment(registro.fecha).utc().format("DD-MM-YYYY")}<br></br>{registro.inicio} - {registro.termino}</td>
-                                <td>{registro.datosServicio[0].nombre}</td>
-                                <td>
-                                    {registro.datosReemplazo[ind].nombre}  {registro.datosReemplazo[ind].apellido} <br></br>  {registro.datosReemplazo[ind].rut}
-                                </td>
-                                <td>{estado}</td>
-                            </tr>)
-                        }
+                        registros.push(<tr>
+                            <td>{moment(registro.fecha).utc().format("DD-MM-YYYY")}<br></br>{registro.inicio} - {registro.termino}</td>
+                            <td>{registro.datosServicio[0].nombre}</td>
+                            <td>
+                                {registro.datosReemplazo[ind].nombre}  {registro.datosReemplazo[ind].apellido} <br></br>  {registro.datosReemplazo[ind].rut}
+                            </td>
+                            <td>{estado}</td>
+                        </tr>)
+                    }
                     // })
                 });
             }
         } else {
-            <tr><td colSpan="3">No hay turnos registrados para esta fecha</td></tr>
+            registros = <tr><td colSpan="4">No hay solicitudes registradas</td></tr>
         }
         // let paginacion = funciones.paginacion(this.state.paginas, this.state.pagina, this.paginar);
 
         return (
             <div className="principal" id="component-listar-trabajadores">
                 <div>
-                    <h2 className="celeste"><Link to="/perfil/turnos"> <Bcelesterev /> </Link> Mis turnos <strong>/ Solicitudes de reemplazo</strong></h2>
+                    <h2 className="amarillo"><Link to={`/personas/turnos/trabajador/${this.state.datosUsuario._id}`}> <Bamarillorev /> </Link> Mis turnos <strong>/ Solicitudes de reemplazo</strong></h2>
                 </div>
                 <div className="listado listado-simple">
                     <div className="encabezado">

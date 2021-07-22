@@ -51,6 +51,7 @@ export default class NuevaEncuesta extends Component {
             nombreEncuesta: '',
             preguntas: [],
             showAgregaPregunta: '',
+            todos: 0,
             modifyTarget: '',
             modifyTargetIndex: '',
 
@@ -70,6 +71,19 @@ export default class NuevaEncuesta extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
+    }
+
+    selectTodos = (e) => {
+        if (e.target.checked === true) {
+            this.setState({
+                trabajadoresSelect: [],
+                todos: 1
+            })
+        } else {
+            this.setState({
+                todos: 0
+            })
+        }
     }
 
     manejadorModals = (e, res) => {
@@ -143,11 +157,12 @@ export default class NuevaEncuesta extends Component {
     enviaDatos = async (e) => {
         if (this.state.nombreEncuesta !== "") {
             if (this.state.preguntas.length !== 0) {
-                if (this.state.trabajadoresSelect.length !== 0) {
+                if (this.state.trabajadoresSelect.length !== 0 || this.state.todos === 1) {
                     const res = await Axios.post('/api/bienestar/encuestas/create/', {
                         nombre: this.state.nombreEncuesta,
                         preguntas: this.state.preguntas,
-                        trabajadores: this.state.trabajadoresSelect
+                        trabajadores: this.state.trabajadoresSelect,
+                        todos: this.state.todos
                     }, { headers: authHeader() })
                         .then(respuesta => {
                             toast.success("Encuesta agregada satisfactoriamente", toastoptions);
@@ -274,12 +289,20 @@ export default class NuevaEncuesta extends Component {
                 </div>
                 <div className="seccion seccion-trabajadores-encuestas">
                     <div>
-                        <span>Trabajadores Asignados</span>
+                        <span>Trabajadores Asignados </span>
+                        <span className="block w100 separacion">Seleccionar Todos <input type="checkbox" name="todos" onChange={this.selectTodos} /></span>
                         <span className="select-container">
-                            <select name="selectTrabajador" onChange={this.onChangeTrabajadores} value={this.state.selectTrabajador} className="input-generico">
-                                <option>Seleccionar</option>
-                                {trabajadores}
-                            </select>
+                            {this.state.todos === 1
+                                ? <select name="selectTrabajador" disabled onChange={this.onChangeTrabajadores} value={this.state.selectTrabajador} className="input-generico">
+                                    <option>Seleccionar</option>
+                                    {trabajadores}
+                                </select>
+                                : <select name="selectTrabajador" onChange={this.onChangeTrabajadores} value={this.state.selectTrabajador} className="input-generico">
+                                    <option>Seleccionar</option>
+                                    {trabajadores}
+                                </select>
+                            }
+
                         </span>
                     </div>
                     {trabajadoresAsignados}

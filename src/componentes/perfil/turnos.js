@@ -45,8 +45,10 @@ export default class GestionResiduos extends Component {
         var componente = this;
         var fecha = new Date();
         var rut = autenticacion.currentUserValue.data.usuariobd.rut;
+        var perfil = autenticacion.currentUserValue.data.usuariobd.perfil;
+        console.log(autenticacion.currentUserValue.data.usuariobd);
         console.log(fecha);
-        const res = Axios.post('/api/users/worker/turnos/', { fecha:  moment(fecha).format('YYYY-MM-DD'), rut: rut }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/users/worker/turnos/', { fecha:  moment(fecha).format('YYYY-MM-DD'), rut: rut, perfil: perfil }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -62,8 +64,10 @@ export default class GestionResiduos extends Component {
         var componente = this;
         var fecha = e.target.value;
         var rut = autenticacion.currentUserValue.data.usuariobd.rut;
+        var perfil = autenticacion.currentUserValue.data.usuariobd.perfil;
+        console.log(autenticacion.currentUserValue.data.usuariobd);
         console.log(fecha);
-        const res = Axios.post('/api/users/worker/turnos/', { fecha:  moment(fecha).format('YYYY-MM-DD'), rut: rut }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/users/worker/turnos/', { fecha:  moment(fecha).format('YYYY-MM-DD'), rut: rut, perfil: perfil}, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ horas: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -79,7 +83,7 @@ export default class GestionResiduos extends Component {
         var columnas;
         var subespacio;
         nodo.classList.add("asd");
-        console.log("recalculando");
+        console.log("recalculansdo");
         columnas = nodo.children;
         for await (var espacio of columnas) {
             //por cada columna

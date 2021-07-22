@@ -47,9 +47,6 @@ export default class Perfil extends Component {
     manejadorModals = (e, res) => { //creamos una funcion que reciba parametros para pasarlo al toogle modal (esta funcion la pasaremos al cuerpo del modal como propiedad para ejecutarse por autoreferencia)
         this.toogleModal(e, res);
     }
-    componentDidMount = () =>{
-        this.props.impFuncion();
-    }
 
     onChangeInput = (e) => {
         this.setState({
@@ -99,7 +96,8 @@ export default class Perfil extends Component {
     }
 
     async componentDidMount() {
-        const { id } = this.props.match.params
+        this.props.impFuncion();
+        const { id } = this.props.match.params;
         await this.setState({
             datosUsuarios: this.state.currentUser.data.usuariobd
         });

@@ -63,7 +63,9 @@ export default class ListarTrabajadores extends Component {
     obtenerTurnos = async (fecha) => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
         console.log(fecha);
-        const res = Axios.post('/api/users/worker/turnos/especifico/', { fecha: fecha }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        var perfil = autenticacion.currentUserValue.data.usuariobd.perfil;
+        var rut = autenticacion.currentUserValue.data.usuariobd.rut;
+        const res = Axios.post('/api/users/worker/turnos/especifico/', { fecha: fecha, perfil: perfil, rut: rut }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data.data);
                 componente.setState({ turnos: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -99,10 +101,10 @@ export default class ListarTrabajadores extends Component {
                 if (hora.estado === 3) curestado = "turnoFinalizado"
                 if (hora.estado === 1 || hora.estado === 2) curestado = "turnoEncurso"
                 return (<tr className={curestado}>
-                     <td className="columna onlymovil">
+                    <td className="columna onlymovil">
                         <span>fecha Jornada</span>
-                     </td>
-                    <td className="columna">
+                    </td>
+                    <td className="columna primeracol">
                         <span>
                             {moment(hora.fecha).utc().format("DD-MM-YYYY")}
                         </span>
@@ -112,7 +114,7 @@ export default class ListarTrabajadores extends Component {
                     </td>
                     <td className="columna onlymovil">
                         <span>Servicio/Sector</span>
-                     </td>
+                    </td>
                     <td className="columna">
                         <span>
                             {hora.datosServicio.nombre}
@@ -123,7 +125,7 @@ export default class ListarTrabajadores extends Component {
                     </td>
                     <td className="columna onlymovil">
                         <span>Cliente</span>
-                     </td>
+                    </td>
                     <td className="columna">
                         <span>
                             {hora.datosCliente.nombre}
@@ -131,7 +133,7 @@ export default class ListarTrabajadores extends Component {
                     </td>
                     <td className="columna onlymovil">
                         <span>Ir al turno  <Link to={`/personas/asistencias/control-asistencia/turno/${hora._id}`}><Ojo /></Link></span>
-                     </td>
+                    </td>
                     <td className="columna onlydesktop">
                         <Link to={`/personas/asistencias/control-asistencia/turno/${hora._id}`}><Ojo /></Link>
                     </td>

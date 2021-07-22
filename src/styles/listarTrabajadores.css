@@ -85,7 +85,7 @@ text-align: center;
     font-size: 18px;
 }
 
-#component-listar-trabajadores table td:first-of-type,
+#component-listar-trabajadores table td:first-of-type:not(.onlymovil),
 #component-listar-trabajadores table th:first-of-type {
     padding-left: 30px;
     padding-right: 30px;

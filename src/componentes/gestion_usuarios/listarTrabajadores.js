@@ -53,6 +53,7 @@ export default class ListarTrabajadores extends Component {
             paginas: '',
 
             rut: '',
+            nombre: '',
             centro: '',
             estado: ''
         };
@@ -90,7 +91,7 @@ export default class ListarTrabajadores extends Component {
 
     obtenerTrabajadores = async () => { //genera una peticion get por axios a la api de usuarios
         var componente = this;
-        const res = Axios.post('/api/users/worker/trabajadoresPost', { rut: this.state.rut, centro: this.state.centro, pagina: this.state.pagina }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        const res = Axios.post('/api/users/worker/trabajadoresPost', { rut: this.state.rut, centro: this.state.centro, pagina: this.state.pagina, nombre:this.state.nombre }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 console.log(res.data);
                 componente.setState({ trabajadores: res.data.data, paginas: res.data.paginas });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -187,14 +188,19 @@ export default class ListarTrabajadores extends Component {
                     <div>
                         <form>
                             <div className="form-group justify-center">
-                                <input className="input-generico" name="rut" value={this.state.rut} onChange={this.onChangeRut} placeholder="Nombre o Rut" />
+                                <input className="input-generico" name="nombre" value={this.state.nombre} onChange={this.onChangeInput} placeholder="Nombre" />
+                                <input className="input-generico" name="rut" value={this.state.rut} onChange={this.onChangeRut} placeholder="Rut" />
+                                
+                                {/* <select className="input-generico">
+                                    <option>Estado de contrato</option>
+                                </select> */}
+                            </div>
+                            <div className="form-group justify-center">
                                 <select className="input-generico" name="centro" onChange={this.onChangeInput}>
                                     <option value="">Centro de costos</option>
                                     {centrosCostos}
                                 </select>
-                                {/* <select className="input-generico">
-                                    <option>Estado de contrato</option>
-                                </select> */}
+                                
                             </div>
                             <div className="form-group buttons">
                                 <button className="boton-generico btazul" onClick={this.filtrar} type="button">Filtrar</button>
@@ -207,7 +213,7 @@ export default class ListarTrabajadores extends Component {
                     <table>
                         <thead>
                             <th className="onlymovil" colSpan="3">Trabajador</th>
-                            <th className="onlydesktop">Trabajador</th>
+                            <th className="onlydesktop primeracol">Trabajador</th>
                             <th className="onlydesktop">Centro Costos</th>
                             <th className="onlydesktop"> Acciones Ficha</th>
                         </thead>

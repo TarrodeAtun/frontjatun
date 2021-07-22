@@ -100,6 +100,10 @@ export default class CrearCapacitacion extends Component {
                                         campoVacio = true;
                                     }
                                 });
+                                console.log(this.state.formCertificado);
+                                if(!this.state.formCertificado){
+                                    campoVacio = true;
+                                }
                                 if (!campoVacio) {
                                     formData.append("rut", this.state.datosUsuario.rut);
                                     formData.append("curso", this.state.form.curso);
@@ -126,6 +130,7 @@ export default class CrearCapacitacion extends Component {
                                         });
                                 } else {
                                     toast.warning("Debes llenar todos los campos", toastoptions);
+                                    onClose();
                                 }
 
                             }}
@@ -167,7 +172,7 @@ export default class CrearCapacitacion extends Component {
                             </div>
                             <div>
                                 <span>Duración en Hrs</span>
-                                <span><input className="input-generico" name="duracion" value={this.state.form.duracion} onChange={this.onChangeInput} /></span>
+                                <span><input className="input-generico" type="number" name="duracion" value={this.state.form.duracion} onChange={this.onChangeInput} /></span>
                             </div>
                             <div>
                                 <span>Fecha</span>

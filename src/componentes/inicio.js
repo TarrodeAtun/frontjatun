@@ -41,7 +41,7 @@ export default class inicio extends Component {
     }
 
     async componentDidMount() {
-
+        this.props.impFuncion();
         await this.setState({ datosUsuarios: this.state.currentUser.data.usuariobd });
         if (this.state.datosUsuarios.rut) {
             this.consultarTurno();

@@ -249,7 +249,7 @@ export default class GestionResiduos extends Component {
                         </div>
                         <div className="seccion calendario">
                             <div className="encabezado flex">
-                                <h3>asdsda</h3>
+                                <h3>Calendario de turnos</h3>
                                 <input className="fechaProgra input-generico" onChange={this.obtenerTurnos} type="date"></input>
 
                             </div>

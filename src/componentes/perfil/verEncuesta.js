@@ -192,7 +192,7 @@ export default class EditarEncuesta extends Component {
                 <div className="listado-simple">
                     <div className="encabezado">
                         <input className="form-control" onChange={this.onChangeInput} name="nombreEncuesta" value={this.state.nombreEncuesta} placeholder="Nombre encuesta" />
-                        <button className="ml" onClick={this.manejadorModals} data-objetivo="AgregarPregunta">+ Agregar pregunta</button>
+                      
                     </div>
                     <div className="elementos">
 

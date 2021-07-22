@@ -62,9 +62,7 @@ export default class Perfil extends Component {
                 formDireccion: '',
                 formComuna: '',
                 formCiudad: '',
-                formPerfil1: '',
-                formPerfil2: '',
-                formCargo: '',
+                formPerfil: '',
                 formBanco: '',
                 formTipoCuenta: '',
                 formNumCuenta: '',
@@ -202,7 +200,7 @@ export default class Perfil extends Component {
             comuna: this.state.form.formComuna,
             ciudad: this.state.form.formCiudad
         }));
-        formData.append('perfil', this.state.form.formperfil);
+        formData.append('perfil', this.state.form.formPerfil);
         formData.append('bancarios', JSON.stringify({
             banco: this.state.form.formBanco,
             tipo: this.state.form.formTipoCuenta,

@@ -102,6 +102,7 @@ import VerMensajeSoporte from './componentes/bienestar/soporte/verMensaje';
 //perfil personal
 import Perfil from './componentes/perfil/perfil';
 import TurnosPersonal from './componentes/perfil/turnos';
+import DetalleTurnoPersonal from './componentes/perfil/turnos';
 import TurnosHistorialPersonal from './componentes/perfil/historialTurnos';
 import FichaPersonal from './componentes/perfil/fichaTrabajador';
 import EquipoPersonal from './componentes/perfil/equipoPersonal';
@@ -183,7 +184,7 @@ class App extends React.Component {
               />
               <div id="principal">
                 <Switch>
-                  <Route exact path="/" component={Inicio} />
+                  <RutaPrivada exact path="/" component={Inicio} funcion={this.mostrarNavegador}/>
 
 
                   {/* trabajadores */}
@@ -313,7 +314,7 @@ class App extends React.Component {
                   pauseOnHover
                 />
                 <Switch>
-                  <Route exact path="/" component={Inicio} />
+                  <RutaPrivada exact path="/" component={Inicio} funcion={this.mostrarNavegador} />
                   <Route exact path="/login" component={Login} funcion={this.mostrarNavegador} />
                   <Route exact path="/recuperarPass/:token" component={RecuperarPass} />
                   <Route component={NotFound} />

@@ -91,7 +91,8 @@ export default class ListarTrabajadores extends Component {
     listadoTrabajadores = async () => { // hay que llamar los dias en los que el trabajador tiene un turno asignado dentro del mes (onMonthChange function, ver biblioteca de plugin)
         var componente = this;
         var rut = autenticacion.currentUserValue.data.usuariobd.rut;
-        const res = Axios.post('/api/users/worker/trabajadoresPost', { rut: rut }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
+        let rutFull = await funciones.getRutFormateado(autenticacion.currentUserValue.data.usuariobd.rut, autenticacion.currentUserValue.data.usuariobd.dv);
+        const res = Axios.post('/api/users/worker/trabajadoresPost', { rut: rutFull }, { headers: authHeader() }) //se envia peticion axios con el token sesion guardado en local storage como cabecera
             .then(function (res) {   //si la peticion es satisfactoria entonces
                 // console.log(res.data.data);
                 componente.setState({ trabajadores: res.data.data });  //almacenamos el listado de usuarios en el estado usuarios (array)
@@ -108,7 +109,7 @@ export default class ListarTrabajadores extends Component {
         if (filas.length > 0) {
             for await (var fila of filas) {
                 console.log(fila.children[0].children[0].checked);
-                if(fila.children[0].children[0].checked){
+                if (fila.children[0].children[0].checked) {
                     turnos.push({ rut: fila.children[3].children[0].value, turno: fila.children[3].children[0].dataset.turno })
                 }
             }
@@ -205,9 +206,11 @@ export default class ListarTrabajadores extends Component {
         //     })
         //     return (sel)
         // });
+        console.log(componente.state.registros);
         filas = componente.state.registros.map((elem, index) => {  //por cada fecha seleccionada en el calendario realiza
             let sel;
             fechas.find(function (fecha, ind) {  //busca en los turnos donde se incluye el trabajador
+                console.log(elem.fecha, fecha);
                 if (elem.fecha === fecha) {  //si la fecha del turno es igual a la del calendario
                     var onlyInA = componente.state.trabajadores.filter(componente.comparer(elem.trabajadores));
                     var onlyInB = elem.trabajadores.filter(componente.comparer(componente.state.trabajadores));
@@ -228,7 +231,7 @@ export default class ListarTrabajadores extends Component {
                     </tr>
                     console.log(ind);
                 } else {
-                    filas.splice(index,1);
+                    filas.splice(index, 1);
                     sel = null;
                 }
             })

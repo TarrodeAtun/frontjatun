@@ -286,7 +286,7 @@ export default class CrearUsuario extends Component {
                                 <span>Número de hijos</span>
                                 {this.state.showIngresar
                                     ? <span>{this.state.form.formHijos}</span>
-                                    : <span><input className="input-generico" name="formHijos" value={this.state.form.formHijos} onChange={this.onChangeInput} required /></span>
+                                    : <span><input className="input-generico" type="number" name="formHijos" value={this.state.form.formHijos} onChange={this.onChangeInput} required /></span>
                                 }
                             </div>
                         </div>
@@ -370,10 +370,10 @@ export default class CrearUsuario extends Component {
                                     </span>
                                     :
                                     <span>
-                                        <select name="formPerfil1" onChange={this.onChangeInput} value={this.state.form.perfil} className="input-generico" >
+                                        <select name="perfil" onChange={this.onChangeInput} value={this.state.form.perfil} className="input-generico" >
                                             <option>Seleccione un perfil</option>
                                             <option value="1">Administrador</option>
-                                            <option value="2">Jefe Cuadrilla</option>
+                                            <option value="2">Líder de Cuadrilla</option>
                                             <option value="3">Operador</option>
                                             <option value="4">RRHH</option>
                                             <option value="5">Jefe Servicio</option>

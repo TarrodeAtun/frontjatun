@@ -58,7 +58,7 @@ export default class login extends Component {
             await this.setState({ mensaje: respuesta, errorForm: 'incorrecto', password: '', });
             this.resetMensaje();
         } else {
-            historial.push('/perfil/ficha-personal');
+            historial.push('/');
         }
     };
     onChangeInput = (e) => {

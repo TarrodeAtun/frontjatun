@@ -9,6 +9,7 @@ import { historial } from '../../helpers/historial';
 import { funciones } from '../../servicios/funciones';
 import { toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
+import moment from 'moment';
 
 // importaciones de iconos 
 import imagen from "../../assets/persona.svg";
@@ -52,13 +53,34 @@ export default class EquipoTrabajador extends Component {
                 formFechainic: '',
                 formFechaterm: '',
                 formTipoContrato: '',
+                formSueldo: '',
+                formJornada: '',
+                liquiMAuno: '',
+                liquiMAdos: '',
+                liquiMAtres: '',
+                liquiMAcuatro: '',
+                liquiMAcinco: '',
+                liquiMAseis: '',
             },
+
+            //estas son las imagenes que van en el form ------
             formCedula: '',
             formAntecedentes: '',
             formContrato: '',
             formFiniquito: '',
             formRenuncia: '',
 
+            formLiquiuno: '',
+            formLiquidos: '',
+            formLiquitres: '',
+            formLiquicuatro: '',
+            formLiquicinco: '',
+            formLiquiseis: '',
+
+            // -----------
+
+
+            //estas son las que cargan luego
             antecedentes: {
                 name: '',
                 link: ''
@@ -76,6 +98,31 @@ export default class EquipoTrabajador extends Component {
                 link: ''
             },
             renuncia: {
+                name: '',
+                link: ''
+            },
+
+            liquiuno: {
+                name: '',
+                link: ''
+            },
+            liquidos: {
+                name: '',
+                link: ''
+            },
+            liquitres: {
+                name: '',
+                link: ''
+            },
+            liquicuatro: {
+                name: '',
+                link: ''
+            },
+            liquicinco: {
+                name: '',
+                link: ''
+            },
+            liquiseis: {
                 name: '',
                 link: ''
             },
@@ -128,6 +175,14 @@ export default class EquipoTrabajador extends Component {
                         formFechainic: res.data.fechainic,
                         formFechaterm: res.data.fechaterm,
                         formTipoContrato: res.data.tipoContrato,
+                        formSueldo: res.data.sueldo,
+                        formJornada: res.data.jornada,
+                        liquiMAuno: res.data.liquiMAuno,
+                        liquiMAdos: res.data.liquiMAdos,
+                        liquiMAtres: res.data.liquiMAtres,
+                        liquiMAcuatro: res.data.liquiMAcuatro,
+                        liquiMAcinco: res.data.liquiMAcinco,
+                        liquiMAseis: res.data.liquiMAseis,
                     }
                 });
                 console.log(res.data.archivos);
@@ -175,6 +230,14 @@ export default class EquipoTrabajador extends Component {
             }
         })
     }
+    onchangeTermino = (e) => {
+        console.log(e.target.checked);
+        this.setState({
+            form: {
+                ...this.state.form, [e.target.name]: e.target.checked
+            }
+        })
+    }
     onChangeFileInput = (e) => {
         console.log(e.target.files[0]);
         this.setState({
@@ -193,30 +256,31 @@ export default class EquipoTrabajador extends Component {
         }
     }
     enviaDatos = async e => {
+        console.log("1");
         let componente = this;
         e.preventDefault();
         var formData = new FormData();
         // if(this.state.formAntecedentes !== "" || this.state.formAntecedentes !== null){
-        formData.append('antecedentes', this.state.formAntecedentes)
-        // }
-        // if(this.state.formCedula !== "" || this.state.formCedula !== null){
-        formData.append('cedula', this.state.formCedula)
-        // }
-        // if(this.state.formContrato === "" || this.state.formContrato === null){
-        formData.append('contrato', this.state.formContrato)
-        // }
-        // if(this.state.formFiniquito === "" || this.state.formFiniquito === null){
-        formData.append('finiquito', this.state.formFiniquito)
-        // }
-        // if(this.state.formRenuncia === "" || this.state.formRenuncia === null){
-        formData.append('renuncia', this.state.formRenuncia)
-        // }
-        var campoVacio = false;
-        await Object.entries(this.state.form).map((t, k) => {
-            if (t[1] === "" || t[1] === null) {
-                campoVacio = true;
-            }
-        });
+        formData.append('antecedentes', this.state.formAntecedentes);
+        formData.append('cedula', this.state.formCedula);
+        formData.append('contrato', this.state.formContrato);
+        formData.append('finiquito', this.state.formFiniquito);
+        formData.append('renuncia', this.state.formRenuncia);
+
+        formData.append('liquiuno', this.state.formLiquiuno);
+        formData.append('liquidos', this.state.formLiquidos);
+        formData.append('liquitres', this.state.formLiquitres);
+        formData.append('liquicuatro', this.state.formLiquicuatro);
+        formData.append('liquicinco', this.state.formLiquicinco);
+        formData.append('liquiseis', this.state.formLiquiseis);
+
+        formData.append('liquiMAuno', this.state.form.liquiMAuno);
+        formData.append('liquiMAdos', this.state.form.liquiMAdos);
+        formData.append('liquiMAtres', this.state.form.liquiMAtres);
+        formData.append('liquiMAcuatro', this.state.form.liquiMAcuatro);
+        formData.append('liquiMAcinco', this.state.form.liquiMAcinco);
+        formData.append('liquiMAseis', this.state.form.liquiMAseis);
+
         formData.append("rut", this.state.datosUsuario.rut);
         formData.append("direccion", this.state.form.formDireccion);
         formData.append("comuna", this.state.form.formComuna);
@@ -229,9 +293,14 @@ export default class EquipoTrabajador extends Component {
         formData.append("fechainic", this.state.form.formFechainic);
         formData.append("fechaterm", this.state.form.formFechaterm);
         formData.append("tipoContrato", this.state.form.formTipoContrato);
+        formData.append("sueldo", this.state.form.formSueldo);
+        formData.append("jornada", this.state.form.formJornada);
+        // formData.append("sueldo", this.state.form.formSueldo);
+        console.log("3");
+        console.log(formData);
         const res = await Axios.post('/api/users/worker/ficha/contractuales/', formData, { headers: authHeader() })
             .then(res => {
-                console.log(res);
+                console.log(res.data.data);
                 if (res.data.estado === "success") {
                     toast.success(res.data.mensaje, toastoptions);
                     componente.setState({ showModificar: false });
@@ -248,23 +317,36 @@ export default class EquipoTrabajador extends Component {
                             formFechainic: res.data.data.fechainic,
                             formFechaterm: res.data.data.fechaterm,
                             formTipoContrato: res.data.data.tipoContrato,
+                            formSueldo: parseInt(res.data.data.sueldo),
+                            formJornada: parseInt(res.data.data.jornada),
+                            liquiMAuno: res.data.data.liquiMAuno,
+                            liquiMAdos: res.data.data.liquiMAdos,
+                            liquiMAtres: res.data.data.liquiMAtres,
+                            liquiMAcuatro: res.data.data.liquiMAcuatro,
+                            liquiMAcinco: res.data.data.liquiMAcinco,
+                            liquiMAseis: res.data.data.liquiMAseis,
                         }
                     });
-                    console.log(res.data.data.archivos);
-                    res.data.data.archivos.forEach(archivo => {
-                        console.log(archivo);
-                        componente.setState({
-                            [archivo.input]: {
-                                name: [archivo.input],
-                                link: [archivo.url]
-                            }
-                        })
-                    });
+                    // console.log(res.data.data.archivos);
+                    if (res.data.data.archivos) {
+                        res.data.data.archivos.forEach(archivo => {
+                            console.log(archivo);
+                            componente.setState({
+                                [archivo.input]: {
+                                    name: [archivo.input],
+                                    link: [archivo.url]
+                                }
+                            })
+                        });
+                    }
+                    toast.success(res.data.mensaje, toastoptions);
                 } else if (res.data.estado === "warning") {
                     toast.warning(res.data.mensaje, toastoptions);
                 }
             })
             .catch(function (err) { //en el caso de que se ocurra un error, axios lo atrapa y procesa
+                console.log("5");
+                console.log(err);
                 handleResponse(err.response);  //invocamos al manejador para ver el tipo de error y ejecutar la accion pertinente
                 toast.error("Ha habido un error al enviar los datos", toastoptions);
             });
@@ -335,7 +417,7 @@ export default class EquipoTrabajador extends Component {
                             <div>
                                 <span>N° de Hijos</span>
                                 {this.state.showModificar
-                                    ? <span><input className="input-generico" name="formHijos" value={this.state.form.formHijos} onChange={this.onChangeInput} /></span>
+                                    ? <span><input className="input-generico" type="number" name="formHijos" value={this.state.form.formHijos} onChange={this.onChangeInput} /></span>
                                     : <span>{this.state.form.formHijos}</span>
                                 }
                             </div>
@@ -343,12 +425,20 @@ export default class EquipoTrabajador extends Component {
                                 <span>Carga Familiar</span>
                                 {this.state.showModificar
                                     ? <span className="formRadio" name="formCarga" onChange={this.onChangeInput}>
-                                        <input type="radio" value="1" name="formCarga" /> Si
-                                        <input type="radio" value="0" name="formCarga" /> No
+                                        {this.state.form.formCarga === "1"
+                                            ? <Fragment>
+                                                <input type="radio" value="1" checked name="formCarga" /> Si
+                                                <input type="radio" value="0" name="formCarga" /> no
+                                            </Fragment>
+                                            : <Fragment>
+                                                <input type="radio" value="1" name="formCarga" /> Si
+                                                <input type="radio" value="0" checked name="formCarga" /> no
+                                            </Fragment>
+                                        }
                                     </span>
                                     : <span>
-                                        {this.state.form.formPerfil1 === "1" && 'Si'}
-                                        {this.state.form.formPerfil1 === "0" && 'Nno'}
+                                        {this.state.form.formCarga === "1" && 'Si'}
+                                        {this.state.form.formCarga === "0" && 'No'}
                                     </span>
                                 }
                             </div>
@@ -359,7 +449,7 @@ export default class EquipoTrabajador extends Component {
                                     : <Fragment>
                                         {this.state.cedula.name
                                             ? <span className="spanlink" onClick={() => openInNewTab(this.state.cedula.link)}>{this.state.cedula.name}</span>
-                                            : <span >No se ha ingresad aún</span>
+                                            : <span >No se ha ingresado aún</span>
                                         }
                                     </Fragment>
                                 }
@@ -379,28 +469,11 @@ export default class EquipoTrabajador extends Component {
                             </div>
                             <h3>Condiciones del contrato</h3>
                             <div>
-                                <span>Fecha de inicio</span>
-                                {this.state.showModificar
-                                    ? <span><input className="input-generico" type="date" name="formFechainic" onChange={this.onChangeInput} value={this.state.form.formFechainic} /></span>
-                                    : <span>{this.state.form.formFechainic}</span>
-                                }
-                            </div>
-                            <div>
-                                <span>Fecha de termino</span>
-                                {this.state.showModificar
-                                    ? <span className="formCheckbox">
-                                        <input type="checkbox" name="formTermUndefined" /> indefinido
-                                        <input className="input-generico" type="date" disabled name="formFechaterm" value={this.state.form.formFechaterm} onChange={this.onChangeInput} />
-                                    </span>
-                                    : <span>{this.state.form.formFechaterm}</span>
-                                }
-                            </div>
-                            <div>
                                 <span>Tipo de contrato</span>
                                 {this.state.showModificar
                                     ? <span>
                                         <select name="formTipoContrato" onChange={this.onChangeInput} value={this.state.form.formTipoContrato} className="input-generico" >
-                                            <option>Seleccione un tipo de contrato</option>
+                                            <option value="">Seleccione un tipo de contrato</option>
                                             <option value="1">Fijo</option>
                                             <option value="2">Indefinido</option>
                                             <option value="3">Otro</option>
@@ -415,16 +488,137 @@ export default class EquipoTrabajador extends Component {
                                 }
                             </div>
                             <div>
-                                <span>Contrato</span>
+                                <span>Tipo de jornada</span>
                                 {this.state.showModificar
+                                    ? <span>
+                                        <select name="formJornada" onChange={this.onChangeInput} value={this.state.form.formJornada} className="input-generico" >
+                                            <option value="">Seleccione un tipo de contrato</option>
+                                            <option value="1">Full Time</option>
+                                            <option value="2">Part Time</option>
+                                        </select>
+                                    </span>
+                                    :
+                                    <span>
+                                        {this.state.form.formJornada === 1 && 'Full Time'}
+                                        {this.state.form.formJornada === 2 && 'Part Time'}
+                                    </span>
+                                }
+                            </div>
+                            <div>
+                                <span>Sueldo base mensual</span>
+                                {this.state.showModificar
+                                    ? <span><input className="input-generico" type="number" name="formSueldo" onChange={this.onChangeInput} value={this.state.form.formSueldo} /></span>
+                                    : <span>{this.state.form.formSueldo }</span>
+                                }
+                            </div>
+                            <div>
+                                <span>Fecha de inicio</span>
+                                {this.state.showModificar
+                                    ? <span><input className="input-generico" type="date" name="formFechainic" onChange={this.onChangeInput} value={moment(this.state.form.formFechainic).utc().format("YYYY-MM-DD")} /></span>
+                                    : <span>{this.state.form.formFechainic ? moment(this.state.form.formFechainic).utc().format("DD-MM-YYYY") : "No establecida"}</span>
+                                }
+                            </div>
+                            <div>
+                                <span>Fecha de termino</span>
+                                {this.state.showModificar
+                                    ? <span className="formCheckbox">
 
-                                    ? <span><input type="file" onChange={this.onChangeFileInput} className="input-generico" name="formContrato" /></span>
+                                        {parseInt(this.state.form.formTipoContrato) === 2
+                                            ? <input className="input-generico" type="date" disabled name="formFechaterm" />
+                                            : <input className="input-generico" type="date" name="formFechaterm" value={moment(this.state.form.formFechaterm).utc().format("YYYY-MM-DD")} onChange={this.onChangeInput} />
+                                        }
+                                    </span>
+                                    : <span>{this.state.form.formFechaterm ? moment(this.state.form.formFechaterm).utc().format("DD-MM-YYYY") : "No establecida"}</span>
+                                }
+                            </div>
+                            <h3>Liquidaciones de Sueldo (Ultimas 6)</h3>
+                            <div>
+                                {this.state.showModificar
+                                    ? <Fragment>
+                                        <span><input className="input-generico" name="liquiMAuno" value={this.state.form.liquiMAuno} onChange={this.onChangeInput} placeholder="Especifica mes y año" /></span>
+                                        <span><input type="file" onChange={this.onChangeFileInput} name="formLiquiuno" className="input-generico" /></span>
+                                    </Fragment>
                                     : <Fragment>
-                                        {this.state.contrato.name
-                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.contrato.link)}>{this.state.contrato.name}</span>
+                                        <span>{this.state.form.liquiMAuno}</span>
+                                        {this.state.liquiuno.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.liquiuno.link)}>{this.state.liquiuno.name}</span>
                                             : <span>No se ha ingresado aún</span>
                                         }
-
+                                    </Fragment>
+                                }
+                            </div>
+                            <div>
+                                {this.state.showModificar
+                                    ? <Fragment>
+                                        <span><input className="input-generico" name="liquiMAdos" value={this.state.form.liquiMAdos} onChange={this.onChangeInput} placeholder="Especifica mes y año" /></span>
+                                        <span><input type="file" onChange={this.onChangeFileInput} name="formLiquidos" className="input-generico" /></span>
+                                    </Fragment>
+                                    : <Fragment>
+                                        <span>{this.state.form.liquiMAdos}</span>
+                                        {this.state.liquidos.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.liquidos.link)}>{this.state.liquidos.name}</span>
+                                            : <span>No se ha ingresado aún</span>
+                                        }
+                                    </Fragment>
+                                }
+                            </div>
+                            <div>
+                                {this.state.showModificar
+                                    ? <Fragment>
+                                        <span><input className="input-generico" name="liquiMAtres" value={this.state.form.liquiMAtres} onChange={this.onChangeInput} placeholder="Especifica mes y año" /></span>
+                                        <span><input type="file" onChange={this.onChangeFileInput} name="formLiquitres" className="input-generico" /></span>
+                                    </Fragment>
+                                    : <Fragment>
+                                        <span>{this.state.form.liquiMAtres}</span>
+                                        {this.state.liquitres.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.liquitres.link)}>{this.state.liquitres.name}</span>
+                                            : <span>No se ha ingresado aún</span>
+                                        }
+                                    </Fragment>
+                                }
+                            </div>
+                            <div>
+                                {this.state.showModificar
+                                    ? <Fragment>
+                                        <span><input className="input-generico" name="liquiMAcuatro" value={this.state.form.liquiMAcuatro} onChange={this.onChangeInput} placeholder="Especifica mes y año" /></span>
+                                        <span><input type="file" onChange={this.onChangeFileInput} name="formLiquicuatro" className="input-generico" /></span>
+                                    </Fragment>
+                                    : <Fragment>
+                                        <span>{this.state.form.liquiMAcuatro}</span>
+                                        {this.state.liquicuatro.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.liquicuatro.link)}>{this.state.liquicuatro.name}</span>
+                                            : <span>No se ha ingresado aún</span>
+                                        }
+                                    </Fragment>
+                                }
+                            </div>
+                            <div>
+                                {this.state.showModificar
+                                    ? <Fragment>
+                                        <span><input className="input-generico" name="liquiMAcinco" value={this.state.form.liquiMAcinco} onChange={this.onChangeInput} placeholder="Especifica mes y año" /></span>
+                                        <span><input type="file" onChange={this.onChangeFileInput} name="formLiquicinco" className="input-generico" /></span>
+                                    </Fragment>
+                                    : <Fragment>
+                                        <span>{this.state.form.liquiMAcinco}</span>
+                                        {this.state.liquicinco.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.liquicinco.link)}>{this.state.liquicinco.name}</span>
+                                            : <span>No se ha ingresado aún</span>
+                                        }
+                                    </Fragment>
+                                }
+                            </div>
+                            <div>
+                                {this.state.showModificar
+                                    ? <Fragment>
+                                        <span><input className="input-generico" name="liquiMAseis" value={this.state.form.liquiMAseis} onChange={this.onChangeInput} placeholder="Especifica mes y año" /></span>
+                                        <span><input type="file" onChange={this.onChangeFileInput} name="formLiquiseis" className="input-generico" /></span>
+                                    </Fragment>
+                                    : <Fragment>
+                                        <span>{this.state.form.liquiMAseis}</span>
+                                        {this.state.liquiseis.name
+                                            ? <span className="spanlink" onClick={() => openInNewTab(this.state.liquiseis.link)}>{this.state.liquiseis.name}</span>
+                                            : <span>No se ha ingresado aún</span>
+                                        }
                                     </Fragment>
                                 }
                             </div>
